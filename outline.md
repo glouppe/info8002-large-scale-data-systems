@@ -8,6 +8,7 @@ Fall 2017
 
 https://www.cse.buffalo.edu/~stevko/courses/cse486/spring16/schedule.html
 https://courses.engr.illinois.edu/cs425/fa2017/lectures.html
+http://homepage.cs.uiowa.edu/~ghosh/16615.html
 
 ---
 
@@ -25,7 +26,7 @@ https://courses.engr.illinois.edu/cs425/fa2017/lectures.html
 
 # Philosophy
 
-## Thorough
+## Solid ground
 
 - Understand the foundational principles of distributed systems.
 
@@ -55,8 +56,9 @@ class: middle, center
 
 # 1. Distributed systems
 
-- Networking basics
 - Overview of distributed systems
+- Challenges
+- Networking basics
 
 ---
 
@@ -71,6 +73,7 @@ class: middle, center
 # 3. Consensus I
 
 - Time and synchronization
+- Logical time
 - Global states
 - Consensus
 
