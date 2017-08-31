@@ -56,7 +56,7 @@ class: middle, center
 # 1. Distributed systems
 
 - Networking basics
-- Overview of computing paradigms (client-server, grid, P2P, cloud)
+- Overview of distributed systems
 
 ---
 
@@ -136,7 +136,11 @@ class: middle, center
 
 # 10. Distributed file systems
 
-- XXX
+- Concept
+- Interface
+- RPC
+- Scalability (partitioning)
+- Case study: GFS
 
 ---
 
@@ -161,4 +165,4 @@ class: middle, center
 
 ---
 
-# XXX
+XXX
