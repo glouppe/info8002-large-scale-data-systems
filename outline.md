@@ -1,7 +1,8 @@
 class: middle, center
 
 # Large-scale distributed systems
-## Outline
+
+Fall 2017
 
 ???
 
@@ -12,28 +13,58 @@ https://courses.engr.illinois.edu/cs425/fa2017/lectures.html
 
 # Organization
 
+## Logistics
 - Prof. Gilles Louppe ([g.louppe@ulg.ac.be](mailto:g.louppe@ulg.ac.be))
 - Teaching assistant: Joeri Hermans (XXX)
+
+## Notes
+- Slides and research papers.
+- No textbook!
+
+---
+
+# Philosophy
+
+## Thorough
+
+- Understand the foundational principles of distributed systems.
+
+## Critical thinking
+
+- Assess their benefits and disadvantages.
+- No hype!
+
+## Practical
+
+- Exposition to industrial software.
+- Fun and challenging course project.
 
 ---
 
 class: middle, center
 
-# Foundations
+# Outline
 
 ---
 
-# 1. Communications
+class: middle, center
+
+# I. Foundations
+
+---
+
+# 1. Distributed systems
 
 - Networking basics
-- Overview of computing paradigms (client-server, grid computing, P2P, cloud)
+- Overview of computing paradigms (client-server, grid, P2P, cloud)
 
 ---
 
-# 2. Failures
+# 2. Failures & Communications
 
 - Failure detection
-- Reliable Multicast
+- Reliable multicast
+- Gossiping
 
 ---
 
@@ -49,6 +80,7 @@ class: middle, center
 
 - Leader election
 - Paxos
+- Byzantine failures
 
 ---
 
@@ -63,14 +95,13 @@ class: middle, center
 # 6. Consistency
 
 - Replication
-- Gossiping
-- Byzantine failures
+- Consistency models
 
 ---
 
 class: middle, center
 
-# Computing paradigms for data science
+# II. Computing paradigms for data science
 
 ---
 
@@ -99,11 +130,17 @@ class: middle, center
 
 class: middle, center
 
-# Distributed data storage
+# III. Distributed data storage
 
 ---
 
-# 10. Key-value stores / NoSQL
+# 10. Distributed file systems
+
+- XXX
+
+---
+
+# 11. Key-value stores / NoSQL
 
 - Structured vs. Unstructured databases
 - DHT
@@ -111,19 +148,17 @@ class: middle, center
 
 ---
 
-# 11. Block chain
+# 12. Block chain
 
 - Concept
-- Bitcoin
+- Case study: Bitcoin
 
 ---
 
-# 12. Graph databases
-
-- Concept
-- Example
-- Case study: Neo4j
-
----
+class: middle, center
 
 # Projects
+
+---
+
+# XXX
