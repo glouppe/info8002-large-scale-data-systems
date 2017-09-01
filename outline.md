@@ -83,7 +83,7 @@ class: middle, center
 
 - Leader election
 - Paxos
-- Byzantine failures
+- Byzantine failures (if time)
 
 ---
 
@@ -139,11 +139,10 @@ class: middle, center
 
 # 10. Distributed file systems
 
-- Concept
-- Interface
+- Architecture
 - RPC
 - Scalability (partitioning)
-- Case study: GFS
+- Case study: GFS, HDFS
 
 ---
 
