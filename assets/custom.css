@@ -1,0 +1,19 @@
+.anchor-left {
+    position: absolute;
+    left: 0;
+}
+
+.anchor-right {
+    position: absolute;
+    right: 0;
+}
+
+.anchor-top {
+    position: absolute;
+    top: 0;
+}
+
+.anchor-bottom {
+    position: absolute;
+    bottom: 0;
+}

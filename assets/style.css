@@ -37,6 +37,10 @@ body {
     margin: 0 0 .5em 0;
 }
 
+.remark-visible {
+    position: relative;
+}
+
 .remark-slide-content h2 {
     color: #d11a01;
     font-size: 1.5em;
