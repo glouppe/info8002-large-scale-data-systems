@@ -2,11 +2,16 @@
 
 Lecture X: Distributed Hash Tables
 
+![ULg](figures/logo_ulg.png)
+
+---
+
+# Introduction
+
 ---
 
 # References
 
-1. Kademlia
-2. Testing
+TODO: Add references.
 
 ---
