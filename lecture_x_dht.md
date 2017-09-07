@@ -1,8 +1,12 @@
+class: middle, center
+
 # Large-scale Distributed Systems
 
 Lecture X: Distributed Hash Tables
 
-![ULg](figures/logo_ulg.png)
+.push-right[
+![ULg](figures/logo_ulg.png =150x)
+]
 
 ---
 
