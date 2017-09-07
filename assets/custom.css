@@ -1,25 +1,10 @@
-.anchor {
+.ulg-logo {
     position: absolute;
-}
-
-.anchor * {
-    padding: 0 !important;
-    margin: 0 !important;
-    display: inline-block !important;
-}
-
-.anchor-left {
-    left: 0;
-}
-
-.anchor-right {
-    right: 0;
-}
-
-.anchor-top {
-    top: 0;
-}
-
-.anchor-bottom {
     bottom: 0;
+    right: 0;
+    display: inline-block;
+}
+
+.ulg-logo img {
+    width: 150px;
 }
