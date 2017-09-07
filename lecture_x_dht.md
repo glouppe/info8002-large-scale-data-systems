@@ -4,8 +4,10 @@ class: middle, center
 
 Lecture X: Distributed Hash Tables
 
-.push-right[
-![ULg](figures/logo_ulg.png =150x)
+.anchor-right[
+.anchor-bottom[
+![ULg](figures/logo_ulg.png)
+]
 ]
 
 ---
