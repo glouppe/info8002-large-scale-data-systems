@@ -4,7 +4,7 @@ class: middle, center
 
 Lecture X: Distributed Hash Tables
 
-.anchor-right[
+.right[
 .anchor-bottom[
 ![ULg](figures/logo_ulg.png)
 ]

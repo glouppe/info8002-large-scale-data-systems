@@ -1,19 +1,31 @@
 .anchor-left {
     position: absolute;
+    display: inline-block;
     left: 0;
 }
 
 .anchor-right {
     position: absolute;
+    display: inline-block;
     right: 0;
 }
 
 .anchor-top {
     position: absolute;
+    display: inline-block;
     top: 0;
 }
 
 .anchor-bottom {
     position: absolute;
+    display: inline-block;
     bottom: 0;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
 }
