@@ -4,12 +4,6 @@ class: middle, center
 
 Fall 2017
 
-???
-
-https://www.cse.buffalo.edu/~stevko/courses/cse486/spring16/schedule.html
-https://courses.engr.illinois.edu/cs425/fa2017/lectures.html
-http://homepage.cs.uiowa.edu/~ghosh/16615.html
-
 ---
 
 # Organization
@@ -19,8 +13,14 @@ http://homepage.cs.uiowa.edu/~ghosh/16615.html
 - Teaching assistant: Joeri Hermans (XXX)
 
 ## Notes
-- Slides and research papers.
+- Slides and research papers, with partial inspiration from:
+    - [CSE 486/585 Distributed systems](https://www.cse.buffalo.edu/~stevko/courses/cse486/spring16/schedule.html) (University at Buffalo)
+    - [CS425 Distributed systems](https://courses.engr.illinois.edu/cs425/fa2017/lectures.html) (University of Illinois UC)
+    - [C5620 Distributed systems and algorithms](http://homepage.cs.uiowa.edu/~ghosh/16615.html) (University of Iowa)
+
 - No textbook!
+
+
 
 ---
 
