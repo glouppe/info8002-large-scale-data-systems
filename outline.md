@@ -1,6 +1,6 @@
 class: middle, center
 
-# Large-scale Database Systems
+# Large-scale Distributed Systems
 
 Fall 2017
 
@@ -26,11 +26,12 @@ Fall 2017
 
 ## Solid ground
 
-- Understand the *foundational principles* of distributed systems, including *databases* and *computing* systems.
+- Understand the **foundational principles** of distributed systems, on top of
+which large-scale *databases* and *computing* systems are operating.
 
 ## Practical
 
-- Exposition to industrial software.
+- Exposition to *industrial software*.
 - Fun and challenging course project.
 
 ## Critical thinking
@@ -54,9 +55,9 @@ class: middle, center
 
 # 1. Distributed systems
 
-- Overview of distributed systems
-- Challenges
+- Introduction to distributed systems
 - Networking basics
+- Overview
 
 ---
 
