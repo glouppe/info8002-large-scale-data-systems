@@ -6,7 +6,9 @@ Lecture X: Example
 
 # History
 
-Example
+Example with Equation:
+
+$$E = mc^2$$
 
 ---
 
