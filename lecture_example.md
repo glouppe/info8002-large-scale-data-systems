@@ -1,15 +1,17 @@
 # Large-scale Distributed Systems
 
-Lecture X: Distributed Hash Tables
+Lecture X: Example
 
 ---
 
 # History
 
+Example
+
 ---
 
 # References
 
-TODO: Add references.
+Example
 
 ---
