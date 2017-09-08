@@ -20,4 +20,6 @@ h1, h2, h3, h4, h5 {
 
 .remark-slide-content {
     background: white !important;
+    vertical-align: middle;
+    text-align: left;
 }
