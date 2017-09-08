@@ -4,13 +4,9 @@ class: middle, center
 
 Lecture X: Distributed Hash Tables
 
-.ulg-logo[
-![ULg](figures/logo_ulg.png)
-]
-
 ---
 
-# Introduction
+# History
 
 ---
 

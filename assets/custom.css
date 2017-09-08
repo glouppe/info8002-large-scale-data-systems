@@ -1,3 +1,7 @@
+.remark-slide-container:first .remark-slide-scaler::after {
+    content: '<img class="ulg-logo" src="figures/logo_ulg.png" alt="ULg">';
+}
+
 .ulg-logo {
     position: absolute;
     bottom: 30px;
