@@ -1,6 +1,6 @@
 class: middle, center
 
-# Large-scale distributed systems
+# Large-scale Database Systems
 
 Fall 2017
 
