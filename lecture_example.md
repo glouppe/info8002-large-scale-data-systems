@@ -1,4 +1,4 @@
-# Large-scale Distributed Systems
+# Large-Scale Distributed Systems
 
 Lecture X: Example
 
