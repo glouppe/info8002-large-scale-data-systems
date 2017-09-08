@@ -1,5 +1,10 @@
-.remark-slide-container:first .remark-slide-scaler .remark-slide::after {
-    content: '<img class="ulg-logo" src="figures/logo_ulg.png" alt="ULg">';
+.remark-slide-container:first::after {
+    content: url("figures/logo_ulg.png");
+    width: 150px;
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    display: inline-block;
 }
 
 .ulg-logo {
