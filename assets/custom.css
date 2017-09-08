@@ -1,6 +1,9 @@
-.remark-slide-container:first .remark-slide-content:after {
-    content: url("figures/logo_ulg.png");
+.remark-slide-container:first-child .remark-slide-content:after {
+    content: '';
+    background: url("../figures/logo_ulg.png") no-repeat;
+    background-size: 100% 100%;
     width: 150px;
+    height: 73px;
     position: absolute;
     bottom: 30px;
     right: 30px;
