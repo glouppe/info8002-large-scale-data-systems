@@ -4,6 +4,12 @@ class: middle, center
 
 Lecture 1: Distributed systems
 
+???
+
+- overview of distributed systems
+- challenges
+- networking basics
+
 ---
 
 ---
