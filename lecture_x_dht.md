@@ -1,4 +1,4 @@
-class: middle, center
+class: middle, left
 
 # Large-scale Distributed Systems
 
