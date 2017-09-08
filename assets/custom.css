@@ -1,4 +1,4 @@
-.remark-slide-container:first:after {
+.remark-slide-container:first div:after {
     content: url("figures/logo_ulg.png");
     width: 150px;
     position: absolute;
