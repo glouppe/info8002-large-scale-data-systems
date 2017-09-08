@@ -1,4 +1,4 @@
-.remark-slide-container:first .remark-slide-scaler::after {
+.remark-slide-container:first .remark-slide-scaler .remark-slide::after {
     content: '<img class="ulg-logo" src="figures/logo_ulg.png" alt="ULg">';
 }
 
