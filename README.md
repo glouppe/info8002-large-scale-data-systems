@@ -1,6 +1,6 @@
-# INFO8002 - Large-scale Database Systems
+# INFO8002 - Large-scale Distributed Systems
 
-Lectures for INFO8002 - Large-scale Database Systems, ULiège, Fall 2017.
+Lectures for INFO8002 - Large-scale Distributed Systems, ULiège, Fall 2017.
 
 - Instructor: Gilles Louppe
 - Assistant: Joeri Hermans
