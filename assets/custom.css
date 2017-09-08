@@ -6,6 +6,13 @@ h1, h2, h3, h4, h5 {
     text-align: left !important;
 }
 
+.remark-slide-content {
+    background: white !important;
+    text-align: left;
+}
+
+/** BEGIN First slide. ********************************************************/
+
 .remark-slide-container:first-child .remark-slide-content:after {
     content: '';
     background: url("../figures/logo_ulg.png") no-repeat;
@@ -18,8 +25,8 @@ h1, h2, h3, h4, h5 {
     display: inline-block;
 }
 
-.remark-slide-content {
-    background: white !important;
+.remark-slide-container:first-child .remark-slide-content {
     vertical-align: middle;
-    text-align: left;
 }
+
+/** END First slide. **********************************************************/
