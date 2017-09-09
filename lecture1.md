@@ -1,15 +1,8 @@
-class: middle, center
+class: middle, center, title-slide
 
 # Large-scale Distributed Systems
 
 Lecture 1: Distributed systems
-
-???
-
-- distributed systems
-- challenges
-- networking basics
-- overview
 
 ---
 
@@ -48,6 +41,14 @@ class: middle, center
 ---
 
 # Theme 4: Consistency
+
+---
+
+# Distributed computing systems
+
+---
+
+# Distributed storage systems
 
 ---
 
