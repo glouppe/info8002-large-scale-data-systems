@@ -4,7 +4,315 @@ Lecture X: Distributed Hash Tables
 
 ---
 
-# History
+# History - Napster
+
+.grid[
+.col-2-3[
+- Developed by Shawn Fanning, Sean Parker, and released on 1st June 1998.
+- Napster pioneered the concept of P2P (peer-to-peer) file-sharing.
+- However, it wasn't truly P2P as we know it by today's standards.
+
+]
+.col-1-3[
+![Napster logo](assets/lectures/dht/napster.jpg)
+]
+]
+
+---
+
+## Napster Architecture (1)
+
+- Napster relied on a *centralized* directory server with *flat* filesystem.
+  - Files with the same name are possible.
+- Storage of the data was done at node-level (*decentralized*).
+  - Node informed the directory server that it is still available using *keep-alive* messages.
+  - Node informed the directory server which files it serves.
+
+![Napster architecture](assets/lectures/dht/napster_architecture.svg)
+
+---
+
+## Napster Architecture (2)
+
+- Flat filesystem:
+
+![Napster directory](assets/lectures/dht/napster_directory.svg)
+
+---
+
+## Data querying and retrieval in Napster
+
+- Joe queries the centralized directory server for a result set which satisfies the pattern $A$.
+
+![Napster query](assets/lectures/dht/napster_query_1.svg)
+
+---
+
+## Data querying and retrieval in Napster
+
+- Directory server selects a result set of $n$ (~ 100) filenames which satisfy pattern $A$.
+- The result-set is send to the requesting host, with the location of every entry in the result set.
+
+![Napster query](assets/lectures/dht/napster_query_2.svg)
+
+---
+
+## Data querying and retrieval in Napster
+
+- To address of every item in the result set is pinged, and sorted with respect to transfer speed / distance.
+- Joe selects the host do download the data from.
+- Message is sent to Alice to initiate file transfer with Joe.
+- No other instances besides the 2 nodes are involved with the transfer.
+
+![Napster query](assets/lectures/dht/napster_query.svg)
+
+---
+
+## Issues
+
+- Centralized directory server
+  - Flat filesystem
+  - Bottleneck & security risk (e.g., DDoS) $\rightarrow$ complete network goes down.
+  - Other external factors can shut down network (e.g., legal instances).
+  - Query by name.
+- Additional engineering required to handle load.
+  - Hardware level (load balancers).
+  - Software level (Partitioning of directory servers).
+- No built-in replication of data.
+  - Does not scale if everyone downloads from one particular peer because it is "close".
+  - For example: if node $a$ is the only peer which holds a particular file $f$, and no other host copied $f$ during the time that $a$ was online, then file $f$ is "lost".
+- Not technically interesting.
+
+---
+
+# History - Gnutella
+
+- Napster's ultimate demise, legally, but more interestingly, technically:
+  - Sudden spike in interest from industry and academia in P2P systems.
+- Development of Gnutella, released in early 2000 (pure P2P).
+- First, *fully decentralized* network.
+- Decentralized group membership, and search protocol.
+  - With main application in file sharing.
+- Maintains a *unstructured virtual (overlay) network* among peers (see following slides).
+- Gnutella nodes (*servents*), perform both *client* (C) and *server* (S) tasks.
+  - (C) User-interfaces to facilitate querying.
+  - (S) Accept queries from other servents.
+  - (S) Check for matches against local dataset, and respond.
+  - (S) Manage background traffic to ensure network integrity (e.g., routing).
+
+---
+
+## Bootstrapping (joining)
+
+- A new servent connects to a list of known nodes.
+  - Initial discovery of known peers in the network is *not* part of the protocol definition. Meaning, *no internally defined* ("tricks" are always possible) mechanisms to discover other servents.
+  - Usually, initial list of peers was fetched from an external (centralized) service which kept track of a list of long-lived peers (e.g., gnutellahosts.com).
+  - Or, list of possibly working peers was shipped with the software.
+
+![Gnutella network](assets/lectures/dht/gnutella_bootstrap.svg)
+
+---
+
+## Protocol
+
+- Protocol messages are routed through the virtual overlay network (application layer).
+  - A message could thus, for example, traverse the following path in the underlaying IP infrastructure: Belgium $\rightarrow$ Australia $\rightarrow$ Belgium, while the peers might be "neighbors" in the virtual overlay network.
+- Gnutella supports the following protocol messages:
+
+Type     | Description                                                                                                                                                  | Payload
+---------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------
+Ping     | Mainly used to send keep-alive messages, and to discover new peers in the network.                                                                           | None
+Pong     | The response to a Ping. Includes the address of a connected Gnutella peer and information regarding the amount of data it is making available to the network. | IP address, port, total size of shared files
+Query    | The primary mechanism for searching the distributed network. A peer receiving a Query descriptor will respond with a QueryHit if a match is found against its local data set. | Minimum network bandwidth of responding peer and search criteria
+QueryHit | The response to a Query. This descriptor provides the recipient with enough information to acquire the data matching the corresponding Query. | IP address, port, network bandwidth of responding peer, number of results and result set
+Push     | A mechanism that allows a firewalled peer to contribute file-based data to the network. | Peer identifier, index of requested file, IP address and port to send file to
+
+---
+
+## Protocol: descriptors
+
+- Servents communicate with each other by sending and receiving Gnutella protocol descriptors. Every descriptor is preceded by a Descriptor Header with the byte structure given below:
+  - Descriptor ID (16 bytes)
+  - Payload Descriptor (identifies message type, e.g., ping, pong, ...) (1 byte)
+  - TTL (Time To Live) (1 byte)
+  - Hops (1 byte)
+  - Payload length (4 bytes)
+
+---
+
+## Descriptor ID
+
+- 16-byte string which *uniquely* identifies the descriptor on the network.
+- Its value must be preserved when forwarding messages between servents.
+- Used to allow detection of cycles and help reduce unnecessary traffic on the network.
+
+**Question:**
+
+How would one generate such a uniquely identifiable identifier, while having only local knowledge of your peers?
+
+---
+
+## Descriptor ID
+
+- 16-byte string which *uniquely* identifies the descriptor on the network.
+- Its value must be preserved when forwarding messages between servents.
+- Used to allow detection of cycles and help reduce unnecessary traffic on the network.
+
+**Question:**
+
+How would one generate such a uniquely identifiable identifier, while having only local knowledge of your peers?
+
+**Answer:**
+
+Use a cryptographically strong random generator. Because:
+
+$P(\text{collision}) = \frac{1}{2^{128} - 1}$
+
+Which is VERY small.
+
+---
+
+## Time To Live / Hops
+
+TTL
+
+- Number of times the descriptor will be forwarded by Gnutella servents before it is removed from the network.
+- Servent MUST decrement the TTL before passing it on to another servent. When the TTL reaches 0, the descriptor MUST no longer be forwarded.
+
+Hops
+
+- Number of times the descriptor has been forwarded.
+
+TTL & Hops invariants:
+
+- $\text{TTL}_0 + \text{Hops}_i = \text{TTL}_0$
+- $\text{TTL}_{i + 1} < \text{TTL}_i$
+- $\text{Hops}_{i + 1} > \text{Hops}_i$
+
+$\rightarrow \text{TTL}_i + \text{Hops}_i = \text{TTL}_0$
+
+---
+
+## Ping / Pong
+
+Ping payload format:
+
+- No payload format!
+
+Pong payload format:
+
+- Port (2 bytes)
+- IP(v4) address (4 bytes)
+- Number of shared files (4 bytes)
+- Number of Kilobytes shared (4 bytes)
+- Optional Pong Data (...)
+
+---
+
+## Example: Ping / Pong (1)
+
+$x$ prepares a ping descriptor to discover to local virtual overlay network.
+
+1. $x$ prepares a descriptor:
+   - Descriptor ID = `generate_random_descriptor()` (`0x359d...`)
+   - Payload Descriptor = `0x00` (ping)
+   - TTL = `0x02` (3 hops)
+   - Hops = `0x00`
+   - Payload length = `0x00000000`
+
+![Gnutella Network Clean](assets/lectures/dht/gnutella_network_clean.svg)
+
+---
+
+## Example: Ping / Pong (2)
+
+- $x$ transmits `Ping` to direct neighbors ($e$, $f$, and $h$):
+  - Descriptor ID: `0x359d...`
+  - TTL: `0x02` (assume 2 is default in this setting)
+  - Hops: `0x00`
+
+![Gnutella Ping 1](assets/lectures/dht/gnutella_ping_1.svg)
+
+---
+
+## Example: Ping / Pong (3)
+
+- $e$, $f$, and $h$ send `Pong` response with new descriptor ID to $x$ *through origin peer* (Why?).
+- Every receiving node validates Descriptor ID ("Have I seen this ID recently? If yes, drop message."), decrements TTL, increments Hops, and retransmits `Ping` to *other, non-origin* peers.
+
+![Gnutella Ping 1](assets/lectures/dht/gnutella_ping_2.svg)
+
+---
+
+## Example: Ping / Pong (4)
+
+- At this point `Ping` descriptor from $x$ expires (TTL = 0). Servents $b$ and $c$ will drop the messages and send the final `Pong` descriptors to the *origin peers*.
+
+![Gnutella Ping 1](assets/lectures/dht/gnutella_ping_3.svg)
+
+---
+
+## Example: Ping / Pong (5)
+
+![Gnutella Ping 1](assets/lectures/dht/gnutella_ping_4.svg)
+
+---
+
+## Example: Ping / Pong (6)
+
+![Gnutella Ping 1](assets/lectures/dht/gnutella_ping_5.svg)
+
+---
+
+## Example: Ping / Pong (7)
+
+- Final `Pong` messages are dropped due to TTL time-outs and descriptor ID collisions.
+- Visible peers $V(x) = \\{b, c, d, f, g, h\\}$.
+
+![Gnutella Ping 1](assets/lectures/dht/gnutella_ping_6.svg)
+
+---
+
+## Query / QueryHit
+
+- A `Query` for a specific pattern, and the accompanying response, `QueryHit` employs the same routing scheme as `Ping` and `Pong` (*flooding*).
+- The query pattern will only be matched against the hosts in $V(\lambda)$, where $\lambda$ is the requestor.
+  - This implies that data which does not reside in nodes in $V(\lambda)$, is *not* accessible by $\lambda$!
+
+---
+
+## Node Failure
+
+- No action needs to be undertaken unless the failed node is a *direct peer*.
+  - Cleanup of connection resources.
+- Failure can be detected implicitely using `Ping` and `Pong` messages.
+- Node does not reply to Query messages.
+- After the disconnection of a node $n$, it does *not always* hold that $V(\lambda)_{t + 1} = V(\lambda)_t - \\{n\\}$.
+- In this example: $V(x)_{t+1} = V(x)_t - \\{b, d\\} \rightarrow$ data of $b$ and $d$ is lost!
+
+![Gnutella Failure](assets/lectures/dht/gnutella_failure.svg)
+
+---
+
+## Issues
+
+- Communication in Gnutella happens through *flooding*.
+  - Not scalable, increasing peers saturates connections and limits bandwidth.
+  - Probability of finding data is dependent on structure of the network (e.g., number of direct peers) and TTL.
+  - What happens when we increase TTL?
+- No built-in replication.
+  - Replication is dependent on user behaviour.
+- Security issues, due to pattern matching in queries.
+  - How do we know that `metallica_enter_sandmap.mp3` is not `justin_bieber_baby.mp3` or a virus?
+
+---
+
+class: middle
+# Other approaches are required!
+
+---
+
+# Content Addressable Network
 
 TODO
 
@@ -12,6 +320,7 @@ TODO
 
 # References
 
-TODO
+- http://rfc-gnutella.sourceforge.net/developer/stable/index.html
+- http://people.cs.uchicago.edu/~matei/PAPERS/gnutella-rc.pdf
 
 ---

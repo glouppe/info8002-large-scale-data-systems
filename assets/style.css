@@ -68,6 +68,10 @@ a:hover {
     text-decoration: underline;
 }
 
+img {
+    width: 100%;
+}
+
 em {
     color: #0288d1;
     font-style: normal;
@@ -145,6 +149,37 @@ th {
 .remark-slide-content {
     background: white !important;
     text-align: left;
+}
+
+table {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+thead {
+    background: #555;
+    font-size: .9em;
+}
+
+th {
+    margin: 0;
+    padding: 7px 0;
+    text-align: center;
+    font-weight: bold;
+}
+
+tbody {
+    font-size: .8em;
+    background: #f0f0f0;
+}
+
+tr:nth-child(odd) {
+    background: #fcfcfc;
+}
+
+td {
+    padding: 5px 8px;
 }
 
 /** BEGIN First slide. ********************************************************/
