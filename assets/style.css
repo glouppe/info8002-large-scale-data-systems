@@ -25,10 +25,7 @@ body {
 .remark-slide-content {
     background-image: linear-gradient(135deg, transparent, rgba(0, 0, 0, 0.02) 50%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.05));
     font-size: 1.4em;
-}
-
-.smaller {
-    font-size: 1.2em;
+    border-top: solid 5px #0288d1;
 }
 
 .remark-slide-content h1 {
@@ -59,6 +56,10 @@ body {
     font-size: 0.5em;
 }
 
+.smaller {
+    font-size: 1.2em;
+}
+
 a {
     color: #0288d1;
     text-decoration: none;
@@ -80,6 +81,7 @@ em {
 strong {
     color: #d11a01;
     font-style: normal;
+    font-weight: normal;
 }
 
 ul > li, ol > li {
@@ -125,25 +127,26 @@ th {
     display: block;
     text-align: center;
     font-size: 0.8em;
+    font-style: italic;
 }
 
-/* Two-column layout */
 
-.left-column {
-    width: 20%;
-    height: 92%;
-    float: left;
+/* Title slide */
+
+.title-slide:after {
+    content: '';
+    background: url("../assets/logo_ulg.png") no-repeat;
+    background-size: 100% 100%;
+    width: 150px;
+    height: 73px;
+    position: absolute;
+    bottom: 2em;
+    left: 3.3em;
+    display: inline-block;
 }
 
-.left-column h2 {
-    font-size: 1em;
-    font-weight: bold;
-    margin: 1em 0 .5em 0;
-}
-
-.right-column {
-    width: 75%;
-    float: right;
+.title-slide {
+    vertical-align: middle;
 }
 
 .remark-slide-content {

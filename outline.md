@@ -1,14 +1,8 @@
-class: middle, center
+class: middle, center, title-slide
 
-# Large-scale distributed systems
+# Large-scale Distributed Systems
 
 Fall 2017
-
-???
-
-https://www.cse.buffalo.edu/~stevko/courses/cse486/spring16/schedule.html
-https://courses.engr.illinois.edu/cs425/fa2017/lectures.html
-http://homepage.cs.uiowa.edu/~ghosh/16615.html
 
 ---
 
@@ -19,7 +13,11 @@ http://homepage.cs.uiowa.edu/~ghosh/16615.html
 - Teaching assistant: Joeri Hermans (XXX)
 
 ## Notes
-- Slides and research papers.
+- Slides, with partial adaptation of:
+    - [CSE 486/585 Distributed systems](https://www.cse.buffalo.edu/~stevko/courses/cse486/spring16/schedule.html) (University at Buffalo)
+    - [CS425 Distributed systems](https://courses.engr.illinois.edu/cs425/fa2017/lectures.html) (University of Illinois UC)
+    - [C5620 Distributed systems and algorithms](http://homepage.cs.uiowa.edu/~ghosh/16615.html) (University of Iowa)
+- Research papers
 - No textbook!
 
 ---
@@ -28,17 +26,18 @@ http://homepage.cs.uiowa.edu/~ghosh/16615.html
 
 ## Solid ground
 
-- Understand the foundational principles of distributed systems.
-
-## Critical thinking
-
-- Assess their benefits and disadvantages.
-- No hype!
+- Understand the **foundational principles** of distributed systems, on top of
+which large-scale *databases* and *computing* systems are operating.
 
 ## Practical
 
-- Exposition to industrial software.
+- Exposition to *industrial software*.
 - Fun and challenging course project.
+
+## Critical thinking
+
+- Assess the benefits and disadvantages of distributed systems.
+- No hype!
 
 ---
 
@@ -56,9 +55,9 @@ class: middle, center
 
 # 1. Distributed systems
 
-- Overview of distributed systems
-- Challenges
+- Introduction to distributed systems
 - Networking basics
+- Overview
 
 ---
 
