@@ -28,7 +28,9 @@ Lecture X: Distributed Hash Tables
   - Node informed the directory server that it is still available using *keep-alive* messages.
   - Node informed the directory server which files it serves.
 
+.width-100[
 ![Napster architecture](assets/lectures/dht/napster_architecture.svg)
+]
 
 ---
 
@@ -36,7 +38,9 @@ Lecture X: Distributed Hash Tables
 
 - Flat filesystem:
 
+.width-100[
 ![Napster directory](assets/lectures/dht/napster_directory.svg)
+]
 
 ---
 
@@ -44,7 +48,9 @@ Lecture X: Distributed Hash Tables
 
 - Joe queries the centralized directory server for a result set which satisfies the pattern $A$.
 
+.width-100[
 ![Napster query](assets/lectures/dht/napster_query_1.svg)
+]
 
 ---
 
@@ -53,7 +59,9 @@ Lecture X: Distributed Hash Tables
 - Directory server selects a result set of $n$ (~ 100) filenames which satisfy pattern $A$.
 - The result-set is send to the requesting host, with the location of every entry in the result set.
 
+.width-100[
 ![Napster query](assets/lectures/dht/napster_query_2.svg)
+]
 
 ---
 
@@ -64,7 +72,9 @@ Lecture X: Distributed Hash Tables
 - Message is sent to Alice to initiate file transfer with Joe.
 - No other instances besides the 2 nodes are involved with the transfer.
 
+.width-100[
 ![Napster query](assets/lectures/dht/napster_query.svg)
+]
 
 ---
 
@@ -109,7 +119,9 @@ Lecture X: Distributed Hash Tables
   - Usually, initial list of peers was fetched from an external (centralized) service which kept track of a list of long-lived peers (e.g., gnutellahosts.com).
   - Or, list of possibly working peers was shipped with the software.
 
+.width-100[
 ![Gnutella network](assets/lectures/dht/gnutella_bootstrap.svg)
+]
 
 ---
 
@@ -220,7 +232,9 @@ $x$ prepares a ping descriptor to discover to local virtual overlay network.
    - Hops = `0x00`
    - Payload length = `0x00000000`
 
+.width-100[
 ![Gnutella Network Clean](assets/lectures/dht/gnutella_network_clean.svg)
+]
 
 ---
 
@@ -231,7 +245,9 @@ $x$ prepares a ping descriptor to discover to local virtual overlay network.
   - TTL: `0x02` (assume 2 is default in this setting)
   - Hops: `0x00`
 
+.width-100[
 ![Gnutella Ping 1](assets/lectures/dht/gnutella_ping_1.svg)
+]
 
 ---
 
@@ -240,7 +256,9 @@ $x$ prepares a ping descriptor to discover to local virtual overlay network.
 - $e$, $f$, and $h$ send `Pong` response with new descriptor ID to $x$ *through origin peer* (Why?).
 - Every receiving node validates Descriptor ID ("Have I seen this ID recently? If yes, drop message."), decrements TTL, increments Hops, and retransmits `Ping` to *other, non-origin* peers.
 
+.width-100[
 ![Gnutella Ping 1](assets/lectures/dht/gnutella_ping_2.svg)
+]
 
 ---
 
@@ -248,19 +266,25 @@ $x$ prepares a ping descriptor to discover to local virtual overlay network.
 
 - At this point `Ping` descriptor from $x$ expires (TTL = 0). Servents $b$ and $c$ will drop the messages and send the final `Pong` descriptors to the *origin peers*.
 
+.width-100[
 ![Gnutella Ping 1](assets/lectures/dht/gnutella_ping_3.svg)
+]
 
 ---
 
 ## Example: Ping / Pong (5)
 
+.width-100[
 ![Gnutella Ping 1](assets/lectures/dht/gnutella_ping_4.svg)
+]
 
 ---
 
 ## Example: Ping / Pong (6)
 
+.width-100[
 ![Gnutella Ping 1](assets/lectures/dht/gnutella_ping_5.svg)
+]
 
 ---
 
@@ -269,7 +293,9 @@ $x$ prepares a ping descriptor to discover to local virtual overlay network.
 - Final `Pong` messages are dropped due to TTL time-outs and descriptor ID collisions.
 - Visible peers $V(x) = \\{b, c, d, f, g, h\\}$.
 
+.width-100[
 ![Gnutella Ping 1](assets/lectures/dht/gnutella_ping_6.svg)
+]
 
 ---
 
@@ -290,7 +316,9 @@ $x$ prepares a ping descriptor to discover to local virtual overlay network.
 - After the disconnection of a node $n$, it does *not always* hold that $V(\lambda)_{t + 1} = V(\lambda)_t - \\{n\\}$.
 - In this example: $V(x)_{t+1} = V(x)_t - \\{b, d\\} \rightarrow$ data of $b$ and $d$ is lost!
 
+.width-100[
 ![Gnutella Failure](assets/lectures/dht/gnutella_failure.svg)
+]
 
 ---
 

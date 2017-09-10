@@ -69,7 +69,7 @@ a:hover {
     text-decoration: underline;
 }
 
-img {
+.width-100 {
     width: 100%;
 }
 
@@ -184,23 +184,3 @@ tr:nth-child(odd) {
 td {
     padding: 5px 8px;
 }
-
-/** BEGIN First slide. ********************************************************/
-
-.remark-slide-container:first-child .remark-slide-content:after {
-    content: '';
-    background: url("../assets/logo_ulg.png") no-repeat;
-    background-size: 100% 100%;
-    width: 150px;
-    height: 73px;
-    position: absolute;
-    bottom: 2em;
-    left: 3.3em;
-    display: inline-block;
-}
-
-.remark-slide-container:first-child .remark-slide-content {
-    vertical-align: middle;
-}
-
-/** END First slide. **********************************************************/
