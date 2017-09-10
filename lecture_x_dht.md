@@ -343,17 +343,6 @@ class: middle
 
 ---
 
-# Main issues with previous approaches?
-
-- Not reliable, i.e., no built-in redudancy.
-  - If a machine fails, possibly all data is removed from the network.
-- Not private.
-  - TODO Add.
-- Not efficient or scalable.
-  - TODO Add.
-
----
-
 # Content Addressable Network
 
 TODO
@@ -364,6 +353,5 @@ TODO
 
 - http://rfc-gnutella.sourceforge.net/developer/stable/index.html
 - http://people.cs.uchicago.edu/~matei/PAPERS/gnutella-rc.pdf
-- https://people.eecs.berkeley.edu/~sylvia/papers/cans.pdf
 
 ---
