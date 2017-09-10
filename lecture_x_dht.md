@@ -343,6 +343,21 @@ class: middle
 
 ---
 
+# Issues with these approaches.
+
+- Not reliable.
+  - Data is lost if a particular node fails.
+  - Node failure implicitely influence others nodes and network content (e.g., $V(\lambda)$).
+- Not private and not secure.
+  - How do ensure that the contents of file named $f$ really represents $f$?
+- Not efficient and not scalable.
+  - Querying network by flooding, $\mathcal{O}(n)$ worst-case, simply does not scale, hurts performance as well.
+  - Querying network by using centralized service, bottlenecked, and single-point-of-failure directory server.
+
+$\rightarrow$ Data is arbitrarily stored over the network (*unstructured* P2P system).
+
+---
+
 # Content Addressable Network
 
 TODO
