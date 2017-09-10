@@ -27,7 +27,7 @@ Fall 2017
 ## Solid ground
 
 - Understand the **foundational principles** of distributed systems, on top of
-which large-scale *databases* and *computing* systems are operating.
+which distributed *databases* and *computing* systems are operating.
 
 ## Practical
 
@@ -98,6 +98,7 @@ class: middle, center
 
 - Replication
 - Consistency models
+- CAP theorem
 
 ---
 

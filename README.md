@@ -8,5 +8,5 @@ Lectures for INFO8002 - Large-scale Distributed Systems, ULiège, Fall 2017.
 Slides:
 
 - [Outline](https://glouppe.github.io/info8002-large-scale-database-systems/?p=outline.md)
-- Lecture 1: Distributed systems
+- [Lecture 1: Distributed systems](https://glouppe.github.io/info8002-large-scale-database-systems/?p=lecture1.md)
 - ...

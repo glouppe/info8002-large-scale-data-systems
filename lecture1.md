@@ -68,7 +68,7 @@ What is a *distributed system*?
 
 ## Definition
 
-A distributed system is a collection of entitites with a common goal, each of
+A distributed system is a collection of entities with a common goal, each of
 which is *autonomous*, *programmable*, *asynchronous* and *failure-prone*, and
 which communicate through an **unreliable** communication mediu.
 
@@ -86,6 +86,28 @@ which communicate through an **unreliable** communication mediu.
     - 50 machine failures out of 20k machine cluster per day (reported by Yahoo!)
     - 1 disk failure out of 16k disks every 6 hours (reported by Google)
 - Additional constraints: *concurrent execution*, *consistency*, etc.
+
+---
+
+# What am I going to learn?
+
+- Understand the **foundational principles** of distributed systems.
+    - Communications
+    - Consensus
+    - Concurrency
+    - Failures and consistency
+- From these general building blocks, understand
+    - how *distributed computing systems* for data science work,
+    - how *distributed storage systems* operate.
+
+???
+
+# Why studying distributed systems?
+
+What are *two* biggest driving forces in the computing industry?
+- It is the cloud.
+- and smart phones.
+- They are *distributed*!
 
 ---
 
@@ -114,20 +136,34 @@ which communicate through an **unreliable** communication mediu.
 
 ---
 
-# Theme 4: Failures
+# Theme 4: Failures and consistency
 
-- *How do you know if machine has failed?*
+- *How do you know if a machine has failed?*
     - Failure detection.
 - *How you do program your system to operate continually even under failure?*
     - Gossiping, replication.
+- *What if some machines malfunction?*
+    - Byzantine fault tolerance.
 
 ---
 
 # Distributed computing systems
 
+XXX
+
+- MapReduce
+- Graph computational systems
+- Data science on a budget
+
 ---
 
 # Distributed storage systems
+
+XXX
+
+- Distributed file systems
+- Key-value stores
+- Block chain
 
 ---
 
