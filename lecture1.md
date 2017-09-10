@@ -70,7 +70,13 @@ What is a *distributed system*?
 
 A distributed system is a collection of entities with a common goal, each of
 which is *autonomous*, *programmable*, *asynchronous* and *failure-prone*, and
-which communicate through an **unreliable** communication mediu.
+which communicate through an **unreliable** communication medium.
+
+---
+
+class: center, middle
+
+![](figures/lec1/tweet-difficult.png)
 
 ---
 
@@ -97,8 +103,8 @@ which communicate through an **unreliable** communication mediu.
     - Concurrency
     - Failures and consistency
 - From these general building blocks, understand
-    - how *distributed computing systems* for data science work,
-    - how *distributed storage systems* operate.
+    - distributed *computing paradigms* for data science,
+    - distributed *storage systems* .
 
 ???
 
@@ -147,7 +153,7 @@ What are *two* biggest driving forces in the computing industry?
 
 ---
 
-# Distributed computing systems
+# Distributed computing for data science
 
 XXX
 
