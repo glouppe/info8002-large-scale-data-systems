@@ -1,3 +1,5 @@
+class: middle, center, title-slide
+
 # Large-Scale Distributed Systems
 
 Lecture X: Distributed Hash Tables
@@ -332,6 +334,7 @@ $x$ prepares a ping descriptor to discover to local virtual overlay network.
   - Replication is dependent on user behaviour.
 - Security issues, due to pattern matching in queries.
   - How do we know that `metallica_enter_sandman.mp3` is not `justin_bieber_baby.mp3` or a virus?
+- Not all nodes in the network are accessible! $\rightarrow V(\lambda)$
 
 ---
 
