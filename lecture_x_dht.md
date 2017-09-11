@@ -434,7 +434,20 @@ class: middle
   - *Greedy message forwarding*.
   - Every CAN message includes a destination coordinate.
 - A neighbor in a $d$-dimensional space is defined as: if two zones in a $d$-dimensional space overlap among $d - 1$ dimensions and abut along one.
+- For a $d$-dimensional space partitioned into $n$ *equal* zones, the average routing path length is thus $(\frac{d}{4}n^{\frac{1}{d}})$.
+  - Why?
+  - Worst case?
+  - Best case?
 
+---
+
+# CAN Routing Failure
+
+- Failure in CAN routing can occur!
+  - If a node loses all neighbors in a certain direction in the strictly shortest direction, and the routing table has not been rebuilt yet, then routing fails.
+  - Message is send in a flooding manner to all remaining peers (*expanding ring search*).
+  - Receive peers resume employing *greedy forwarding*.
+  - **Problem**: Same message **COULD** be received multiple times by the destination node.
 
 ---
 
