@@ -338,11 +338,6 @@ $x$ prepares a ping descriptor to discover to local virtual overlay network.
 
 ---
 
-class: middle
-# Other approaches are required!
-
----
-
 # Issues with these approaches.
 
 - Not reliable.
@@ -353,14 +348,101 @@ class: middle
 - Not efficient and not scalable.
   - Querying network by flooding, $\mathcal{O}(n)$ worst-case, simply does not scale, hurts performance as well.
   - Querying network by using centralized service, bottlenecked, and single-point-of-failure directory server.
+- Not self-organizing.
+  - Centralized server was required in the case of Napster.
+  - Web caches, or list of initial (bootstrapping) peers had to be shipped with the software.
 
 $\rightarrow$ Data is arbitrarily stored over the network (*unstructured* P2P system).
 
 ---
 
+class: middle
+# Other approaches are required!
+
+---
+
+# Hash tables
+
+- A hash table would be able to address some of these concerns.
+  - *Efficient & scalable:* $\mathcal{O}(1)$ lookup and store operations (on a single machine).
+  - *Secure:* key $\equiv$ SHA-256 hash (or other hash function) of file $\rightarrow$ ensures file contents.
+
+**Core idea:** A *scalable indexing* approach for distributed systems by hashing a key to a specific machine in the network.
+- The data transfer system is scalable (direct, host-to-host) since the underlaying IP (hiearchical) infrastructure supports it.
+- But distributed systems need a scalable indexing system as well because of the virtual overlay network.
+
+---
+
 # Content Addressable Network
 
-TODO
+- Introduced by Sylvia Ratnasamy et al in 2001.
+- Basically: take a hash map and apply it to the scale of the internet.
+- Fully distributed.
+- Scalable (nodes only contain small amount of informations about adjacent nodes).
+- Fault-tolerant (can route around network disruptions).
+- Does not impose a hiearchical naming structure to achieve scalability.
+  - "*Hierachical*": ID's starting with 0 are on the left, ID's with 1 on the right (a la binary-search).
+
+---
+
+# CAN Architecture
+
+- As the foundation of an internet-scale application.
+- CAN operations:
+  - Insertion
+  - Lookup
+  - Deletion
+- Every CAN node stores:
+  - A chunk (*zone*) of the entire hash table.
+  - Holds information about a small number of adjacent nodes.
+- Completely distributed, no intervention from centralized architecture.
+- Scalable (nodes maintain a small amount of information about peers).
+- Fault-tolerant, in the sense that messages can be routed around failures.
+  - Data loss is still possible.
+---
+
+# CAN Architecture
+
+- Virtual overlay network is a $d$-dimensional Cartesian space $C$.
+  - E.g., 2-dimensional $[0,1] \times [0,1]$ Cartesian space.
+- At any point in time, the *entire* coordinate space is *dynamically* partitioned among all nodes in the system, such that every nodes is responsible for a distinct zone.
+- Using a $K, V$ pair, $K$ is hashed to a point $P \in C$ using a *uniform deterministic hash function $h$*.
+  - Why uniform and deterministic?
+- If the point $P$ is not owned by the requesting node or its immediate neighbors, the request must be routed through the CAN infrastructure until it reaches the desired zone.
+  - **Efficient routing is critical to ensure scalability!**
+  - Was this the case in the Gnutella network?
+
+---
+
+# CAN Routing
+
+- Every node maintains a set of neighboring hosts, each entry:
+  - IP address and port
+  - Zone range
+
+.width-100[
+![CAN Zones](assets/lectures/dht/can_zones.png)
+]
+
+---
+
+# CAN Routing
+
+**Main concept**: follow a straight line through the Cartesian space from source to destination coordinates.
+
+- Routing happens by selecting the neighboring zone which strictly minimizes the distance to the destination coordinate.
+  - *Greedy message forwarding*.
+  - Every CAN message includes a destination coordinate.
+- A neighbor in a $d$-dimensional space is defined as: if two zones in a $d$-dimensional space overlap among $d - 1$ dimensions and abut along one.
+
+
+---
+
+# CAN Construction
+
+---
+
+# CAN Maintenance
 
 ---
 
