@@ -155,6 +155,15 @@ td {
     font-style: italic;
 }
 
+.circle img {
+    border-radius: 50%;
+}
+
+.stretch img {
+    width: 100%;
+    height: auto;
+}
+
 
 /* Title slide */
 

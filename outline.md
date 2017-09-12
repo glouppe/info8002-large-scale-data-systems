@@ -57,7 +57,6 @@ class: middle, center
 
 - Introduction to distributed systems
 - Networking basics
-- Overview
 
 ---
 
