@@ -328,6 +328,8 @@ class: center, middle
 ]
 ]
 
+.footnote[Credits: [Computer Network: A Top-Down Approach](https://www.pearson.com/us/higher-education/program/Kurose-Computer-Networking-A-Top-Down-Approach-7th-Edition/PGM1101673.html)]
+
 ---
 
 # Challenges of layering
@@ -375,7 +377,7 @@ class: center, middle
 
 .stretch[![TCP/IP](figures/lec1/network.png)]
 
-Each node contains a different set of layers, reflecting their differences in functionality. Intermediate nodes remain simple while complexity is pushed back to end nodes.
+Each node contains a different set of layers, reflecting their differences in functionality. Intermediate nodes remain simple while complexity is put at the network boundary in the end nodes.
 
 ---
 
@@ -431,11 +433,15 @@ possible." (Jerome Saltzer et al, 1984)
 
 .center[![](figures/lec1/tcp-data.png)]
 
+.footnote[Credits: [Computer Network: A Top-Down Approach](https://www.pearson.com/us/higher-education/program/Kurose-Computer-Networking-A-Top-Down-Approach-7th-Edition/PGM1101673.html)]
+
 ---
 
 # TCP: retransmission
 
 .center[![](figures/lec1/tcp-lost.png)]
+
+.footnote[Credits: [Computer Network: A Top-Down Approach](https://www.pearson.com/us/higher-education/program/Kurose-Computer-Networking-A-Top-Down-Approach-7th-Edition/PGM1101673.html)]
 
 ---
 
@@ -446,30 +452,67 @@ possible." (Jerome Saltzer et al, 1984)
 - *Sockets* offer an **application programming interface** (API) of the transport layer (e.g., TCP).
 - Applications are oblivious to underlying network operations.
 
+.footnote[Credits: [Computer Network: A Top-Down Approach](https://www.pearson.com/us/higher-education/program/Kurose-Computer-Networking-A-Top-Down-Approach-7th-Edition/PGM1101673.html)]
+
 ---
 
 # HTTP: our first distributed system
 
 .grid[
 .col-1-2[
-- HTTP: hypertext transfer protocol.
+- *HTTP*: hypertext transfer protocol.
 - Application layer protocol powering the WWW.
-- Client / Server model:
+- **Client / Server model**:
     - client: browser that requests, receives and displays web objects.
     - server: web server which stores the website and sends objects in response to requests.
+- HTTP is stateless. *Why?*
 ]
 .col-1-2[
 ![](figures/lec1/http.png)
 ]
 ]
 
-.center[]
-
-
+.footnote[Credits: [Computer Network: A Top-Down Approach](https://www.pearson.com/us/higher-education/program/Kurose-Computer-Networking-A-Top-Down-Approach-7th-Edition/PGM1101673.html)]
 
 ---
 
 # An HTTP conversation
+
+Suppose we want to visit `http://www.ulg.ac.be`:
+
+1a) The HTTP client initiates a TCP connection to the server `www.montefiore.ulg.ac.be` on port number 80.
+```python
+import socket
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.connect(("www.montefiore.ulg.ac.be", 80))
+```
+
+1b) The HTTP server at `www.montefiore.ulg.ac.be` accepts and establishes the TCP connection from the client.
+
+2) The HTTP client sends an HTTP message to the server via its TCP socket. The request includes the path name `/index.html`.
+```python
+request = b"GET /index.html HTTP/1.1\nHost: www.montefiore.ulg.ac.be\n\n"
+s.send(request)
+```
+
+---
+
+# An HTTP conversation
+
+3) The HTTP server receives the request message via its socket, forms a response message containing the requested `/index.html` object, sends message into the socket.
+
+4) The HTTP server closes the TCP connection if necessary. (But TCP doesn't actually terminate
+until it knows for sure that the client has received the response message intact.)
+
+5) The HTTP client receives a response message containing the HTML file and renders it.
+```python
+result = s.recv(10000)
+while (len(result) > 0):
+    print(result)
+    result = s.recv(10000)
+```
+
+6) Steps 1-5 are then repeated for each sub-object in the page.
 
 ---
 
@@ -478,7 +521,7 @@ possible." (Jerome Saltzer et al, 1984)
 - What to put on top of physical networks?
     - Layers providing *survivability*.
 - Where to put functionalities?
-    - Fate-sharing and end-to-end arguments.
+    - **Fate-sharing** and **end-to-end arguments**.
     - IP layer does not provide much.
     - TCP layer handles most of the survivability issues.
 - HTTP: a client-server distributed system built on top of TCP.
