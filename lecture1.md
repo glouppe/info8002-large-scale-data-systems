@@ -221,7 +221,7 @@ class: middle, center
 
 # Networking basics
 
-A quick refresher
+How do you talk to another machine?
 
 ---
 
@@ -324,7 +324,7 @@ class: center, middle
     - Layers can change without disturbing other layers.
 ]
 .col-1-2[
-![](figures/lec1/stack.jpg)
+![](figures/lec1/stack.png)
 ]
 ]
 
@@ -371,17 +371,11 @@ class: center, middle
 
 ---
 
-# TCP/IP
+# Encapsulation
 
-- *IP* (Internet protocol) as network layer
-    - The network knows the source and the destination.
-    - A conversation is divided into packets, which are delivered with best-effort.
-    - Packet loss, corruption or out-of-order delivery could all happen.
-- *TCP* (Transmission control protocol) as transport layer
-    - Deals with the problems.
-    - Implemented at the end hosts.
+.stretch[![TCP/IP](figures/lec1/network.png)]
 
-.center[![TCP/IP](figures/lec1/layers.png)]
+Each node contains a different set of layers, reflecting their differences in functionality. Intermediate nodes remain simple while complexity is pushed back to end nodes.
 
 ---
 
@@ -407,30 +401,87 @@ possible." (Jerome Saltzer et al, 1984)
 
 ---
 
+# TCP/IP
+
+- *IP* (Internet protocol) as network layer
+    - The network knows the source and the destination.
+    - A conversation is divided into packets, which are delivered with **best-effort**.
+    - Packet loss, corruption or out-of-order delivery could all happen.
+- *TCP* (Transmission control protocol) as transport layer
+    - Deals with the problems.
+    - Implemented at the end hosts.
+
+---
+
 # TCP
 
-- Overview
-- Handshake
-- Retransmission
-- Issues with TCP
+- An *end-to-end* transmission protocol for the transport layer.
+- **Protects** conversations:
+    - Receiver *acknowledges* the reception of packets.
+        - If a packet does not arrive, it is retransmitted.
+    - Out-of-order delivery and duplicate packets are taken care of with *sequence numbers*.
+    - Packet corruption is detected with checksums.
+- **Controls congestion**:
+    - The network might be over-utilized.
+    - TCP prevents the network from collapsing (throttling).
+
+---
+
+# TCP: packet acknowledgment
+
+.center[![](figures/lec1/tcp-data.png)]
+
+---
+
+# TCP: retransmission
+
+.center[![](figures/lec1/tcp-lost.png)]
 
 ---
 
 # The application layer
 
+.stretch[![](figures/lec1/socket.png)]
+
+- *Sockets* offer an **application programming interface** (API) of the transport layer (e.g., TCP).
+- Applications are oblivious to underlying network operations.
+
 ---
 
-# The HTTP standard
+# HTTP: our first distributed system
 
-- Client-server model
-- HTTP protocol, built on top of TCP
-- Guided example
-- telnet example
-- Does the working definition work for the http web?
+.grid[
+.col-1-2[
+- HTTP: hypertext transfer protocol.
+- Application layer protocol powering the WWW.
+- Client / Server model:
+    - client: browser that requests, receives and displays web objects.
+    - server: web server which stores the website and sends objects in response to requests.
+]
+.col-1-2[
+![](figures/lec1/http.png)
+]
+]
+
+.center[]
+
+
+
+---
+
+# An HTTP conversation
 
 ---
 
 # Summary
+
+- What to put on top of physical networks?
+    - Layers providing *survivability*.
+- Where to put functionalities?
+    - Fate-sharing and end-to-end arguments.
+    - IP layer does not provide much.
+    - TCP layer handles most of the survivability issues.
+- HTTP: a client-server distributed system built on top of TCP.
 
 ---
 
