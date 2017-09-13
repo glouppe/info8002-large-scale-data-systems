@@ -127,7 +127,7 @@ which communicate through an **unreliable** communication medium.
 
 # Distributed systems are difficult to build
 
-- **Scale**: hundreds or thousands of machine
+- **Scale**: hundreds or thousands of machines.
     - Google: 4k-machine MapReduce cluster
     - Yahoo!: 4k-machine Hadoop cluster
     - Akamai: 70k machines, distributed over the world
@@ -254,7 +254,7 @@ A quick refresher
 
 # The Internet
 
-- Underlies many *distributed systems*, while being a distributed system in itself.
+- The Internet underlies many *distributed systems*, while being a distributed system in itself.
 - A vast interconnected collection of networks of *many types*.
 - Goal of the original designers:
     - *interconnecting* different networks by designing **common protocols**.
@@ -274,10 +274,10 @@ A quick refresher
     - Internet communication **must continue** despite loss of networks or gateways.
     - The Internet must support **multiple types of communication services**.
     - The Internet architecture must accommodate **a variety of networks**.
-    - The architecture must permit distributed management of its resources.
-    - The architecture must be cost effective.
-    - The architecture must permit host attachment with a low level of effort.
-    - The resources used in the architecture must be accountable.
+    - The architecture must permit *distributed management* of its resources.
+    - The architecture must be *cost effective*.
+    - The architecture must permit host attachment with a *low level of effort*.
+    - The resources used in the architecture must be *accountable*.
 
 ---
 
@@ -291,15 +291,15 @@ A quick refresher
 
 ## A potential solution
 
-Designing a "multi-media" network (e.g., via physical signal translator for
+Designing a "multi-media" network (e.g., via a physical signal translator for
 various physical media).
 
 Issues:
 - **Does not scale** with the variety of media:
     - adding $O(1)$ new types of medium requires $O(N)$ translator sub-systems;
 - Adds **complexity** inside the network;
-- Requires control over nodes;
-- Increases the barrier to host attachment.
+- Increases the barrier to host attachment;
+- Requires control over nodes.
 
 ---
 
@@ -308,32 +308,38 @@ class: center, middle
 
 .circle[![David Wheeler](figures/lec1/wheeler.jpg)]
 
-All problems in computer science can be solved by another level of indirection. -- David Wheeler.
+*All problems in computer science can be solved by another level of indirection.* (David Wheeler)
 
 ---
 
 # Connecting by layering
 
+.grid[
+.col-1-2[
 - Sub-divide the problem by partitioning communication systems into **abstraction layers**.
     - A layer serves the layer above it and is served by the layer below it.
+    - Complex services are built from simpler ones.
 - *Interface* between layers defines interaction.
     - Hides implementation details;
     - Layers can change without disturbing other layers.
-
-.center[![Connecting by layering](figures/lec1/layers.png)]
+]
+.col-1-2[
+![](figures/lec1/stack.jpg)
+]
+]
 
 ---
 
 # Challenges of layering
 
-**Where** do we want to put the functionalities?
-
-- Enabling a conversation between two hosts requires:
+- **Where** do we want to put the functionalities?
+- What would be a good **division of labour** between end hosts and intermediate nodes in the network?
+- Enabling a conversation between two remote hosts requires:
     - a mechanism for *addressing* (where do I send this message?)
     - a mechanism for *routing* (how do I reach this address?)
-    - a mechanism for ensuring the *survivability* of the conversation, as long as there is a physical path between entities communicating.
+    - a mechanism for ensuring the *survivability* of the conversation, as long as there is a physical path between the entities communicating.
 - Addressing and routing?
-    - Probably in the network.
+    - Probably in the network, at intermediate nodes.
 - Survivability mechanisms?
     - The network or hosts?
 
@@ -341,15 +347,63 @@ All problems in computer science can be solved by another level of indirection. 
 
 # Two approaches to survivability
 
-- stateful
-- stateless
-- IP layer
-- sneak in end-to-end argument
+## Approach 1: stateful network.
+
+- The **network** keeps the state information about conversations.
 
 ---
 
-# The Internet Protocol suite
+# Two approaches to survivability
 
+## Approach 2: stateless network.
+
+- The **end hosts** keep the state information about conversations.
+- Stateless networks' principle: *fate-sharing*.
+    - The conversation shares the same fate with the ends.
+    - It is acceptable to lose the state information associated with an entity if,
+      at the same time, the entity itself is lost.
+- Advantages:
+    - Fate-sharing protects against any number of intermediate network failures.
+    - Fate-sharing is much easier to engineer.
+- This results in a **best-effort** network.
+    - The intermediate nodes do not provide anything other than best-effort delivery (i.e., *addressing* and *routing*).
+    - The end hosts provide *protection* mechanisms for the conservation.
+
+---
+
+# TCP/IP
+
+- *IP* (Internet protocol) as network layer
+    - The network knows the source and the destination.
+    - A conversation is divided into packets, which are delivered with best-effort.
+    - Packet loss, corruption or out-of-order delivery could all happen.
+- *TCP* (Transmission control protocol) as transport layer
+    - Deals with the problems.
+    - Implemented at the end hosts.
+
+.center[![TCP/IP](figures/lec1/layers.png)]
+
+---
+
+# The end-to-end argument
+
+.grid[
+.col-2-3[
+"When the function in question can completely and correctly be implemented
+only with the knowledge and help of the application standing at the end
+points of the communication system, providing that questioned
+function as a feature of the communication system itself is not
+possible." (Jerome Saltzer et al, 1984)
+]
+.col-1-3[
+.circle[![](figures/lec1/saltzer.jpg)]
+]
+]
+
+## In practice
+
+- Resist the tendency to put complicated things in intermediate nodes.
+- Good rule of thumbs in systems design, but not to follow blindly (e.g., in case of performance).
 
 ---
 
@@ -381,3 +435,5 @@ All problems in computer science can be solved by another level of indirection. 
 ---
 
 # References
+
+- Saltzer, Jerome H., David P. Reed, and David D. Clark. "End-to-end arguments in system design." ACM Transactions on Computer Systems (TOCS) 2.4 (1984): 277-288.
