@@ -429,6 +429,27 @@ possible." (Jerome Saltzer et al, 1984)
 
 ---
 
+# TCP: three-way handshake
+
+.grid[
+.col-1-2[
+- Three-way handshake to **establish a connection**.
+    - The client sends a *SYN* (open) to the server.
+    - The server returns a *SYN ACK* acknowledgment.
+    - The client sends an *ACK* to acknowledge the SYN ACK.
+- Why three-way instead of two-way?
+]
+.col-1-2[
+![](figures/lec1/tcp-handshake.png)
+]
+]
+
+.center[]
+
+.footnote[Credits: [Computer Network: A Top-Down Approach](https://www.pearson.com/us/higher-education/program/Kurose-Computer-Networking-A-Top-Down-Approach-7th-Edition/PGM1101673.html)]
+
+---
+
 # TCP: packet acknowledgment
 
 .center[![](figures/lec1/tcp-data.png)]
@@ -456,6 +477,14 @@ possible." (Jerome Saltzer et al, 1984)
 
 ---
 
+# Socket programming
+
+.center[![](figures/lec1/socket-diagram.png)]
+
+.footnote[Credits: [Computer Network: A Top-Down Approach](https://www.pearson.com/us/higher-education/program/Kurose-Computer-Networking-A-Top-Down-Approach-7th-Edition/PGM1101673.html)]
+
+---
+
 # HTTP: our first distributed system
 
 .grid[
@@ -478,7 +507,7 @@ possible." (Jerome Saltzer et al, 1984)
 
 # An HTTP conversation
 
-Suppose we want to visit `http://www.ulg.ac.be`:
+Suppose we want to visit `http://www.montefiore.ulg.ac.be`:
 
 1a) The HTTP client initiates a TCP connection to the server `www.montefiore.ulg.ac.be` on port number 80.
 ```python
