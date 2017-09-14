@@ -501,8 +501,8 @@ In this manner, a neighbor is chosen *who is still alive* and has the *smallest 
 
 # CAN Summary
 
-- Interesting idea of applying hash-functions to distributed systems!
-- Replication by applying multiple (different) hash-functions (or one could hash a hash).
+- Interesting idea of applying *hash-functions* to distributed systems!
+- *Replication* by applying multiple (different) hash-functions (or one could hash a hash).
 - Several failure cases still possible. Possible routing failure handled by flooding!
   - Inefficient consumption of bandwith in large networks.
   - Same message can arrive more than once (use Gnutella random-id safeguard).
