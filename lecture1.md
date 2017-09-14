@@ -466,11 +466,27 @@ possible." (Jerome Saltzer et al, 1984)
 
 ---
 
+# UDP
+
+- TCP comes with some **overhead**:
+    - Connection establishment;
+    - Packet loss: retransmission timeout;
+    - Congestion control: does not utilize full bandwidth.
+- There are applications that **do not** require these mechanisms.
+    - Streaming applications.
+        - Retransmitting lost or corrupted packets is not worth the effort.
+- *UDP* provides a connectionless transport protocol which exposes IP almost exactly to the application layer, with minimal overhead.
+    - This results in a **best-effort** transport layer, with no guarantee of delivery.
+    - But with almost no overhead (in packet *size* or *delay*).
+        - As the soon the application writes, packets are sent.
+
+---
+
 # The application layer
 
 .stretch[![](figures/lec1/socket.png)]
 
-- *Sockets* offer an **application programming interface** (API) of the transport layer (e.g., TCP).
+- *Sockets* offer an **application programming interface** (API) of the transport layer (TCP or UDP).
 - Applications are oblivious to underlying network operations.
 
 .footnote[Credits: [Computer Network: A Top-Down Approach](https://www.pearson.com/us/higher-education/program/Kurose-Computer-Networking-A-Top-Down-Approach-7th-Edition/PGM1101673.html)]
@@ -551,8 +567,8 @@ while (len(result) > 0):
     - Layers providing *addressing*, *routing* and *survivability* of packets.
 - Where to put functionalities?
     - **Fate-sharing** and **end-to-end arguments**.
-    - IP layer provides a *best-effort delivery service*.
-    - TCP layer *handles* most of the *survivability issues*.
+    - IP provides a *best-effort delivery service*.
+    - TCP *handles* most of the *survivability issues* to provide a **reliable** logical transport channel.
 - HTTP: a client-server distributed system built on top of TCP.
 
 ---
