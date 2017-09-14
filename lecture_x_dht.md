@@ -517,6 +517,42 @@ In this manner, a neighbor is chosen *who is still alive* and has the *smallest 
 
 ---
 
+class: middle, center
+
+# Mid-lecture Recap!
+
+![There will be no order, only chaos](assets/lectures/dht/no-order.jpg)
+
+---
+
+# Mid-lecture Recap (1)
+
+- Major challenge in P2P is how to achieve **efficient** *resource search*.
+  - *Virtual overlay networks* achieve this by introducing *hierarchy* (order $\rightarrow$ no chaos :-)).
+  - Hierachy helps in this situation since it *elliminates* routes, by *reducing* the number of search-steps.
+  - *Example*: binary search is efficient ($\mathcal{O}(\text{log}(n))$) because of the hierachical, i.e., structured nature of sorted lists $\rightarrow$ the element on the left is always equal or smaller than me.
+- Due to the introduction of (virtual) *overlay networks*, we are able to categorize P2P systems:
+  - Unstructured P2P system.
+  - Structured P2P system.
+
+---
+
+# Mid-lecture Recap (2)
+
+## Unstructured P2P systems
+
+TODO
+
+---
+
+# Mid-lecture Recap (3)
+
+## Structured P2P systems
+
+TODO
+
+---
+
 # References
 
 - http://rfc-gnutella.sourceforge.net/developer/stable/index.html (Gnutella Protocol RFC)
