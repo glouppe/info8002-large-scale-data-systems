@@ -10,7 +10,7 @@ Fall 2017
 
 ## Logistics
 - Prof. Gilles Louppe ([g.louppe@ulg.ac.be](mailto:g.louppe@ulg.ac.be))
-- Teaching assistant: Joeri Hermans (XXX)
+- Teaching assistant: Joeri Hermans ([joeri.hermans@doct.ulg.ac.be](mailto:joeri.hermans@doct.ulg.ac.be))
 
 ## Notes
 - Slides, with partial adaptation of:
