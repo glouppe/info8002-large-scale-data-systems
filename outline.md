@@ -60,7 +60,7 @@ class: middle, center
 
 ---
 
-# 2. Failures & Communications
+# 2. Failures & Group communication
 
 - Failure detection
 - Reliable multicast
