@@ -510,6 +510,10 @@ In this manner, a neighbor is chosen *who is still alive* and has the *smallest 
   - *Shortest* path length: 0
   - *Average* path length: $\mathcal{O}(\frac{d}{4}n^\frac{1}{d})$ (assuming equally divided zones)
   - *Longest* path length: $\mathcal{O}(n) \rightarrow$ Unacceptable for large systems
+- Routing through overlay network makes all nodes reachable in a finite about of steps, practical considerations:
+  - Neighboring nodes can be in Belgium and Australia ~370 ms (gov.au)
+  - Imagine: message is routed through 10 machines with said latency: *3.7s respond time*!
+  - Therefore, path length needs to be small! Even in worst-case!
 
 ---
 
