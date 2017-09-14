@@ -453,9 +453,49 @@ class: middle
 
 # CAN Construction
 
+- Spltting the allocated zone of an existing node, and retaining a certain half of the splitted zone to the joining node along with all points which are located in the relevant half.
+- This process can be divided into several steps:
+  1. New node must assign itself a random coordinate.
+  2. Then, the new node must have a node currently associated with the CAN (can be done differently).
+  3. Using CAN routing, find the zone associated with the choosen coordinate.
+  4. The current occupant node of the zone splits its zone in half and assigns one half to the new done. The split assumes a certain *ordering of dimensions* so a split can be undone at a later time.
+  5. Key-Value pairs of the reassigned half-zone are transferred to the new node.
+  6. Sets of neighbors in all adjacent zones are updated. Thus, insertion: $\mathcal{O}(d)$.
+
 ---
 
 # CAN Maintenance
+
+## Node departure and recovery
+
+When nodes leave a CAN, we need to ensure that the zones they occupied are taken over by the remaining nodes.
+
+*Clean exit*:
+- Node explicitely hands over the zone (including the key-value) pairs to the (newly) responsible and remaining nodes.
+- Zone will be handed over to the smallest adjacent zone (check correctness).
+
+---
+
+## Detecting failures
+
+- Periodically, nodes send update messages to neighbors specifying:
+  - A list of neighbors, and their zone coordinates
+- A *time-out* of a neighbor response, triggers a failure.
+
+---
+
+## Recovering from a failure
+
+Every neighboring node initiates a `TAKEOVER` procedure:
+
+1. Evey neighbor zone starts a timer proportionally to the volume of the zone.
+2. When the timer expires, the neighbor sends a `TAKEOVER` message to all other neighbors with new zone information (including failed zones).
+
+Upon the receival of a `TAKEOVER` message, a node cancels its timer if and only if the volume of the receiving zone is smaller then its own.
+
+In this manner, a neighbor is chosen *who is still alive* and has the *smallest zone* (why smallest zone?).
+
+**Still prone to failure (simultaneous failure of multiple nodes, how?)!**
 
 ---
 
