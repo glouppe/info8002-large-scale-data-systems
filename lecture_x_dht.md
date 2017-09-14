@@ -501,7 +501,8 @@ In this manner, a neighbor is chosen *who is still alive* and has the *smallest 
 
 # References
 
-- http://rfc-gnutella.sourceforge.net/developer/stable/index.html
+- http://rfc-gnutella.sourceforge.net/developer/stable/index.html (Gnutella Protocol RFC)
 - http://people.cs.uchicago.edu/~matei/PAPERS/gnutella-rc.pdf
+- http://conferences.sigcomm.org/sigcomm/2001/p13-ratnasamy.pdf (CAN)
 
 ---
