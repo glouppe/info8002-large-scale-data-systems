@@ -548,11 +548,11 @@ while (len(result) > 0):
 # Summary
 
 - What to put on top of physical networks?
-    - Layers providing *survivability*.
+    - Layers providing *addressing*, *routing* and *survivability* of packets.
 - Where to put functionalities?
     - **Fate-sharing** and **end-to-end arguments**.
-    - IP layer does not provide much.
-    - TCP layer handles most of the survivability issues.
+    - IP layer provides a *best-effort delivery service*.
+    - TCP layer *handles* most of the *survivability issues*.
 - HTTP: a client-server distributed system built on top of TCP.
 
 ---
