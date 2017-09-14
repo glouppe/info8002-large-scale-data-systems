@@ -499,6 +499,20 @@ In this manner, a neighbor is chosen *who is still alive* and has the *smallest 
 
 ---
 
+# CAN Summary
+
+- Interesting idea of applying hash-functions to distributed systems!
+- Replication by applying multiple (different) hash-functions (or one could hash a hash).
+- Several failure cases still possible. Possible routing failure handled by flooding!
+  - Inefficient consumption of bandwith in large networks.
+  - Same message can arrive more than once (use Gnutella random-id safeguard).
+- Rather inefficient messaging:
+  - *Shortest* path length: 0
+  - *Average* path length: $\mathcal{O}(\frac{d}{4}n^\frac{1}{d})$ (assuming equally divided zones)
+  - *Longest* path length: $\mathcal{O}(n) \rightarrow$ Unacceptable for large systems
+
+---
+
 # References
 
 - http://rfc-gnutella.sourceforge.net/developer/stable/index.html (Gnutella Protocol RFC)
