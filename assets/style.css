@@ -22,6 +22,16 @@ body {
     background: #ddd;
 }
 
+.center * {
+    text-align: center !important;
+}
+
+.center p {
+    margin: 0 auto !important;
+    margin-before: 0 !important;
+    margin-after: 0 !important;
+}
+
 .remark-slide-content {
     background-image: linear-gradient(135deg, transparent, rgba(0, 0, 0, 0.02) 50%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.05));
     font-size: 1.4em;
@@ -71,6 +81,22 @@ a:hover {
 
 .width-100 * {
     width: 100%;
+}
+
+.width-80 * {
+    width: 80%;
+}
+
+.width-70 * {
+    width: 70%;
+}
+
+.width-60 * {
+    width: 60%;
+}
+
+.width-50 * {
+    width: 50%;
 }
 
 em {

@@ -541,15 +541,35 @@ class: middle, center
 
 ## Unstructured P2P systems
 
-TODO
+Do not impose any type of structure on the overlay network, or are just loosely connected.
+
+- Low search efficiency, especially for unpopular content.
+- Search based on content meta-data (e.g., name).
 
 ---
 
 # Mid-lecture Recap (3)
 
-## Structured P2P systems
+## Structured P2P
 
-TODO
+Impose hierarchy (structure) on virtual overlay networks.
+
+- Topology of the network is tightly controlled,
+- Any content can be reached in a relatively small number of steps due to deterministic lookup through *routing*.
+- Higher search efficiency due to imposed hiearachy.
+* Performance (search efficiency) is directly related to how nodes are arranged and how the overlay network is maintained.
+
+.center[
+.width-70[
+![Virtual Overlay Network](assets/lectures/dht/overlay-network.png)
+]
+]
+
+---
+
+class: middle, center
+
+### Improve worst-case search efficiency of Content Adressable Networks!
 
 ---
 
