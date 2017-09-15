@@ -571,12 +571,18 @@ class: middle, center
 ]
 ]
 
-
 ---
 
 # Chord
 
-TODO
+- Proposed in 2001 by Stoica et al. at MIT
+- *Consistent Hashing* (Karger et al., also at MIT) with SHA-1 hash function.
+  - Basically: hash one key to multiple buckets.
+  - Reduces probability of data-loss in P2P setting.
+- Data-items use a *$m$-bit identifier*, where $m$ is a predefined system parameter.
+- Overlay network is arranged in a *circle* ranging from $0$ to $2^m - 1$.
+- A node identifier is choosen by hashing the IP address.
+- A key identifier is choosen by hashing the key.
 
 ---
 
@@ -585,5 +591,6 @@ TODO
 - http://rfc-gnutella.sourceforge.net/developer/stable/index.html (Gnutella Protocol RFC)
 - http://people.cs.uchicago.edu/~matei/PAPERS/gnutella-rc.pdf
 - http://conferences.sigcomm.org/sigcomm/2001/p13-ratnasamy.pdf (CAN)
+- https://pdos.csail.mit.edu/papers/chord:sigcomm01/chord_sigcomm.pdf (Chord)
 
 ---
