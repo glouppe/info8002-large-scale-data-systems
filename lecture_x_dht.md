@@ -550,7 +550,7 @@ Do not impose any type of structure on the overlay network, or are just loosely 
 
 # Mid-lecture Recap (3)
 
-## Structured P2P
+## Structured P2P systems
 
 Impose hierarchy (structure) on virtual overlay networks.
 
@@ -559,17 +559,24 @@ Impose hierarchy (structure) on virtual overlay networks.
 - Higher search efficiency due to imposed hiearachy.
 * Performance (search efficiency) is directly related to how nodes are arranged and how the overlay network is maintained.
 
+---
+
+class: middle, center
+
+### Improve worst-case search efficiency of Content Adressable Networks!
+
 .center[
 .width-70[
 ![Virtual Overlay Network](assets/lectures/dht/overlay-network.png)
 ]
 ]
 
+
 ---
 
-class: middle, center
+# Chord
 
-### Improve worst-case search efficiency of Content Adressable Networks!
+TODO
 
 ---
 
