@@ -577,12 +577,40 @@ class: middle, center
 
 - Proposed in 2001 by Stoica et al. at MIT
 - *Consistent Hashing* (Karger et al., also at MIT) with SHA-1 hash function.
-  - Basically: hash one key to multiple buckets.
-  - Reduces probability of data-loss in P2P setting.
+  - Only $\mathcal{O}(\frac{k}{n})$ keys need to be reshuffeled at most when a node joins or leaves.
 - Data-items use a *$m$-bit identifier*, where $m$ is a predefined system parameter.
-- Overlay network is arranged in a *circle* ranging from $0$ to $2^m - 1$.
-- A node identifier is choosen by hashing the IP address.
-- A key identifier is choosen by hashing the key.
+- Overlay network is arranged in a *identifier circle* ranging from $0$ to $2^m - 1$.
+- A *node identifier* is choosen by hashing the IP address.
+- A *key identifier* is choosen by hashing the key.
+- Supports a single operation: `lookup(key)`.
+  - Returns the host which holds the data associated with the key.
+
+---
+
+# Traditional Hashing vs. Consistent Hashing
+
+## Traditional Hashing
+
+- Set of $n$ bins.
+- Key $k$ is assigned to a particular bin.
+- If $n$ changes, all items need to be rehashed (usually: `hash % num_bins`)
+
+## Consistent Hashing
+
+- Evenly distributes $x$ objects over $n$ bins.
+- When $n$ changes:
+  - Only $\mathcal{O}(\frac{x}{k})$ objects need to be rehashed.
+  - Uses a deterministic hash function.
+
+---
+
+# Chord Consistent Hashing
+
+Consistent hashing in Chord assigns keys to nodes as follows:
+
+- Key $k$ is assigned to the first node whose identifier is equal to or follows $k$ in the indentifier space.
+- This node is called the *successor node* of $k$, denoted `successor(k)`.
+- Which is in principle, the first node on the identifier ring starting from $k$.
 
 ---
 
