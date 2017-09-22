@@ -720,6 +720,15 @@ class: center, middle
 
 ---
 
+## Finger Table Characteristics
+
+- Every nodes stores only a small number of other nodes.
+- Every nodes knows more about *close* nodes compared to far away nodes.
+
+What happens when a node $n$ does not know the successor of a key $k$?
+
+---
+
 # Node Join
 
 TODO
