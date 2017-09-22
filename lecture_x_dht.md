@@ -610,7 +610,131 @@ Consistent hashing in Chord assigns keys to nodes as follows:
 
 - Key $k$ is assigned to the first node whose identifier is equal to or follows $k$ in the indentifier space.
 - This node is called the *successor node* of $k$, denoted `successor(k)`.
+- Enables **minimal disruption**.
 - Which is in principle, the first node on the identifier ring starting from $k$.
+
+To maintain the consistent (hashing) mapping, let us consider a node $n$ which
+
+## Joins
+
+- Certain keys assigned to `successor(n)` are now assigned to $n$. Which?
+  - $(k \geq n) \land (k < \text{successor}(n))$
+
+## Leaves
+
+- All of $n$'s assigned keys are assigned to `successor(n)`.
+
+---
+
+class: center, middle
+
+![Chord DHT Consistent Hashing](assets/lectures/dht/dht-chord.png)
+
+---
+
+# Routing
+
+- In the most simple case, Chord nodes only need to maintain the address of the sucessor node.
+  - Scalable yes, but, $\mathcal{O}(n)$ operations are required. *Unacceptable* in in large systems!
+- To accelerate this process, Chord maintains additional information.
+
+## Finger Table
+
+- As before, let $m$ be the number of bits in the identifier.
+- Every node $n$ maints a routing (finger) table with at most $m$ entries.
+- Entry $i$ in the finger table of node $n$:
+  - First node $s$ that *succeeds* $n$ by at least $2^{i - 1}$ on the *identifier circle*.
+  - Meaning: $s = \text{successor}(n + 2^{i-1})$
+
+---
+
+class: center, middle
+
+![Chord Finger Table](assets/lectures/dht/chord-finger-table.jpg)
+
+---
+
+# Chord Finger Tables: Example
+
+- $m = 4$ bits $\rightarrow$ max 4 entries in the routing table.
+- $i$-th entry in finger table: $s = \text{successor}(n + 2^{i - 1}\text{~}\mathrm{mod}\text{~}2^m)$
+- $n = 4$
+
+.center[
+.width-80[
+![Chord Finger Table Initial Situation](assets/lectures/dht/chord-clean.svg)
+]
+]
+
+---
+
+## Finger Table: first entry
+
+- $i = 1$
+- $s = \text{successor}(n + i\text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(5) = 5$
+
+.center[
+.width-100[
+![Chord Finger Table Initial Situation](assets/lectures/dht/chord-finger-1.svg)
+]
+]
+
+---
+
+## Finger Table: second entry
+
+- $i = 2$
+- $s = \text{successor}(n + i\text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(6) = 8$
+
+.center[
+.width-100[
+![Chord Finger Table Initial Situation](assets/lectures/dht/chord-finger-2.svg)
+]
+]
+
+---
+
+## Finger Table: thirth entry
+
+- $i = 3$
+- $s = \text{successor}(n + i\text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(8) = 8$
+
+.center[
+.width-100[
+![Chord Finger Table Initial Situation](assets/lectures/dht/chord-finger-3.svg)
+]
+]
+
+---
+
+## Finger Table: fourth entry
+
+- $i = 4$
+- $s = \text{successor}(n + i\text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(12) = 14$
+
+.center[
+.width-100[
+![Chord Finger Table Initial Situation](assets/lectures/dht/chord-finger-4.svg)
+]
+]
+
+---
+
+# Node Join
+
+TODO
+
+---
+
+# Node Leave
+
+TODO
+
+---
+
+# Chord Summary
+
+TODO
 
 ---
 
