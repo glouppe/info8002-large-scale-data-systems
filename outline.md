@@ -57,47 +57,56 @@ class: middle, center
 # 1. Distributed systems
 
 - Introduction to distributed systems
+- Outline
 - Networking basics
 
 ---
 
-# 2. Formal modeling
+# 2. Basic abstractions
 
-- Model of distributed computing
-- Time, clocks and ordering
+- Distributed computation model
+- Abstracting processes
+    - Failures
+- Abstracting communication
+- Abstracting time
+    - Timing assumptions
+    - Failure detection
+    - Leader election
 - Distributed abstractions
-- Correctness
 
 ---
 
-# 3. Failure detection
-
-- Failures
-- Failure detector
-- Leader election
-
----
-
-# 4. Reliable delivery
+# 3. Reliable delivery
 
 - Reliable multicast
+
+???
+
 - Gossiping
 
 ---
 
-# 5. Shared memory
+# 4. Shared memory
 
 - Shared memory
+
+???
+
 - Global states
 
 ---
 
-# 6. Consensus
+# 5. Consensus
 
 - Consensus
-- Replication
-- Impossibility result (Two Generals' problem)
+- Impossibility result
 - Paxos
+- Replication (total order broadcast)
+
+???
+
+- Possibly split into two parts.
+- Firefly consensus, impossibility
 
 ---
 
@@ -107,14 +116,14 @@ class: middle, center
 
 ---
 
-# 7. Map Reduce
+# 6. Map Reduce
 
 - Concept
 - Case study: Hadoop
 
 ---
 
-# 8. Computational graph systems
+# 7. Computational graph systems
 
 - Concept
 - Static vs. dynamic graphs
@@ -123,7 +132,7 @@ class: middle, center
 
 ---
 
-# 9. Data science on a budget
+# 8. Data science on a budget
 
 - A lot can be done using a laptop only
 - Algorithmic solutions to large-scale data science problems
@@ -136,7 +145,7 @@ class: middle, center
 
 ---
 
-# 10. Distributed file systems
+# 9. Distributed file systems
 
 - Architecture
 - RPC
@@ -145,7 +154,7 @@ class: middle, center
 
 ---
 
-# 11. Key-value stores / NoSQL
+# 10. Key-value stores / NoSQL
 
 - Structured vs. Unstructured databases
 - DHT
@@ -153,7 +162,7 @@ class: middle, center
 
 ---
 
-# 12. Block chain
+# 11. Block chain
 
 - Concept
 - Case study: Bitcoin
