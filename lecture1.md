@@ -193,7 +193,13 @@ This problem is **impossible** to solve!
     - Two nodes need to *agree* on a *value*.
     - They communicate by *messages* using an *unreliable channel*.
 
-- Agreement is a core problem.
+- **Agreement** is one of the core problems of distributed systems.
+
+---
+
+class: middle, center
+
+# Outline
 
 ---
 
@@ -218,7 +224,7 @@ This problem is **impossible** to solve!
 
 - *How do you talk to another machine?*
     - Networking basics
-- *How do you talk to multiple machines at once, with guarantees?*
+- *How do you talk to multiple machines at once, with ordering guarantees?*
     - Multicast, Gossiping.
 
 ---
