@@ -69,12 +69,14 @@ What is a *distributed system*?
 
 ## Definition
 
-A distributed system is a collection of entities with a common goal, each of
+A distributed system (DS) is a collection of entities with a common goal, each of
 which is *autonomous*, *programmable*, *asynchronous* and *failure-prone*, and
 which communicate through an **unreliable** communication medium.
 
 - *Entity*: a process on a device.
 - *Communication medium*: Wired or wireless network.
+
+A distributed system appears to its users as a *single* coherent system.
 
 ---
 
@@ -125,18 +127,34 @@ which communicate through an **unreliable** communication medium.
 
 ---
 
-# Distributed systems are difficult to build
+# Why study distributed systems?
 
-- **Scale**: hundreds or thousands of machines.
-    - Google: 4k-machine MapReduce cluster
-    - Yahoo!: 4k-machine Hadoop cluster
-    - Akamai: 70k machines, distributed over the world
-    - Facebook: 60k machines providing the service
-    - Hard enough to program one machine!
-- **Dynamism**: machines do fail!
-    - 50 machine failures out of 20k machine cluster per day (reported by Yahoo!)
-    - 1 disk failure out of 16k disks every 6 hours (reported by Google)
-- Additional constraints: *concurrent execution*, *consistency*, *security*, etc.
+- Distributed systems are **everywhere**:
+    - Internet
+    - WWW
+    - Mobile devices
+    - Internet of Things
+
+- **Technical** importance:
+    - Improve *scalability*
+    - Improve *reliability*
+
+---
+
+#  Why study distributed systems?
+
+- Distributed systems are **difficult** to build.
+    - *Scale*: hundreds or thousands of machines.
+        - Google: 4k-machine MapReduce cluster
+        - Facebook: 60k machines providing the service
+        - Hard enough to program one machine!
+    - *Fault tolerance*: machines and networks do fail!
+        - 50 machine failures out of 20k machine cluster per day (reported by Yahoo!)
+        - 1 disk failure out of 16k disks every 6 hours (reported by Google)
+    - *Concurrency*:
+        - Nodes execute in parallel
+        - Messages travel asynchronously
+- But only few **core problems** reoccur.
 
 ???
 
@@ -144,13 +162,48 @@ which communicate through an **unreliable** communication medium.
 
 ---
 
+# Teaser: Two Generals' Problem
+
+Two general need to coordinate an attack.
+- They must **agree** on time to attack.
+- They will win only if they attack **simultaneously**.
+- They communicate through **messengers**.
+- Messengers may be **killed** on their way.
+
+---
+
+# Teaser: Two Generals' Problem
+
+Let's try to solve the problem for generals $g_1$ and $g_2$.
+
+- $g_1$ sends time of attack to $g_2$.
+- Problem: how to ensure $g_2$ received the message?
+- Solution: let $g_2$ acknowledge receipt of message.
+- Problem: how to ensure $g_1$ received the acknowledgment?
+- Solution: let $g_1$ acknowledge receipt of acknowledgment.
+- ...
+
+This problem is **impossible** to solve!
+
+---
+
+# Teaser: Two Generals' Problem
+
+- Applicability to distributed systems:
+    - Two nodes need to *agree* on a *value*.
+    - They communicate by *messages* using an *unreliable channel*.
+
+- Agreement is a core problem.
+
+---
+
 # What am I going to learn in this course?
 
 - Understand the **foundational principles** required for the *design*, *implementation* and *maintenance* of distributed systems.
     - Communications
-    - Consensus
-    - Concurrency
     - Failures and consistency
+    - Concurrency
+    - Consensus
 - From these general building blocks, understand
     - distributed *computing paradigms* for data science
         - MapReduce, Computational Graph systems;
@@ -165,28 +218,12 @@ which communicate through an **unreliable** communication medium.
 
 - *How do you talk to another machine?*
     - Networking basics
-- *How do you talk to multiple machines at once?*
+- *How do you talk to multiple machines at once, with guarantees?*
     - Multicast, Gossiping.
 
 ---
 
-# Theme 2: Consensus
-
-- *How do multiple machines reach an agreement?*
-    - Time and synchronization, global states, mutual exclusion, leader election, paxos.
-- **Bad news**: it is impossible!
-    - The impossibility of consensus.
-
----
-
-# Theme 3: Concurrency
-
-- *How do you control access to shared resources?*
-    - Distributed mutual exclusion, distributed transactions, 2/3-phase commit, etc.
-
----
-
-# Theme 4: Failures and consistency
+# Theme 2: Failures and consistency
 
 - *How do you know if a machine has failed?*
     - Failure detection.
@@ -194,6 +231,22 @@ which communicate through an **unreliable** communication medium.
     - Gossiping, replication.
 - *What if some machines malfunction?*
     - Byzantine fault tolerance.
+
+---
+
+# Theme 3: Concurrency
+
+- *How do you control access to shared resources?*
+    - Distributed mutual exclusion, distributed transactions, etc.
+
+---
+
+# Theme 4: Consensus
+
+- *How do multiple machines reach an agreement?*
+    - Time and synchronization, global states, leader election, Paxos.
+- **Bad news**: it is impossible!
+    - The impossibility of consensus for asynchronous systems.
 
 ---
 
@@ -206,7 +259,7 @@ which communicate through an **unreliable** communication medium.
 
 ---
 
-# Theme 6: Distributed storage systems
+# Theme 6: Distributed storage
 
 - *How do you locate where things are and access them?*
     - Distributed file systems

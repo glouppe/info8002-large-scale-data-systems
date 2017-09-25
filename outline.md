@@ -12,13 +12,14 @@ Fall 2017
 - Prof. Gilles Louppe ([g.louppe@ulg.ac.be](mailto:g.louppe@ulg.ac.be))
 - Teaching assistant: Joeri Hermans ([joeri.hermans@doct.ulg.ac.be](mailto:joeri.hermans@doct.ulg.ac.be))
 
+.pull-right[![Textbook](./figures/textbook.jpg)]
 ## Notes
-- Slides, with partial adaptation of:
-    - [CSE 486/585 Distributed systems](https://www.cse.buffalo.edu/~stevko/courses/cse486/spring16/schedule.html) (University at Buffalo)
-    - [CS425 Distributed systems](https://courses.engr.illinois.edu/cs425/fa2017/lectures.html) (University of Illinois UC)
-    - [C5620 Distributed systems and algorithms](http://homepage.cs.uiowa.edu/~ghosh/16615.html) (University of Iowa)
-- Research papers
-- No textbook!
+Rachid Guerraoui, Luis Rodrigues, "Introduction to Reliable Distributed Programming", Springer. (*optional*)
+
+Slides are partially adapted from:
+- [CSE 486/585 Distributed systems](https://www.cse.buffalo.edu/~stevko/courses/cse486/spring16/schedule.html) (University at Buffalo)
+- [CS425 Distributed systems](https://courses.engr.illinois.edu/cs425/fa2017/lectures.html) (University of Illinois UC)
+- ID2203 Introduction to Distributed Systems (KTH).
 
 ---
 
@@ -60,44 +61,43 @@ class: middle, center
 
 ---
 
-# 2. Failures & Group communication
+# 2. Formal modeling
 
-- Failure detection
+- Model of distributed computing
+- Time, clocks and ordering
+- Distributed abstractions
+- Correctness
+
+---
+
+# 3. Failure detection
+
+- Failures
+- Failure detector
+- Leader election
+
+---
+
+# 4. Reliable delivery
+
 - Reliable multicast
 - Gossiping
 
 ---
 
-# 3. Consensus I
+# 5. Shared memory
 
-- Time and synchronization
-- Logical time
+- Shared memory
 - Global states
+
+---
+
+# 6. Consensus
+
 - Consensus
-
----
-
-# 4. Consensus II
-
-- Leader election
-- Paxos
-- Byzantine failures (if time)
-
----
-
-# 5. Concurrency
-
-- Mutual exclusion
-- Transactions
-- 2/3-phase commit protocols
-
----
-
-# 6. Consistency
-
 - Replication
-- Consistency models
-- CAP theorem
+- Impossibility result (Two Generals' problem)
+- Paxos
 
 ---
 
