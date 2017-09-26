@@ -154,7 +154,7 @@ A distributed system appears to its users as a *single* coherent system.
     - *Concurrency*:
         - Nodes execute in parallel
         - Messages travel asynchronously
-- But only few **core problems** reoccur.
+- But only a few **core problems** reoccur.
 
 ???
 
@@ -164,7 +164,8 @@ A distributed system appears to its users as a *single* coherent system.
 
 # Teaser: Two Generals' Problem
 
-Two general need to coordinate an attack.
+Two generals need to coordinate an attack.
+
 - They must **agree** on time to attack.
 - They will win only if they attack **simultaneously**.
 - They communicate through **messengers**.
@@ -182,6 +183,8 @@ Let's try to solve the problem for generals $g_1$ and $g_2$.
 - Problem: how to ensure $g_1$ received the acknowledgment?
 - Solution: let $g_1$ acknowledge receipt of acknowledgment.
 - ...
+
+--
 
 This problem is **impossible** to solve!
 
