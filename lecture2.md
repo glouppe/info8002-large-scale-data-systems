@@ -6,6 +6,12 @@ Lecture 2: Basic abstractions
 
 ---
 
+In this lesson, ...
+
+XXX
+
+---
+
 # Programming abstractions
 
 - *Sequential programming*
@@ -68,7 +74,7 @@ Lecture 2: Basic abstractions
 - Reactive programming model:
 
 ```python
-def on_eventA(event):   # handler for events of type A
+def upon_eventA(event):   # handler for events of type A
     # do something
     # ...
     trigger(eventB(...))
@@ -85,25 +91,104 @@ def on_eventA(event):   # handler for events of type A
 - Components can be composed locally to build software stacks.
     - The top of the stack is the *application layer*.
     - The bottom of the stack  the *transport* or *network* layer.
-- Layers of distributed programming abstractions are typically in the middle.
+- Distributed programming abstraction layers are typically in the middle.
+- We assume that every process executes the code triggered by events in a mutually exclusive way, without concurrently processing $\geq$ 2 events.
 
 ---
 
-# Automata and steps
+# Execution
 
+.center[![](figures/lec2/step.png)]
+
+- The **execution** of a distributed algorithm is a *sequence of steps* executed by its processes.
+- A **process step** consists in
+    - *receiving* a message from another process,
+    - *executing* a local computation,
+    - *sending* a message to some process.
+- Local messages between components are treated as local computation.
+- We assume *deterministic* process steps (with respect to the message received and the local state prior to executing a step).
 
 ---
 
 # Liveness and safety
 
+- Implementing a distributed programming abstraction requires satisfying its *correctness*
+  in all possible executions of the algorithm.
+    - i.e., in all possible interleaving of steps.
+
+- Correctness of an abstraction is expressed in terms of **liveness** and **safety**.
+    - *Safety*: properties that state that nothing bad ever happens.
+        - A safety property is a property such that, whenever it is violated in some execution $E$ of an algorithm,
+        there is a prefix $E'$ of $E$ such that the property will be violated in any extension of $E'$.
+    - *Liveness*: properties that state something good eventually happens.
+        - A liveness property is a property such that for any prefix $E'$ of $E$, there exists an extension of $E'$ for which
+        the property is satisfied.
+
+- Any property can be expressed as the conjunction of safety property and a liveness property.
+
 ---
 
-# Abstracting processes
+# Correctness example (1)
 
-???
+.grid[
+.col-2-3[
+## Traffic lights at an intersection
+- Safety: only one direction should have a green light.
+- Liveness: every direction should eventually get a green light.
+]
+.col-1-3[
+![](figures/lec2/lights.jpg)
+]
+]
 
-2.2
-Failures
+---
+
+# Correctness example (2)
+
+## TCP
+- Safety: messages are not duplicated and received in the order they were sent.
+- Liveness: messages are not lost.
+
+---
+
+# Model/Assumptions
+
+In our abstraction of a distributed system, we need to specify the *assumptions* needed for the algorithm to be **correct**.
+
+We need assumptions on:
+- **failure** behavior of processes and channels
+- **timing** behavior of processes and channels.
+
+---
+
+# Process failures
+
+- Processes may **fail** in four different ways:
+    - *Crash-stop*
+    - *Omissions*
+    - *Crash-recovery*
+    - *Byzantine / arbitrary*
+
+- Processes that do not fail in an execution are **correct**.
+
+.center[![](figures/lec2/failures.png)]
+.caption[Failure modes of a process]
+
+---
+
+# Crash-stop failures
+
+---
+
+# Omission failures
+
+---
+
+# Crash-recovery failures
+
+---
+
+# Byzantine failures
 
 ---
 
