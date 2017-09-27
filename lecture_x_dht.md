@@ -850,5 +850,6 @@ So, what needs to happen in order to ensure a consistent network when a node $n$
 - http://people.cs.uchicago.edu/~matei/PAPERS/gnutella-rc.pdf
 - http://conferences.sigcomm.org/sigcomm/2001/p13-ratnasamy.pdf (CAN)
 - https://pdos.csail.mit.edu/papers/chord:sigcomm01/chord_sigcomm.pdf (Chord)
+- https://pdos.csail.mit.edu/~petar/papers/maymounkov-kademlia-lncs.pdf (Kademlia)
 
 ---
