@@ -6,26 +6,16 @@ Lecture 2: Basic abstractions
 
 ---
 
-In this lesson, ...
+# Outline
 
-XXX
-
----
-
-# Programming abstractions
-
-- *Sequential programming*
-    - Array, record, list, ...  
-
-- *Concurrent programming*
-    - Thread, semaphore, monitor, ...
-
-- *Distributed programming*
-    - Reliable broadcast
-    - Shared memory
-    - Consensus
-    - Atomic commit
-    - ...
+- In this lesson, we will define **basic abstractions** that capture the
+  fundamental characteristics of various distributed systems, and on top of
+  which we will later define more elaborate abstractions.
+- Three main abstractions:
+    - *Process* abstractions
+    - *Link* abstractions
+    - *Timing* abstractions
+- A *distributed system model* = a combination of the three categories of abstractions.
 
 ---
 
@@ -46,7 +36,6 @@ XXX
 - Communication
     - Reliability guarantees (e.g. with TCP) are only offered for **one-to-one** communication (client-server).
     - How to do *group communication*?
-
 - High-level services
     - Sometimes one-to-many communication is not enough.
     - Need *reliable high-level services*.
@@ -68,19 +57,12 @@ XXX
 - Every process consists of **modules** or **components**.
     - Modules may exist in multiple instances.
     - Every instance has a unique identifier and is characterized by a set of properties.
-- Asynchronous **events** represent *communication* or *control flow* between component.
+- Asynchronous **events** represent *communication* or *control flow* between components.
     - Each component is constructed as a state-machine whose transitions are triggered by the reception of events.
-    - Events may carry information (e.g., data message, group information)
+    - Events carry information (sender, message, etc)
 - Reactive programming model:
-
-```python
-def upon_eventA(event):   # handler for events of type A
-    # do something
-    # ...
-    trigger(eventB(...))
-```
-
-- In our abstraction, a distributed algorithm is effectively described by a set of event handlers.
+.center[![](figures/lec2/handler-notations.png)]
+- Effectively, a distributed algorithm is described by a set of event handlers.
 
 ---
 
@@ -115,15 +97,13 @@ def upon_eventA(event):   # handler for events of type A
 - Implementing a distributed programming abstraction requires satisfying its *correctness*
   in all possible executions of the algorithm.
     - i.e., in all possible interleaving of steps.
-
-- Correctness of an abstraction is expressed in terms of **liveness** and **safety**.
+- Correctness of an abstraction is expressed in terms of **liveness** and **safety** properties.
     - *Safety*: properties that state that nothing bad ever happens.
         - A safety property is a property such that, whenever it is violated in some execution $E$ of an algorithm,
         there is a prefix $E'$ of $E$ such that the property will be violated in any extension of $E'$.
     - *Liveness*: properties that state something good eventually happens.
         - A liveness property is a property such that for any prefix $E'$ of $E$, there exists an extension of $E'$ for which
         the property is satisfied.
-
 - Any property can be expressed as the conjunction of safety property and a liveness property.
 
 ---
@@ -151,13 +131,13 @@ def upon_eventA(event):   # handler for events of type A
 
 ---
 
-# Model/Assumptions
+# Assumptions
 
-In our abstraction of a distributed system, we need to specify the *assumptions* needed for the algorithm to be **correct**.
+- In our abstraction of a distributed system, we need to specify the *assumptions* needed for the algorithm to be **correct**.
 
-We need assumptions on:
-- **failure** behavior of processes and channels
-- **timing** behavior of processes and channels.
+- A distributed system model includes assumptions on:
+    - **failure** behavior of processes and channels
+    - **timing** behavior of processes and channels
 
 ---
 
@@ -178,25 +158,96 @@ We need assumptions on:
 
 # Crash-stop failures
 
+- A process stops taking steps.
+    - Not sending messages.
+    - Not receiving messages.
+- **By default**, we assume the crash-stop process abstraction.
+    - Hence, do not recover.
+    - Q: Does this mean that processes are not allowed to recover?
+
 ---
 
 # Omission failures
+
+- Process omits sending or receiving messages.
+    - *Send omission*: A process omits to send a message it has to send according to its algorithm.
+    - *Receive omission*: A process fails to receive a message that was sent to it.
+- In general, omission failures are due to buffer overflows.
+- With omission failures, a process deviates from is algorithm by dropping messages that should have been exchanged with other processes.
 
 ---
 
 # Crash-recovery failures
 
+- A process might crash.
+    - It stops taking steps, not receiving and sending messages.
+- It may **recover** after crashing.
+    - The process emits a `<Recovery>` event upon recovery.
+- Access to **stable storage**:
+    - May read/write (*expensive*) to permanent storage device.
+    - Storage survives crashes.
+    - E.g., save state to storage, crash, recover, read saved state, ...
+- A failure is different in the crash-recovery abstraction:
+    - A process is **faulty** in an execution if
+        - It crashes and never recovers, or
+        - It crashes and recovers infinitely often.
+
+    - Hence, a **correct** process may crash and recover.
+
 ---
 
 # Byzantine failures
 
+- A process may behave arbitrarily.
+    - Sending messages not specified by its algorithm.
+    - Updating its state as not specified by its algorithm.
+
+- Might behave **maliciously**, attacking the system.
+    - Several malicious nodes might collude.
+
 ---
 
-# Abstracting communication
+# Links
 
-???
+- In our abstraction, every process may **logically** communicate with every other process (a).
+- The physical implementation may differ (b-d).
 
-2.3
+.stretch[![](figures/lec2/links.png)]
+
+---
+
+# Link failures
+
+- *Fair-loss links*
+    - Channel delivers any message sent, with non-zero probability.
+
+- *Stubborn links*
+    - Channel delivers any message sent infinitely many times.
+    - Can be implemented using fair-loss links.
+
+- *Perfect links* (i.e. reliable)
+    - Channel delivers any message sent exactly once.
+    - Can be implemented using stubborn links.
+    - **By default**, we assume the perfect links abstraction.
+
+- Q: What abstraction do UDP and TCP implement?
+
+---
+
+# Perfect links: interface
+
+.center[![](figures/lec2/pl-interface.png)]
+
+Q: Which property is safety/liveness/neither?
+
+---
+
+# Perfect links: implementation
+
+.center[![](figures/lec2/pl-impl.png)]
+
+Q: How does TCP efficiently maintain its `delivered` log?
+
 
 ---
 
