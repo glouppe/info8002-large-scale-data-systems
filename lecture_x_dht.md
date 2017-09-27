@@ -916,7 +916,7 @@ class: middle, center
 Before we look into storing and retrieving key value pairs in Kademlia, we first define a notion of *identifier closeness*.
 
 - This allows us to store and retrieve information on $k$ (system parameter) closest nodes.
-- The distance between two identifiers is defined as: $d(x, y) = x \oplus y$, and is *bidirectional*.
+- The distance between two identifiers is defined as: $d(x, y) = x \oplus y$.
 
 $\rightarrow$ Ensures redundancy
 
@@ -981,6 +981,51 @@ $\rightarrow$ Use $k$ closest node to store and persist the data.
 ---
 
 ## Retrieving data
+
+1. Find $k$ closest nodes of the specified identifier using `FIND_VALUE(id)`.
+2. Halt procedure whenever the set of closest nodes doesn't change or a value is returned.
+
+$\rightarrow$ For chaching purposes, once a lookup succeeds, the requesting node stores the key-value pair at the *closest node to the key that did not return the value*.
+
+- Because of the *unidirectionality* of the topology (requests will usually follow the same path), future searches for the same key are likely to hit cached entries before querying the closest node.
+
+$\rightarrow$ Induces problem with popular nodes: *over-caching*.
+
+**Solution**: Set expiration time *inversely proportional* to the distance between the true identifier and the current node identifier.
+
+---
+
+# Node Joining
+
+TODO
+
+---
+
+# Node Leaving
+
+TODO
+
+---
+
+# Routing
+
+TODO
+
+---
+
+# Example: Routing Table
+
+TODO
+
+---
+
+# Kademlia Summary
+
+TODO
+
+---
+
+# Key points of the lecture
 
 TODO
 
