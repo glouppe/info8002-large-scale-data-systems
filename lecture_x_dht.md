@@ -870,7 +870,7 @@ class: center, middle
 - Minimizes the number of configuration messages (gaurentee).
 - 160-bit identifiers (e.g., using SHA-1 or some other hash function, implementation specific).
 - Key-Value pairs are stored on nodes based on *closeness* in the identifier space.
-- Identifier based *routing* algorithm by imposing a *hiararchy*.
+- Identifier based *routing* algorithm by imposing a *hiararchy* (virtual overlay network).
 
 ---
 
@@ -879,6 +879,70 @@ class: middle, center
 # How?
 
 ---
+
+class: middle, center
+
+### XOR metric for distance between points in the key (identifier) space.
+
+---
+
+# XOR
+
+- Symmetric $\rightarrow$ identical distance.
+- Allows nodes to receive lookup queries from the same distribution of nodes contained in their routing table.
+  - Kademlia uses this to "learn" routing information.
+  - Chord does not learn routing information from queries.
+  - Chord cannot send queries do nodes preceiding the current node (needs to go clock-wise).
+
+---
+
+# System Description
+
+- $m = 160$ bits
+- Treat nodes as leaves in an (unbalanced) binary tree (sorted by prefix)
+- The Kademlia protocol ensures that every node knows at least one other node in every subtree.
+  - Guarentees that any node can locate any other node given its identifier.
+
+.center[
+.width-100[
+![Kademlia Subtrees](assets/lectures/dht/kademlia-subtrees.png)
+]
+]
+
+---
+
+# Storing and retrieving data
+
+Before we look into storing and retrieving key value pairs in Kademlia, we first define a notion of *identifier closeness*.
+
+- This allows us to store and retrieve information on $k$ (system parameter) closest nodes.
+- The distance between two identifiers is defined as: $d(x, y) = x \oplus y$, and is *bidirectional*.
+
+$\rightarrow$ Ensures redudancy
+
+---
+
+## Node State
+
+- For every prefix $0 < i < 160$, every node keeps a list of (IP address, Port, ID) for nodes of distance between $2^i$ and $2^{i+1}$: *k-buckets*.
+- Every k-bucket is sorted by time last seen (descending, i.e, last-seen first).
+- When a node receives a message, it updates the corresponding k-bucket for the sender's identifier. If the sender already exist, it is moved to the tail of the list.
+  - **Important**: If the k-bucket is full, the node pings the last-seen node and checks if it is still available. **Only if** the node is **not available** it will replace it.
+  - Policy of replacement only when a nodes leaves the network $\rightarrow$ prevents Denial of Service (DoS) attacks (e.g., flushing routing tables).
+
+---
+
+## k-bucket
+
+.center[
+.width-80[
+![k-bucket](assets/lectures/dht/k-bucket.png)
+]
+]
+
+---
+
+## Kademlia Protocol
 
 TODO
 
