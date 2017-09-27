@@ -842,6 +842,7 @@ So, what needs to happen in order to ensure a consistent network when a node $n$
 - *Iterative* lookup process.
 - *Timeouts* to detect failures :(
 - No guarentees (with high probability ...) :(
+- Routing tables NEED to be correct :(
 
 ---
 
@@ -857,12 +858,27 @@ class: center, middle
 ### we can **load balance**
 
 
-
-# But can we do it in more efficient way with guarentees?
+# But can we obtain these properties in more efficient way with guarentees?
 
 ---
 
 # Kademlia
+
+- Configuration information spreads automatically as a side-effect of key lookups (gossipping).
+- Nodes have enough knowledge and flexibility to route queries through low-latency paths.
+- Asynchronous queries to avoid timeout delays from failed nodes.
+- Minimizes the number of configuration messages (gaurentee).
+- 160-bit identifiers (e.g., using SHA-1 or some other hash function, implementation specific).
+- Key-Value pairs are stored on nodes based on *closeness* in the identifier space.
+- Identifier based *routing* algorithm by imposing a *hiararchy*.
+
+---
+
+class: middle, center
+
+# How?
+
+---
 
 TODO
 
