@@ -42,6 +42,12 @@ Lecture 2: Basic abstractions
 
 ---
 
+class: middle, center
+
+# Distributed computation
+
+---
+
 # Distributed computation
 
 .center[![](figures/lec2/dp-abstraction.png)]
@@ -139,6 +145,13 @@ Lecture 2: Basic abstractions
     - **failure** behavior of processes and channels
     - **timing** behavior of processes and channels
 
+
+---
+
+class: middle, center
+
+# Process abstractions
+
 ---
 
 # Process failures
@@ -150,9 +163,6 @@ Lecture 2: Basic abstractions
     - *Byzantine / arbitrary*
 
 - Processes that do not fail in an execution are **correct**.
-
-.center[![](figures/lec2/failures.png)]
-.caption[Failure modes of a process]
 
 ---
 
@@ -207,6 +217,20 @@ Lecture 2: Basic abstractions
 
 ---
 
+# Fault-tolerance hierarchy
+
+.center[![](figures/lec2/failures.png)]
+
+Q: Explain how failure modes are special cases of one another.
+
+---
+
+class: middle, center
+
+# Communication abstractions
+
+---
+
 # Links
 
 - In our abstraction, every process may **logically** communicate with every other process (a).
@@ -246,12 +270,25 @@ Q: Which property is safety/liveness/neither?
 
 .center[![](figures/lec2/pl-impl.png)]
 
-Q: How does TCP efficiently maintain its `delivered` log?
+- Q: Does this implementation ensure correctness?
+- Q: How does TCP efficiently maintain its `delivered` log?
 
 
 ---
 
-# Abstracting time
+class: middle, center
+
+# Timing assumptions
+
+---
+
+---
+
+class: middle, center
+
+# Timing abstractions
+
+---
 
 ???
 - Timing assumptions (2.4)
@@ -261,11 +298,15 @@ Q: How does TCP efficiently maintain its `delivered` log?
 
 ---
 
-# Distributed abstractions
+class: middle, center
+
+# Distributed system models
+
+---
 
 ???
 
-@.6
+2.6
 
 ---
 
