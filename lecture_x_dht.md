@@ -927,7 +927,7 @@ $\rightarrow$ Ensures redundancy
 - For every prefix $0 < i < 160$, every node keeps a list of (IP address, Port, ID) for nodes of distance between $2^i$ and $2^{i+1}$: *k-buckets*.
 - Every k-bucket is sorted by time last seen (descending, i.e, last-seen first).
 - When a node receives a message, it updates the corresponding k-bucket for the sender's identifier. If the sender already exist, it is moved to the tail of the list.
-  - **Important**: If the k-bucket is full, the node pings the last-seen node and checks if it is still available. **Only if** the node is **not available** it will replace it.
+  - **Important**: If the k-bucket is full, the node pings the **last** seen node and checks if it is still available. **Only if** the node is **not available** it will replace it.
   - Policy of replacement only when a nodes leaves the network $\rightarrow$ prevents Denial of Service (DoS) attacks (e.g., flushing routing tables).
 
 ---
@@ -997,25 +997,229 @@ $\rightarrow$ Induces problem with popular nodes: *over-caching*.
 
 # Node Joining
 
-TODO
+Very simple approach compared to other implementations.
+
+1. Node $n$ initializes it's k-bucket (empty).
+2. A node $n$ connects to an already participating node $j$.
+3. Node $n$ then performs a *node-lookup* for its own identifier.
+   - Yielding the $k$ closests node.
+   - By doing so $n$ inserts itself in other nodes $k$-buckets.
+
+**Note**: no key exchanges!
 
 ---
 
-# Node Leaving
+# Node Leaving and Failure
 
-TODO
+Again, as is joining, leaving is very simple as well.
+
+$\rightarrow$ Just disconnect.
+
+- Failure handling is *implicit* in Kademlia due to *data persistance*.
+- No special actions required by other nodes (failed node will just be removed from the k-bucket).
 
 ---
 
-# Routing
+# Routing and Routing Table
 
-TODO
+- Routing table is an (unbalanced) binary tree whose leaves are $k$-buckets.
+- Every $k$-bucket contains some nodes with a common prefix.
+- The shared prefix is the $k$-buckets position in the binary tree.
+
+$\rightarrow$ Thus, a $k$-buckets covers some range of the 160 bit identifier space.
+
+- All $k$-buckets cover the *complete* identifier space with *no* overlap.
+
+---
+
+# Dynamic Construction of the Routing Table
+
+- Nodes in the routing table are allocated dynamically as needed.
+- A bucket is split whenever the $k$-bucket is *full* and the range *includes* the node's own *identifier*.
+
+.center[
+.width-80[
+![k-bucket](assets/lectures/dht/k-bucket.png)
+]
+]
 
 ---
 
 # Example: Routing Table
 
-TODO
+- $k$ = 2
+- $\alpha = 1$ (no asynchronous requests, also no asynchronous pings)
+- Node identifier (000000) is *not* in the routing table
+
+.center[
+.width-80[
+![Kademlia Routing 1](assets/lectures/dht/kademlia-routing-1.svg)
+]
+]
+
+---
+
+class: middle, center
+
+### Node `000111` is involved with an RPC request, what happens?
+
+.center[
+.width-100[
+![Kademlia Routing 2](assets/lectures/dht/kademlia-routing-2.svg)
+]
+]
+
+---
+
+class: middle, center
+
+.center[
+.width-100[
+![Kademlia Routing 3](assets/lectures/dht/kademlia-routing-3.svg)
+]
+]
+
+---
+
+class: middle, center
+
+.center[
+.width-100[
+![Kademlia Routing 4](assets/lectures/dht/kademlia-routing-4.svg)
+]
+]
+
+---
+
+class: middle, center
+
+.center[
+.width-100[
+![Kademlia Routing 5](assets/lectures/dht/kademlia-routing-5.svg)
+]
+]
+
+---
+
+class: middle, center
+
+.center[
+.width-100[
+![Kademlia Routing 6](assets/lectures/dht/kademlia-routing-6.svg)
+]
+]
+
+---
+
+class: middle, center
+
+.center[
+.width-100[
+![Kademlia Routing 7](assets/lectures/dht/kademlia-routing-7.svg)
+]
+]
+
+---
+
+class: middle, center
+
+### A new node `011000` is involved with a RPC message.
+
+.center[
+.width-100[
+![Kademlia Routing 8](assets/lectures/dht/kademlia-routing-8.svg)
+]
+]
+
+---
+
+class: middle, center
+
+.center[
+.width-100[
+![Kademlia Routing 9](assets/lectures/dht/kademlia-routing-9.svg)
+]
+]
+
+---
+
+class: middle, center
+
+.center[
+.width-100[
+![Kademlia Routing 10](assets/lectures/dht/kademlia-routing-10.svg)
+]
+]
+
+---
+
+class: middle, center
+
+.center[
+.width-100[
+![Kademlia Routing 11](assets/lectures/dht/kademlia-routing-11.svg)
+]
+]
+
+---
+
+class: middle, center
+
+.center[
+.width-100[
+![Kademlia Routing 12](assets/lectures/dht/kademlia-routing-12.svg)
+]
+]
+
+---
+
+class: middle, center
+
+.center[
+.width-100[
+![Kademlia Routing 13](assets/lectures/dht/kademlia-routing-13.svg)
+]
+]
+
+---
+
+class: middle, center
+
+.center[
+.width-100[
+![Kademlia Routing 14](assets/lectures/dht/kademlia-routing-14.svg)
+]
+]
+
+---
+
+class: middle, center
+
+.center[
+.width-100[
+![Kademlia Routing 15](assets/lectures/dht/kademlia-routing-15.svg)
+]
+]
+
+---
+
+class: middle, center
+
+.center[
+.width-100[
+![Kademlia Routing 16](assets/lectures/dht/kademlia-routing-16.svg)
+]
+]
+
+---
+
+class: middle, center
+
+.center[
+.width-100[
+![Kademlia Routing 17](assets/lectures/dht/kademlia-routing-17.svg)
+]
+]
 
 ---
 
