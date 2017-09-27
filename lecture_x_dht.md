@@ -1005,7 +1005,7 @@ Very simple approach compared to other implementations.
    - Yielding the $k$ closests node.
    - By doing so $n$ inserts itself in other nodes $k$-buckets.
 
-**Note**: no key exchanges!
+**Note**: The new node should store keys which are the closest to its own identifier by obtaining the $k$-closest nodes.
 
 ---
 
@@ -1225,13 +1225,21 @@ class: middle, center
 
 # Kademlia Summary
 
-TODO
+- Efficient, guaranteed lookups $\mathcal{O}(\text{log} N)$
+- XOR-based metric topology (provable consistency and performance).
+- Possibly latency minimizing (by always picking the lowest latency note when selecting $\alpha$ nodes).
+- Lookup is iterative, but concurrent ($\alpha$).
+- Kademlia protocol implicitely enables data persitance and recovery, no special failure mechanisms requires.
+- Flexibale routing table robust against DoS (route table flushing).
+
 
 ---
 
-# Key points of the lecture
+class: middle, center
 
-TODO
+# Key point of the lecture
+
+## Hiarachy imposes structure, which can be utilized to improve efficiency and scalability.
 
 ---
 
