@@ -840,7 +840,31 @@ So, what needs to happen in order to ensure a consistent network when a node $n$
 - Relatively small join/leave cost.
 - Deterministic (queries will end at the desired node, unlike Gnutella).
 - *Iterative* lookup process.
-- No guarentees (with high probability ...)
+- *Timeouts* to detect failures :(
+- No guarentees (with high probability ...) :(
+
+---
+
+class: center, middle
+
+### we can **find data**
+### we can **store data**
+### we can **have a global state**
+### we can **detect failures**
+### we can **recover from failures and ensure correctness**
+### we can **store data without losing it**
+### we can **coordinate our data**
+### we can **load balance**
+
+
+
+# But can we do it in more efficient way with guarentees?
+
+---
+
+# Kademlia
+
+TODO
 
 ---
 
