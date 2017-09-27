@@ -918,7 +918,7 @@ Before we look into storing and retrieving key value pairs in Kademlia, we first
 - This allows us to store and retrieve information on $k$ (system parameter) closest nodes.
 - The distance between two identifiers is defined as: $d(x, y) = x \oplus y$, and is *bidirectional*.
 
-$\rightarrow$ Ensures redudancy
+$\rightarrow$ Ensures redundancy
 
 ---
 
@@ -943,6 +943,44 @@ $\rightarrow$ Ensures redudancy
 ---
 
 ## Kademlia Protocol
+
+Provides 4 RPC's (Remote Procedure Call):
+
+- `PING(id)` returns (IP, Port, ID)
+  - Probes the node to check whether it is still online.
+- `STORE(key, value)`
+- `FIND_NODE(id)` returns (IP, Port, ID) for the $k$ nodes it knows about closest to ID.
+- `FIND_VALUE(key)` returns (IP, Port, ID) for the $k$ nodes it knows about closest to ID.
+  - **OR** the value if it maintains the key.
+
+---
+
+## Node Lookup Procedure
+
+The most important procedure a Kademlia participant must perform is locating the $k$ closest nodes to some given identifier.
+
+- Kademlia achieves this by performing a recursive (more iterative) lookup procedure.
+- The initiator issues asynchronous `FIND_NODE` requests to $\alpha$ (system parameter) nodes it has chosen.
+  - Parallel search with the cost of increased network traffic.
+  - Nodes return the $k$ closest nodes to the query ID.
+  - Repeat and select the $\alpha$ nodes from the new set of nodes.
+  - Terminate when set doesn't change.
+  - **Possible optimization**: choose $\alpha$ nodes with lowest latency.
+
+---
+
+## Storing data
+
+Using the `FIND_NODE(id)` procedure, *storing* and making data *persistant* is trivial.
+
+$\rightarrow$ Use $k$ closest node to store and persist the data.
+
+- To ensure persistence in the precense of *node failures*, every node periodically republishes the key-value pair to the $k$ closest nodes.
+- Updating scheme can be implemented. For example: delete data after 24 after publication to limit stale information.
+
+---
+
+## Retrieving data
 
 TODO
 
