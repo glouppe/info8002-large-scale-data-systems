@@ -780,19 +780,67 @@ Of course, one could implement a mechanism that prevents node 4 from looking up 
 
 # Node Join
 
-TODO
+So, what needs to happen in order to ensure a consistent network when a node $n$ joins the network by connecting to a node $n^\prime$?
+
+1. Initialize the predecessor and fingers of node $n$.
+2. Update the fingers and predecessors of existing nodes to reflect the addition of $n$.
+3. Transfer the keys and their corresponding values to $n$.
 
 ---
 
-# Node Leave
+## Initializing fingers and predecessor
 
-TODO
+- $n$ learns it predecessor and fingers by asking $n^\prime$ to look them up $\text{find-predecessor}(n)$.
+- Finger table can also constructed through this mechanism.
+  - Remember: $i$-th entry is $\text{successor}(n + 2^{i - 1}\text{~}\mathrm{mod}\text{~}2^m)$
+  - However: $\mathcal{O}(m \text{~log~} N)$ lookups, can we do better?
+  - Check if the $i$-th finger is also correct for $i + 1$.
+  - Happens when there is no node in that interval, meaning, `finger[i].node >= finger[i + 1].start`.
+
+- $\rightarrow$ This change allows a new node to complete its finger table with "high probability" in $\mathcal{O}(\text{log~}N)$ steps.
+
+---
+
+## Updating fingers of existing nodes
+
+- Node $n$ will become the $i$-th finger of a node $p$ if and only if:
+  - $p$ precedes $n$ by at least $2^{i - 1}$.
+  - The $i$-th finger of node $p$ succeeds $n$.
+- The first node that can meet these two conditions is the immediate predecessor of $n$, which is $n - 2^{i -1}$.
+- Then it increments $i$ and finds the next predecessor which meets this criteria (thus moving counter-clockwise).
+
+---
+
+## Transferring keys
+
+- $n$ can become the successor only for keys that were previously the responsibility of the node immediately following $n$.
+- $n$ only needs to contact the successor of $n + 1$ to transfer responsibility of all relevant keys.
+
+---
+
+# What about failures and replication?
+
+## Failures
+
+- A failure of $n$ must not be allowed to disrupt queries.
+  - Maintain a list of possible successors.
+  - A different thread maintains the finger table (and notifies others) in parallel.
+
+## Replication
+
+- Use the same successor-list to replicate the data!
 
 ---
 
 # Chord Summary
 
-TODO
+- Fast lookup $\text{log}(N)$
+- Small routing table $\text{log}(N)$
+- Handling failures and addressing replication (load balance) using same mechanism (successor list).
+- Relatively small join/leave cost.
+- Deterministic (queries will end at the desired node, unlike Gnutella).
+- *Iterative* lookup process.
+- No guarentees (with high probability ...)
 
 ---
 
