@@ -173,7 +173,7 @@ class: middle, center
     - Not receiving messages.
 - **By default**, we assume the crash-stop process abstraction.
     - Hence, do not recover.
-    - Q: Does this mean that processes are not allowed to recover?
+    - <span class="Q">[Q]</span> Does this mean that processes are not allowed to recover?
 
 ---
 
@@ -221,7 +221,7 @@ class: middle, center
 
 .center[![](figures/lec2/failures.png)]
 
-Q: Explain how failure modes are special cases of one another.
+<span class="Q">[Q]</span> Explain how failure modes are special cases of one another.
 
 ---
 
@@ -254,7 +254,7 @@ class: middle, center
     - Can be implemented using stubborn links.
     - **By default**, we assume the perfect links abstraction.
 
-- Q: What abstraction do UDP and TCP implement?
+- <span class="Q">[Q]</span> What abstraction do UDP and TCP implement?
 
 ---
 
@@ -262,7 +262,7 @@ class: middle, center
 
 .center[![](figures/lec2/pl-interface.png)]
 
-Q: Which property is safety/liveness/neither?
+<span class="Q">[Q]</span> Which property is safety/liveness/neither?
 
 ---
 
@@ -270,9 +270,18 @@ Q: Which property is safety/liveness/neither?
 
 .center[![](figures/lec2/pl-impl.png)]
 
-- Q: Does this implementation ensure correctness?
-- Q: How does TCP efficiently maintain its `delivered` log?
+<span class="Q">[Q]</span> How does TCP efficiently maintain its `delivered` log?
 
+---
+
+# Correctness
+
+- *PL1. Reliable delivery*
+    - Guaranteed by the Stubborn link abstraction. (The Stubborn link will deliver the message an infinite number of times.)
+- *PL2. No duplication*
+    - Guaranteed by the log mechanism.
+- *PL3. No creation*
+    - Guaranteed by the Stubborn link abstraction.
 
 ---
 
@@ -282,6 +291,113 @@ class: middle, center
 
 ---
 
+# Timing assumptions
+
+- **Timing assumptions** correspond to the behavior of processes and links with respect to the passage of time. They relate to
+    - different processing speeds of processes;
+    - different speeds of messages (channels).
+- Three basic types of system:
+    - *Asynchronous system*
+    - *Synchronous system*
+    - *Partially synchronous system*
+
+---
+
+# Asynchronous systems
+
+- **No timing assumptions** on processes and links.
+    - Processes do not have access to any sort of physical clock.
+    - Processing time may vary arbitrarily.
+    - No bound on transmission time.
+- But *causality* between events can still be determined.
+
+---
+
+class: smaller
+
+# Logical clocks
+
+In an asynchronous distributed system, the passage of time can be measured with **logical clocks**:
+- Each process has a local logical clock $l_p$, initially set a $0$.
+- Whenever an event occurs locally at $p$ or when a process sends a message, $p$ increments its logical clock.
+    - $l_p := l_p + 1$
+- When $p$ sends a message event $m$, it timestamps the message with its current logical time, $t(m) := l_p$.
+- When $p$ receives a message event $m$ with timestamp $t(m)$, $p$ updates its logical clock.
+    - $l_p := \\max(l_p, t(m))+1$
+
+.center[![Example of logical clock](figures/lec2/logical-clock.png)]
+
+---
+
+# Observing causality
+
+- Logical clocks capture **cause-effect relations**.
+- The *happened-before* relation $e_1 \to e_2$ denotes that $e_1$ may have caused $e_2$.
+  It is true in the following cases:
+    - $e_1$ and $e_2$ occurred at the same process $p$ and $e_1$ occurred $e_2$;
+    - $e_1$ corresponds to the transmission of $m$ at a process $p$ and $e_2$ corresponds to its reception at a process $q$;
+    - if $e_1 \to e'$ and $e' \to e_2$, then $e_1 \to e_2$ (transitivity).
+- *Clock consistency condition*: $e_1 \to e_2 \Rightarrow t(e_1) < t(e_2)$
+    - If $e_1$ is the cause of $e_2$, then $t(e_1) < t(e_2)$.
+    - But not necessarily the opposite:
+        - $t(e_1) < t(e_2)$ does not imply $e_1 \to e_2$.
+        - $e_1$ and $e_2$ may be logically **concurrent**.
+
+---
+
+class: smaller
+
+# Vector clocks
+
+**Vector clocks** fix this issue by making it possible to tell when two events cannot be causally related, i.e. when they are concurrent.
+- Each process $p$ maintains a vector $V_p$ of $N$ clocks, initially set at $V_p[i] = 0 \, \forall i$.
+- Whenever an event occurs locally at $p$ or when a process sends a message, $p$ increments the $p$-th element of its vector clock.
+    - $V_p[p] := V_p[p] + 1$
+- When $p$ sends a message event $m$, it piggybacks its vector clock as $V_m := V_p$.
+- When $p$ receives a message event $m$ with the vector clock $V_m$, $p$ updates its vector clock.
+    - $V_p[p] := V_p[p] + 1$
+    - $V_p[i] := \\max(V_p[i], V_m[i])$, for $i \neq p$.
+
+.center[![Example of logical clock](figures/lec2/vector-clock.png)]
+
+---
+
+# Comparing vector clocks
+
+- $V_p = V_q$
+    - iff $\forall i \, V_p[i] = V_q[i]$.
+- $V_p \leq V_q$
+    - iff $\forall i \, V_p[i] \leq V_q[i]$.
+- $V_p < V_q$
+    - iff $V_p \leq V_q$ AND $\exists j \, V_p[j] < V_q[j]$
+- $V_p$ and $V_q$ are logically concurrent.
+    - iff NOT $V_p \leq V_q$ AND NOT $V_q \leq V_p$
+
+---
+
+
+# Synchronous systems
+
+Assumption of three properties:
+- *Synchronous computation*
+    - Known upper bound on the process computation delay.
+- *Synchronous communication*
+    - Known upper bound on message transmission delay.
+- *Synchronous physical clocks*
+    - Processes have access to a local physical clock;
+    - Known upper bound on clock drift and clock skew.
+
+<span class="Q">[Q]</span> Why studying synchronous systems? What services can be provided?
+
+---
+
+# Partially synchronous systems
+
+A partially synchronous system is a system that is synchronous *most of the time*.
+- There are periods where the timing assumptions of a synchronous system do not hold.
+- But the distributed algorithm will have a long enough time window where everything behaves nicely, so that it can achieve its goal.
+
+<span class="Q">[Q]</span> Are there such systems?
 ---
 
 class: middle, center
@@ -290,11 +406,123 @@ class: middle, center
 
 ---
 
-???
-- Timing assumptions (2.4)
-- Failure detection (2.5)
-- Leader election (2.5)
-- Relations between FD and LE
+# Failure detection
+
+- It is **tedious** to model (partial) synchrony.
+- Timing assumptions are mostly needed to detect failures.
+    - Heartbeats, timeouts, etc.
+- We define **failure detector** abstractions to *encapsulate timing assumptions*:
+    - Black box giving suspicions regarding node failures;
+    - Accuracy of suspicions depends on model strength.
+
+---
+
+# Implementation of failure detectors
+
+A typical implementation is the following:
+- Periodically exchange *hearbeat* messages;
+- **Timeout** based on *worst case* message round trip;
+- If timeout, then **suspect** node;
+- If reception of a message from a suspected node, *revise suspicion* and increase timeout.
+
+---
+
+class: smaller
+
+# Perfect detector: interface
+
+Assuming a crash-stop process abstraction, the **perfect detector** encapsulates the timing assumptions of a *synchronous system*.
+
+.center[![](figures/lec2/pfd-interface.png)]
+
+---
+
+class: smaller
+
+# Perfect detector: implementation
+
+.center[![](figures/lec2/pfd-impl.png)]
+
+---
+
+class: smaller
+
+# Correctness
+
+We assume a synchronous system:
+- The transmission delay is bounded by some known constant.
+- Local processing is negligible.
+- The timeout delay $\Delta$ is chosen to be large enough such that
+    - every process has enough time to send a heartbeat message to all,
+    - every heartbeat message has enough time to be delivered,
+    - the correct destination processes have enough time to process the heartbeat and to send a reply,
+    - the replies have enough time to reach the original sender and to be processed.
+
+Correctness:
+- *PFD1. Strong completeness*
+    - A crashed process $p$ stops replying to heartbeat messages, and no process will deliver its messages.
+      Every correct process will thus eventually detect the crash of $p$.
+- *PFD2. Strong accuracy*
+    - The crash of $p$ is detected by some other process $q$ only if $q$ does
+      not deliver a message from $p$ before the timeout period.
+    - This happens only if $p$ has indeed crashed, because the algorithm makes sure $p$ must have
+      sent a message otherwise and the synchrony assumptions imply that the message should
+      have been delivered before the timeout period.
+
+
+---
+
+class: smaller
+
+# Eventually perfect detector: interface
+
+The **eventually perfect detector** encapsulates the timing assumptions of a *partially synchronous system*.
+
+.center[![](figures/lec2/epfd-interface.png)]
+
+---
+
+class: smaller
+
+# Eventually perfect detector: impl.
+
+.grid[
+.col-1-2[
+![](figures/lec2/epfd-impl.png)
+]
+.col-1-2[
+![](figures/lec2/epfd-impl-2.png)
+]
+]
+
+<span class="Q">[Q]</span> Show that this implementation is correct.
+
+---
+
+# Leader election
+
+- Failure detection captures failure behavior.
+    - Detects **failed** processes.
+- *Leader election* is an abstraction that also captures failure behavior.
+    - Detects **correct** nodes.
+    - But a single and same for all, called the *leader*.
+- If the current leader crashes, a new leader should be elected.
+
+---
+
+# Leader election: interface
+
+.center[![](figures/lec2/le-interface.png)]
+
+---
+
+# Leader election: implementation
+
+.center[![](figures/lec2/le-impl.png)]
+
+<span class="Q">[Q]</span> Show that this implementation is correct.
+
+<span class="Q">[Q]</span> Show that reciprocally, the leader election abstraction can implement a perfect detector.
 
 ---
 
@@ -304,14 +532,27 @@ class: middle, center
 
 ---
 
-???
+class: smaller
 
-2.6
+# Distributed system models
 
----
+We define a **distributed system model** as the combination of (i) a process abstraction,
+(ii) a link abstraction,
+and (iii) a failure detector abstraction.
 
-# Summary
+- *Fail-stop* (synchronous)
+    - Crash-stop process abstraction
+    - Perfect links
+    - Perfect failure detector
+- *Fail-silent* (asynchronous)
+    - Crash-stop process abstraction
+    - Perfect links
+- *Fail-noisy* (partially synchronous)
+    - Crash-stop process abstraction
+    - Perfect links
+    - Eventually perfect failure detector
+- *Fail-recovery*
+    - Crash-stop process abstraction
+    - Stubborn links
 
----
-
-# References
+The fail-stop distributed system model substantially simplifies the design of distributed algorithms.
