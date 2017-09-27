@@ -671,7 +671,7 @@ class: center, middle
 ## Finger Table: first entry
 
 - $i = 1$
-- $s = \text{successor}(n + i\text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(5) = 5$
+- $s = \text{successor}(n + 2^{i-1} \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(5) = 5$
 
 .center[
 .width-100[
@@ -684,7 +684,7 @@ class: center, middle
 ## Finger Table: second entry
 
 - $i = 2$
-- $s = \text{successor}(n + i\text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(6) = 8$
+- $s = \text{successor}(n + 2^{i-1} \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(6) = 8$
 
 .center[
 .width-100[
@@ -697,7 +697,7 @@ class: center, middle
 ## Finger Table: thirth entry
 
 - $i = 3$
-- $s = \text{successor}(n + i\text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(8) = 8$
+- $s = \text{successor}(n + 2^{i-1} \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(8) = 8$
 
 .center[
 .width-100[
@@ -709,8 +709,8 @@ class: center, middle
 
 ## Finger Table: fourth entry
 
-- $i = 4$
-- $s = \text{successor}(n + i\text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(12) = 14$
+- $n = 4$
+- $s = \text{successor}(n + 2^{i-1} \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(12) = 14$
 
 .center[
 .width-100[
@@ -725,7 +725,56 @@ class: center, middle
 - Every nodes stores only a small number of other nodes.
 - Every nodes knows more about *close* nodes compared to far away nodes.
 
-What happens when a node $n$ does not know the successor of a key $k$?
+What happens when a node $n$ does not know the successor of a key $k$ (probably since nodes can join and leave arbitrarily)?
+
+*Intuition*: If $n$ can find a node whose ID is closer than its own $k$, find that node, until it finds the successor of $k$
+
+$\rightarrow$ Find the *immediate predecessor* node of the desired identifier (with high probability it knows more about the desired identifier).
+
+*Invariant required*: Every node's successor is correctly maintained.
+---
+
+## Example: finding $k$ from $n$.
+
+- *Remember*: $\text{successor}(k) = \text{predecessor}(k)\text{.successor}$
+
+```python
+def find_predecessor(n, id):
+    j = n
+    while not id in chord_interval(j, j.successor) - j:
+        j = j.closest_preceding_finger(id)
+    return j
+
+def closest_preceding_finger(n, id):
+    for i in range(m - 1, 0, -1):
+        if n.finger[i].node in chord_interval(n, id) - n - id:
+            return finger[i].node
+    return n
+```
+
+**Question**:
+
+```python
+while not id in chord_interval(j, j.successor) - j:
+```
+
+Why "`- j`"?
+
+---
+
+## Example: finding $k$ from $n$ ($k = 4$).
+
+1. $n$ checks if $k$ is in the interval (4, 5] $\rightarrow$ [5, 5].
+2. It isn't, so it will check it's own finger table (starting from the last entry, i.e., $i = m$).
+   1. Is *node 14* in the interval (4, 4) $\rightarrow$ [5, 3]? *Yes!*
+3. $n$ checks if $k$ is in the interval (14, 0] $\rightarrow$ [15, 0].
+4. No, contact *node 14* and check its finger table for closest preceding node.
+   1. Return *node 0*.
+5. $n$ checks if $k$ is in the interval (0, 4] $\rightarrow$ [1, 4]. *Yes!*
+
+$\rightarrow$ Node 0 is the preceding node of $k = 4$.
+
+Of course, one could implement a mechanism that prevents node 4 from looking up its own preceiding node in the network.
 
 ---
 
