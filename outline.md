@@ -14,7 +14,7 @@ Fall 2017
 
 .pull-right[![Textbook](./figures/textbook.jpg)]
 ## Notes
-Rachid Guerraoui, Luis Rodrigues, "Introduction to Reliable Distributed Programming", Springer. (*optional*)
+Rachid Guerraoui, Luis Rodrigues, "Introduction to Reliable Distributed Programming", Springer. (*recommended*)
 
 Slides are partially adapted from:
 - [CSE 486/585 Distributed systems](https://www.cse.buffalo.edu/~stevko/courses/cse486/spring16/schedule.html) (University at Buffalo)
@@ -42,6 +42,23 @@ which distributed *databases* and *computing* systems are operating.
 
 ---
 
+# Lectures
+
+- Theoretical lectures 
+- Exercise sessions
+- Tutorials
+
+
+---
+
+# Evaluation
+
+- Oral exam (50%)
+- Programming project 1 (25%)
+- Programming project 2 (25%)
+
+---
+
 class: middle, center
 
 # Outline
@@ -64,6 +81,8 @@ class: middle, center
 
 # 2. Basic abstractions
 
+Content from *chapters 1* and *2*.
+
 - Distributed computation model
 - Abstracting processes
     - Failures
@@ -78,25 +97,24 @@ class: middle, center
 
 # 3. Reliable delivery
 
+Content from *chapter 3*.
+
 - Reliable multicast
-
-???
-
 - Gossiping
 
 ---
 
 # 4. Shared memory
 
+Content from *chapter 4*.
+
 - Shared memory
-
-???
-
-- Global states
 
 ---
 
 # 5. Consensus
+
+Content from *chapter 5*.
 
 - Consensus
 - Impossibility result
@@ -175,4 +193,17 @@ class: middle, center
 
 ---
 
-XXX
+# Projects
+
+.grid[
+.col-2-3[
+- Implementation of a simple distributed system (25%).
+    - E.g., a distributed hash table, a group communication system, ...
+- Exploratory analysis with a distributed computing framework (25%).
+    - E.g., a case study using Spark.
+]
+.col-1-3[
+![](figures/outline/dht.png)
+![](figures/outline/spark.png)
+]
+]

@@ -210,7 +210,8 @@ class: middle, center
 
 - Understand the **foundational principles** required for the *design*, *implementation* and *maintenance* of distributed systems.
     - Communications
-    - Failures and consistency
+    - Failures
+    - Consistency
     - Concurrency
     - Consensus
 - From these general building blocks, understand
