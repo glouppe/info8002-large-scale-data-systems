@@ -19,21 +19,28 @@ ROOTDIR=$(pwd $1)
 TEXFILE=$ROOTDIR"/"$1
 EXTENSIONLESS=$ROOTDIR"/"${1::-4}
 EXTENSIONLESSCLEAN=${1::-4}
-echo $EXTENSIONLESS
-
-# Remove the old output directory, and old generated pdf.
-rm -r output &> /dev/null
 
 # Create a new output folder.
-mkdir output
-cd output
-pdflatex $EXTENSIONLESS -shell-escape
+pdflatex $EXTENSIONLESS -halt-on-error -shell-escape
 makeindex $EXTENSIONLESS -s nomencl.ist -o $EXTENSIONLESS.nls
 bibtex $EXTENSIONLESS
-pdflatex $EXTENSIONLESS -shell-escape
-pdflatex $EXTENSIONLESS -shell-escape
+pdflatex $EXTENSIONLESS -halt-on-error -shell-escape
+pdflatex $EXTENSIONLESS -halt-on-error -shell-escape
 
-# Move the generated pdf to the parent directory.
-mv $ROOTDIR"/output/"$EXTENSIONLESSCLEAN".pdf" $ROOTDIR
-cd ..
-rm -r output
+# Remove the undesired files.
+rm *.aux &> /dev/null
+rm *.aux &> /dev/null
+rm *.bcf &> /dev/null
+rm *.bib &> /dev/null
+rm *.dvi &> /dev/null
+rm *.fdb_latexmk &> /dev/null
+rm *.fls &> /dev/null
+rm *.idx &> /dev/null
+rm *.ilg &> /dev/null
+rm *.ind &> /dev/null
+rm *.log &> /dev/null
+rm *.nls &> /dev/null
+rm *.out &> /dev/null
+rm *.thm &> /dev/null
+rm *.toc &> /dev/null
+rm *.xml &> /dev/null
