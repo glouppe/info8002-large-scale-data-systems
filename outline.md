@@ -14,12 +14,12 @@ Fall 2017
 
 .pull-right[![Textbook](./figures/textbook.jpg)]
 ## Notes
-Rachid Guerraoui, Luis Rodrigues, "Introduction to Reliable Distributed Programming", Springer. (*recommended*)
-
-Slides are partially adapted from:
-- [CSE 486/585 Distributed systems](https://www.cse.buffalo.edu/~stevko/courses/cse486/spring16/schedule.html) (University at Buffalo)
-- [CS425 Distributed systems](https://courses.engr.illinois.edu/cs425/fa2017/lectures.html) (University of Illinois UC)
-- ID2203 Introduction to Distributed Systems (KTH).
+- Rachid Guerraoui, Luis Rodrigues, "Introduction to Reliable Distributed Programming", Springer. (*recommended*)
+- Slides available on [GitHub](https://github.com/glouppe/info8002-large-scale-database-systems).
+- Slides are partially adapted from:
+    - [CSE 486/585 Distributed systems](https://www.cse.buffalo.edu/~stevko/courses/cse486/spring16/schedule.html) (University at Buffalo)
+    - [CS425 Distributed systems](https://courses.engr.illinois.edu/cs425/fa2017/lectures.html) (University of Illinois UC)
+    - ID2203 Introduction to Distributed Systems (KTH).
 
 ---
 
