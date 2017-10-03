@@ -377,7 +377,7 @@ How do you talk to another machine?
     - Internet communication **must continue** despite loss of networks or gateways.
     - The Internet must support **multiple types of communication services**.
     - The Internet architecture must accommodate **a variety of networks**.
-    - The architecture must permit *distributed management* of its resources.
+    - The architecture must permit **distributed** *management* of its resources.
     - The architecture must be *cost effective*.
     - The architecture must permit host attachment with a *low level of effort*.
     - The resources used in the architecture must be *accountable*.
@@ -389,6 +389,10 @@ How do you talk to another machine?
 - There were *many types of networks* based on various physical media (coax,
   radio, satellite, etc).
 - The original designers wanted to interconnect these networks somehow.
+
+???
+
+Example: communicating with different spoken languages with a common super polyglot translator.
 
 --
 
@@ -402,7 +406,7 @@ Issues:
     - adding $O(1)$ new types of medium requires $O(N)$ translator sub-systems;
 - Adds **complexity** inside the network;
 - Increases the barrier to host attachment;
-- Requires control over nodes.
+- Requires control over nodes one attaches to.
 
 ---
 
@@ -413,6 +417,10 @@ class: center, middle
 
 *All problems in computer science can be solved by another level of indirection.* (David Wheeler)
 
+???
+
+Example: communicating with different spoken languages with intermediary that speak a common language.
+
 ---
 
 # Connecting by layering
@@ -420,6 +428,7 @@ class: center, middle
 .grid[
 .col-1-2[
 - Sub-divide the problem by partitioning communication systems into **abstraction layers**.
+    - Layers == levels of indirection.
     - A layer serves the layer above it and is served by the layer below it.
     - Complex services are built from simpler ones.
 - *Interface* between layers defines interaction.
@@ -456,6 +465,10 @@ class: center, middle
 
 - The **network** keeps the state information about conversations.
 
+???
+
+Draw picture 1: two end hosts communicating and the network recording the conversation.
+
 ---
 
 # Two approaches to survivability
@@ -473,6 +486,11 @@ class: center, middle
 - This results in a **best-effort** network.
     - The intermediate nodes do not provide anything other than best-effort delivery (i.e., *addressing* and *routing*).
     - The end hosts provide *protection* mechanisms for the conservation.
+
+???
+
+Draw picture 2: two end hosts communicating and the end hosts recording the conversation.
+
 
 ---
 
@@ -540,7 +558,7 @@ possible." (Jerome Saltzer et al, 1984)
     - The client sends a *SYN* (open) to the server.
     - The server returns a *SYN ACK* acknowledgment.
     - The client sends an *ACK* to acknowledge the SYN ACK.
-- Why three-way instead of two-way?
+- <span class="Q">[Q]</span> Why three-way instead of two-way?
 ]
 .col-1-2[
 ![](figures/lec1/tcp-handshake.png)
@@ -550,6 +568,19 @@ possible." (Jerome Saltzer et al, 1984)
 .center[]
 
 .footnote[Credits: [Computer Network: A Top-Down Approach](https://www.pearson.com/us/higher-education/program/Kurose-Computer-Networking-A-Top-Down-Approach-7th-Edition/PGM1101673.html)]
+
+???
+
+Reason for three-way handshake:
+
+TCP is bidirectional, i.e it is a pair of one way connections.
+
+A two-way handshake ensure that the client can sends messages to the server.
+However, the server does not know that it can sends messages back to the client.
+
+For this reason, we need one two-way handshake for each connection, hence 4
+events (SYN/ACK/SYN/ACK) in total. The middle events (ACK+SYN) can be sent
+through a single packet.
 
 ---
 
@@ -566,6 +597,10 @@ possible." (Jerome Saltzer et al, 1984)
 .center[![](figures/lec1/tcp-lost.png)]
 
 .footnote[Credits: [Computer Network: A Top-Down Approach](https://www.pearson.com/us/higher-education/program/Kurose-Computer-Networking-A-Top-Down-Approach-7th-Edition/PGM1101673.html)]
+
+???
+
+TCP is an example of *synchronous system*, where we assume that processes have access to local physical clocks. This allows to build the timeout mechanism.
 
 ---
 
@@ -626,20 +661,20 @@ possible." (Jerome Saltzer et al, 1984)
 
 # An HTTP conversation
 
-Suppose we want to visit `http://www.montefiore.ulg.ac.be`:
+Suppose we want to visit `http://www.uliege.be`:
 
-1a) The HTTP client initiates a TCP connection to the server `www.montefiore.ulg.ac.be` on port number 80.
+1a) The HTTP client initiates a TCP connection to the server `www.uliege.be` on port number 80.
 ```python
 import socket
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(("www.montefiore.ulg.ac.be", 80))
+s.connect(("www.uliege.be", 80))
 ```
 
-1b) The HTTP server at `www.montefiore.ulg.ac.be` accepts and establishes the TCP connection from the client.
+1b) The HTTP server at `www.uliege.be` accepts and establishes the TCP connection from the client.
 
 2) The HTTP client sends an HTTP message to the server via its TCP socket. The request includes the path name `/index.html`.
 ```python
-request = b"GET /index.html HTTP/1.1\nHost: www.montefiore.ulg.ac.be\n\n"
+request = b"GET /index.html HTTP/1.1\nHost: www.uliege.be\n\n"
 s.send(request)
 ```
 
