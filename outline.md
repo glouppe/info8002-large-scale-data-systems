@@ -23,6 +23,23 @@ Fall 2017
 
 ---
 
+# Lectures
+
+- Theoretical lectures (10-12)
+- Exercise sessions (5-6)
+- Tutorials (2-3)
+
+
+---
+
+# Evaluation
+
+- Oral exam (50%)
+- Programming project 1 (25%)
+- Programming project 2 (25%)
+
+---
+
 # Philosophy
 
 ## Solid ground
@@ -39,23 +56,6 @@ which distributed *databases* and *computing* systems are operating.
 
 - Assess the benefits and disadvantages of distributed systems.
 - No hype!
-
----
-
-# Lectures
-
-- Theoretical lectures
-- Exercise sessions
-- Tutorials
-
-
----
-
-# Evaluation
-
-- Oral exam (50%)
-- Programming project 1 (25%)
-- Programming project 2 (25%)
 
 ---
 
