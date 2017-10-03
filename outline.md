@@ -14,7 +14,7 @@ Fall 2017
 
 .pull-right[![Textbook](./figures/textbook.jpg)]
 ## Notes
-- Rachid Guerraoui, Luis Rodrigues, "Introduction to Reliable Distributed Programming", Springer. (*recommended*)
+- Christian Cachin, Rachid Guerraoui, Luis Rodrigues, "Introduction to Reliable and Secure Distributed Programming", Springer. (*recommended*)
 - Slides available on [GitHub](https://github.com/glouppe/info8002-large-scale-database-systems).
 - Slides are partially adapted from:
     - [CSE 486/585 Distributed systems](https://www.cse.buffalo.edu/~stevko/courses/cse486/spring16/schedule.html) (University at Buffalo)
