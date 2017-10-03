@@ -2,8 +2,8 @@
 
 Lectures for INFO8002 - Large-scale Distributed Systems, ULiège, Fall 2017.
 
-- Instructor: Gilles Louppe [g.louppe@ulg.ac.be](mailto:g.louppe@ulg.ac.be)
-- Assistant: Joeri Hermans [joeri.hermans@doct.ulg.ac.be](mailto:joeri.hermans@doct.ulg.ac.be)
+- Instructor: Gilles Louppe ([g.louppe@ulg.ac.be](mailto:g.louppe@ulg.ac.be))
+- Assistant: Joeri Hermans ([joeri.hermans@doct.ulg.ac.be](mailto:joeri.hermans@doct.ulg.ac.be))
 
 Slides:
 
