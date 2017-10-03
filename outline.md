@@ -44,7 +44,7 @@ which distributed *databases* and *computing* systems are operating.
 
 # Lectures
 
-- Theoretical lectures 
+- Theoretical lectures
 - Exercise sessions
 - Tutorials
 
@@ -130,40 +130,11 @@ Content from *chapter 5*.
 
 class: middle, center
 
-# II. Computing paradigms for data science
+# II. Distributed data storage
 
 ---
 
-# 6. Map Reduce
-
-- Concept
-- Case study: Hadoop
-
----
-
-# 7. Computational graph systems
-
-- Concept
-- Static vs. dynamic graphs
-- Optimization
-- Case studies: Spark, Tensorflow, PyTorch
-
----
-
-# 8. Data science on a budget
-
-- A lot can be done using a laptop only
-- Algorithmic solutions to large-scale data science problems
-
----
-
-class: middle, center
-
-# III. Distributed data storage
-
----
-
-# 9. Distributed file systems
+# 6. Distributed file systems
 
 - Architecture
 - RPC
@@ -172,7 +143,7 @@ class: middle, center
 
 ---
 
-# 10. Key-value stores / NoSQL
+# 7. Key-value stores / NoSQL
 
 - Structured vs. Unstructured databases
 - DHT
@@ -180,10 +151,39 @@ class: middle, center
 
 ---
 
-# 11. Block chain
+# 8. Block chain
 
 - Concept
 - Case study: Bitcoin
+
+---
+
+class: middle, center
+
+# III. Computing paradigms for data science
+
+---
+
+# 9. Map Reduce
+
+- Concept
+- Case study: Hadoop
+
+---
+
+# 10. Computational graph systems
+
+- Concept
+- Static vs. dynamic graphs
+- Optimization
+- Case studies: Spark, Tensorflow, PyTorch
+
+---
+
+# 11. Data science on a budget
+
+- A lot can be done using a laptop only
+- Algorithmic solutions to large-scale data science problems
 
 ---
 

@@ -69,14 +69,14 @@ What is a *distributed system*?
 
 ## Definition
 
-A distributed system (DS) is a collection of entities with a common goal, each of
+A distributed system is a collection of entities with a common goal, each of
 which is *autonomous*, *programmable*, *asynchronous* and *failure-prone*, and
 which communicate through an **unreliable** communication medium.
 
 - *Entity*: a process on a device.
 - *Communication medium*: Wired or wireless network.
 
-A distributed system appears to its users as a *single* coherent system.
+A distributed system appears to its users as a *single* **coherent** system.
 
 ---
 
@@ -87,6 +87,12 @@ A distributed system appears to its users as a *single* coherent system.
 .caption[What are the *entities*? What is the *communication medium*?]
 ]
 
+???
+
+- Processes = the operating systems (at servers, desktop computers, mobile devices, etc)
+- Communication = a collection of networks of different kinds (wired, wireless, phone, etc)
+- Even if the laptop of your friend crashes, the Internet should not collapse!
+
 ---
 
 ## CERN data center
@@ -96,6 +102,11 @@ A distributed system appears to its users as a *single* coherent system.
 .caption[What are the *entities*? What is the *communication medium*?]
 ]
 
+???
+
+- Processes = a scientific program executing in a distributed or parallel fashion (e.g., with MPI)
+- Communication = local network
+
 ---
 
 ## Massively multiplayer online games
@@ -104,6 +115,11 @@ A distributed system appears to its users as a *single* coherent system.
 ![CERN data center](figures/lec1/wow.jpg)
 .caption[What are the *entities*? What is the *communication medium*?]
 ]
+
+???
+
+- Processes = game software running in player computers, game servers at Blizzard.
+- Communication = the Internet abstraction
 
 ---
 
@@ -116,6 +132,11 @@ A distributed system appears to its users as a *single* coherent system.
 
 .footnote[Credits: Intelligent Business Strategies, [IBM Big Data Hub](http://www.ibmbigdatahub.com/blog/what-hadoop).]
 
+???
+
+- Processes = user application, computing framework servers (Spark), distributed file systems, and various other daemons managing the resources in the system.
+- Communication = the Internet abstraction
+
 ---
 
 ## Bitcoins
@@ -124,6 +145,11 @@ A distributed system appears to its users as a *single* coherent system.
 ![Bitcoins](figures/lec1/btc.png)
 .caption[What are the *entities*? What is the *communication medium*?]
 ]
+
+???
+
+- Processes = wallets (storing bitcoins), miners (discovering new bitcoins), blockchain (== a distributed and secured database) for storing the transactions.
+- Commmunication = a P2P network on top of the Internet.
 
 ---
 
@@ -137,7 +163,9 @@ A distributed system appears to its users as a *single* coherent system.
 
 - **Technical** importance:
     - Improve *scalability*
+        - Adding computational resources to a system is an easy way to scale its performance to many users.
     - Improve *reliability*
+        - We want high availability and durability of the system.
 
 ---
 
@@ -147,18 +175,28 @@ A distributed system appears to its users as a *single* coherent system.
     - *Scale*: hundreds or thousands of machines.
         - Google: 4k-machine MapReduce cluster
         - Facebook: 60k machines providing the service
-        - Hard enough to program one machine!
     - *Fault tolerance*: machines and networks do fail!
         - 50 machine failures out of 20k machine cluster per day (reported by Yahoo!)
         - 1 disk failure out of 16k disks every 6 hours (reported by Google)
     - *Concurrency*:
         - Nodes execute in parallel
         - Messages travel asynchronously
+    - *Consistency*:
+        - Distributed need to ensure user guarantees about the data they store.
+        - E.g., all read operations return the same value, no matter where it is stored.
 - But only a few **core problems** reoccur.
 
 ???
 
-![](figures/lec1/tweet-difficult.png)
+- Scale: Hard enough to program one machine!
+
+---
+
+# Teaser: Two Generals' Problem
+
+.center[
+<iframe width="640" height="480" src="https://www.youtube.com/embed/X7jzXlt6CgE?&loop=1&start=0" frameborder="0" volume="0" allowfullscreen></iframe>
+]
 
 ---
 
@@ -188,6 +226,8 @@ Let's try to solve the problem for generals $g_1$ and $g_2$.
 
 This problem is **impossible** to solve!
 
+(Unless we make additional assumptions)
+
 ---
 
 # Teaser: Two Generals' Problem
@@ -215,10 +255,10 @@ class: middle, center
     - Concurrency
     - Consensus
 - From these general building blocks, understand
-    - distributed *computing paradigms* for data science
-        - MapReduce, Computational Graph systems;
     - distributed *storage systems*
         - DFS, Key-value stores, Blockchain.
+    - distributed *computing paradigms* for data science
+        - MapReduce, Computational Graph systems;
 - Develop **critical thinking** about their strengths and weaknesses.
 - Exposition to *industrial software* through course projects.
 
@@ -260,16 +300,7 @@ class: middle, center
 
 ---
 
-# Theme 5: Distributed computing for data science
-
-- *What are the distributed computing systems for data science?*
-    - Map Reduce (Hadoop)
-    - Computational graph systems (Spark, Tensorflow, (Py)Torch)
-- *Is distributed computing always necessary?*
-
----
-
-# Theme 6: Distributed storage
+# Theme 5: Distributed storage
 
 - *How do you locate where things are and access them?*
     - Distributed file systems
@@ -277,6 +308,15 @@ class: middle, center
 
 - *How do you record and share sensitive data?*
     - Block chain
+
+---
+
+# Theme 6: Distributed computing for data science
+
+- *What are the distributed computing systems for data science?*
+    - Map Reduce (Hadoop)
+    - Computational graph systems (Spark, Tensorflow, (Py)Torch)
+- *Is distributed computing always necessary?*
 
 ---
 
