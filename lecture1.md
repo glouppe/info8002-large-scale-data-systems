@@ -104,7 +104,7 @@ A distributed system appears to its users as a *single* **coherent** system.
 
 ???
 
-- Processes = a scientific program executing in a distributed or parallel fashion (e.g., with MPI)
+- Processes = the worker processes of a scientific program executing in a distributed or parallel fashion (e.g., with MPI)
 - Communication = local network
 
 ---
@@ -120,6 +120,7 @@ A distributed system appears to its users as a *single* **coherent** system.
 
 - Processes = game software running in player computers, game servers at Blizzard.
 - Communication = the Internet abstraction
+- Mention consensus issues
 
 ---
 
@@ -182,7 +183,7 @@ A distributed system appears to its users as a *single* **coherent** system.
         - Nodes execute in parallel
         - Messages travel asynchronously
     - *Consistency*:
-        - Distributed need to ensure user guarantees about the data they store.
+        - Distributed systems need to ensure user guarantees about the data they store.
         - E.g., all read operations return the same value, no matter where it is stored.
 - But only a few **core problems** reoccur.
 
@@ -197,6 +198,10 @@ A distributed system appears to its users as a *single* **coherent** system.
 .center[
 <iframe width="640" height="480" src="https://www.youtube.com/embed/X7jzXlt6CgE?&loop=1&start=0" frameborder="0" volume="0" allowfullscreen></iframe>
 ]
+
+???
+
+Two Generals' Problem = Teaser example of a difficult but reoccuring problem in distributed systems.
 
 ---
 
