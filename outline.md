@@ -139,14 +139,16 @@ class: middle, center
 - Architecture
 - RPC
 - Scalability (partitioning)
-- Case study: GFS, HDFS
+- Case study: HDFS
 
 ---
 
-# 7. Key-value stores / NoSQL
+# 7. NoSQL databases
 
 - Structured vs. Unstructured databases
+- Key-value stores
 - DHT
+- Graph databases
 - Case study: Amazon Dynamo, Apache Cassandra
 
 ---
