@@ -29,8 +29,6 @@ Fall 2017
 - Exercise sessions (5-6)
 - Tutorials (2-3)
 
-**Starting time:** 2pm?
-
 ---
 
 # Evaluation
