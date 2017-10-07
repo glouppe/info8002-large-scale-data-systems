@@ -6,7 +6,7 @@ Lecture 2: Basic abstractions
 
 ---
 
-# Outline
+# Today
 
 - In this lesson, we will define **basic abstractions** that capture the
   fundamental characteristics of various distributed systems, and on top of
@@ -556,3 +556,11 @@ and (iii) a failure detector abstraction.
     - Stubborn links
 
 The fail-stop distributed system model substantially simplifies the design of distributed algorithms.
+
+---
+
+# Summary
+
+---
+
+# References

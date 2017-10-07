@@ -94,11 +94,11 @@ Content from *chapters 1* and *2*.
 
 ---
 
-# 3. Reliable delivery
+# 3. Reliable broadcast
 
 Content from *chapter 3*.
 
-- Reliable multicast
+- Reliable broadcast
 - Gossiping
 
 ---
