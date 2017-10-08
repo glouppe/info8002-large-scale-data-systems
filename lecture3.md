@@ -311,12 +311,94 @@ class: smaller
 # URB for fail-silent
 
 - All-ack URB requires a perfect failure detector (fail-stop).
-- Can we implement in *fail-silent*, URB without a perfect failure detector?
+- Can we implement URB in *fail-silent*,  without a perfect failure detector?
 - **Yes**, provided a majority of nodes are correct.
 
 .center[![](figures/lec3/maurb-impl.png)]
 
 <span class="Q">[Q]</span> Show that this variant is correct.
+
+---
+
+class: center, middle
+
+# Probabilistic broadcast
+
+---
+
+# Scalability of reliable broadcast
+
+- In order to broadcast a message, the sender needs
+    - to send messages to all other processes,
+    - to collect some form of acknowledgement.
+    - $O(N^2)$ are exchanged in total.
+        - If $N$ is large, this can become overwhelming for the system.  
+- Bandwidth, memory or processing resources may limit the number of messages/acknowledgements that may be sent/collected.
+- Hierarchical schemes reduce the total number of messages.
+    - This reduces the load of each process.
+    - But increases the latency and fragility in case of failures.
+
+.center.width-100[![](figures/lec3/comm-acks.png)]
+
+---
+
+# Epidemic dissemination
+
+- **Epidemiology** studies the spread of a disease or infection in terms of populations of infected/uninfected individuals and their rates of change.
+- Nodes infect each other through messages sent in **rounds**.
+    - The *fanout* $k$ determines the number of messages sent by each node.
+    - The *number of rounds* is limited to $R$.
+- Total *number of messages* is usually less than $O(N^2)$.
+- No node is overloaded.
+
+.center[![](figures/lec3/pb-rounds.png)]
+
+---
+
+# Probabilistic broadcast
+
+.center[![](figures/lec3/pb-interface.png)]
+---
+
+# Eager probabilistic broadcast
+
+.center[![](figures/lec3/epb-impl.png)]
+
+---
+
+# The mathematics of epidemics
+
+
+---
+
+# Lazy Probabilistic broadcast
+
+- Eager probabilistic broadcast consumes **considerable resources** and causes many **redundant transmissions**.
+    - When too many nodes are infected, the rate of newly infected node decreases.
+- Assume *a stream of messages* to be broadcast.
+- Broadcast messages in two phases:
+    - *Phase 1 (data dissemination)*: run probabilistic broadcast with a large probability $\epsilon$ that reliable delivery fails. That is, assume a constant fraction of nodes obtain the message (e.g., $\frac{1}{2}$).
+    - *Phase 2 (recovery)*: upon delivery, detect omissions through sequence numbers and initiate retransmissions with gossip.
+
+---
+
+class: smaller
+
+# Lazy Probabilistic broadcast
+
+## Phase 1: data dissemination
+
+.center.width-70[![](figures/lec3/lpb-impl1.png)]
+
+---
+
+class: smaller
+
+# Lazy Probabilistic broadcast
+
+## Phase 2: recovery
+
+.center.width-70[![](figures/lec3/lpb-impl2.png)]
 
 ---
 
@@ -342,34 +424,10 @@ class: center, middle
 
 ---
 
-class: center, middle
-
-# Randomized broadcast
-
----
-
-# Scalability of reliable broadcast
-
----
-
-# Epidemic dissemination
-
----
-
-# Probabilistic broadcast
-
----
-
-# Eager probabilistic broadcast
-
----
-
-# Lazy Probabilistic broadcast
-
----
-
 # Summary
 
 ---
 
 # References
+
+- Eugster, Patrick T., et al. "Epidemic information dissemination in distributed systems." Computer 37.5 (2004): 60-67.
