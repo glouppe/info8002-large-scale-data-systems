@@ -159,19 +159,164 @@ class: center, middle
 
 ---
 
-# Implementing BEB
+# Basic broadcast
+
+.center[![](figures/lec3/beb-impl.png)]
+
+Correctness:
+- *BEB1. Validity*
+    - If sender does not crash, every other correct node receives message by perfect channels.
+- *BEB2+3. No duplication + no creation*
+    - Guaranteed by perfect channels.
 
 ---
 
 # Lazy reliable broadcast
 
+- Assume a *fail-stop* distributed system model.
+    - i.e., require a perfect failure detector.
+- To broadcast $m$:
+    - best-effort broadcast $m$
+    - Upon `bebDeliver`:
+        - Save message
+        - `rbDeliver` the message
+- If sender $s$ crashes, detect and really messages from $s$ to all.
+    - case 1: get $m$ from $s$, detect crash of $s$, redistribute $m$
+    - case 2: detect crash of $s$, get $m$ from $s$, redistribute $m$.
+- Filter duplicate messages.
+
+---
+
+# Lazy reliable broadcast
+
+.center[![](figures/lec3/lrb-impl.png)]
+
+---
+
+# LRB example (1)
+
+.center.width-100[![](figures/lec3/lrb-case2.png)]
+
+<span class="Q">[Q]</span> Which case?
+
+???
+
+Case 2
+
+---
+
+# LRB example (2)
+
+.center.width-100[![](figures/lec3/lrb-case1.png)]
+
+<span class="Q">[Q]</span> Which case?
+
+???
+
+Case 1
+
+---
+
+# Correctness of LRB
+
+Correctness:
+- *RB1-RB3*
+    - Satisfied with best-effort broadcast.
+- *RB4. Agreement*
+    - When correct $p_j$ delivers $m$ broadcast by $p_i$
+        - if $p_i$ is correct, BEB ensures correct delivery
+        - if $p_i$ crashes,
+            - $p_j$ detects this (because of completeness of the PFD)
+            - $p_j$ uses BEB to ensure (BEB1) every correct node gets $m$.
+
 ---
 
 # Eager reliable broadcast
 
+- What happens if we use instead an *eventually* perfect failure detector?
+    - Only affects performance, not correctness.
+- Can we modify Lazy RB to not use a perfect failure detector?
+    - Assume all nodes have failed.
+    - Best-effort broadcast all received messages.
+
 ---
 
-# Uniform eager RB
+# Eager reliable broadcast
+
+.center[![](figures/lec3/erb-impl.png)]
+
+<span class="Q">[Q]</span> Show that eager reliable broadcast is correct.
+
+---
+
+# Uniformity
+
+Neither Lazy RB nor Eager RB ensure *uniform* agreement.
+- E.g., sender $p$ immediately RB delivers and crashes. Only $p$ delivered the message.
+
+## Strategy for uniform agreement
+- Before delivering a message, we need to ensure all correct nodes have received it.
+- Messages are  **pending** until all correct nodes get it.
+    - Collect acknowledgements from nodes that got the message.
+- Deliver once all correct nodes acked.
+
+---
+
+# All-ack uniform reliable broadcast
+
+.center.width-50[![](figures/lec3/aaurb-impl.png)]
+
+---
+
+# All-ack URB example
+
+.center.width-100[![](figures/lec3/urb-example.png)]
+
+---
+
+class: smaller
+
+# Correctness of All-ack URB
+
+## Lemma
+If a correct node $p$ BEB delivers $m$, then $p$ eventually URB delivers $m$.
+
+Proof:
+- A correct node $p$ BEB broadcasts $m$ as soon as it gets $m$.
+- By BEB1, every correct node gets $m$ and BEB broadcasts $m$.
+- Therefore $p$ BEB delivers from every correct node by BEB1.
+- By completeness of the perfect failure detector, $p$ will not wait for dead nodes forever.
+    - `canDeliver` becomes true and $p$ URB delivers $m$.
+
+---
+
+class: smaller
+
+# Correctness of All-ack URB
+
+- *URB1. Validity*
+    - If sender is correct, it will BEB delivers $m$ by validity (BEB1)
+    - By the lemma, it will therefore eventually URB delivers $m$.
+- *URB2. No duplication*
+    - Guaranteed because of the `delivered` set.
+- *URB3. No creation*
+    - Ensured from best-effort broadcast.
+- *URB4. Uniform agreement*
+    - Assume some node (possibly failed) URB delivers $m$.
+        - Then `canDeliver` was true, and by accuracy of the failure detector, every correct node has BEB delivered $m$.
+    - By the lemma, each of the nodes that BEB delivered $m$ will URB deliver $m$.
+
+---
+
+# URB for fail-silent
+
+- All-ack URB requires a perfect failure detector (fail-stop).
+- Can we implement in *fail-silent*, URB without a perfect failure detector?
+- **Yes**, provided a majority of nodes are correct.
+
+.center[![](figures/lec3/maurb-impl.png)]
+
+<span class="Q">[Q]</span> Show that this variant is correct.
 
 ---
 

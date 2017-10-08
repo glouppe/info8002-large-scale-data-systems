@@ -52,7 +52,7 @@ class: middle, center
 
 .center[![](figures/lec2/dp-abstraction.png)]
 
-- A *distributed algorithm* is a distributed collection of $N$ processes implemented by *identical* automata.
+- A *distributed algorithm* is a distributed collection $\Pi = \\{ p, q, r, ... \\}$ of $N$ processes implemented by *identical* automata.
 - The automaton at a process regulates the way the process executes its computation steps.
 - Processes jointly implement the application.
     - Need for **coordination**.
@@ -325,7 +325,11 @@ In an asynchronous distributed system, the passage of time can be measured with 
 - When $p$ receives a message event $m$ with timestamp $t(m)$, $p$ updates its logical clock.
     - $l_p := \\max(l_p, t(m))+1$
 
-.center[![Example of logical clock](figures/lec2/logical-clock.png)]
+---
+
+# Logical clocks
+
+.center.width-100[![Example of logical clock](figures/lec2/logical-clock.png)]
 
 ---
 
@@ -358,7 +362,11 @@ class: smaller
     - $V_p[p] := V_p[p] + 1$
     - $V_p[i] := \\max(V_p[i], V_m[i])$, for $i \neq p$.
 
-.center[![Example of logical clock](figures/lec2/vector-clock.png)]
+---
+
+# Vector clocks
+
+.center.width-100[![Example of logical clock](figures/lec2/vector-clock.png)]
 
 ---
 
