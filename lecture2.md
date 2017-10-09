@@ -338,9 +338,9 @@ In an asynchronous distributed system, the passage of time can be measured with 
 - Logical clocks capture **cause-effect relations**.
 - The *happened-before* relation $e_1 \to e_2$ denotes that $e_1$ may have caused $e_2$.
   It is true in the following cases:
-    - $e_1$ and $e_2$ occurred at the same process $p$ and $e_1$ occurred $e_2$;
-    - $e_1$ corresponds to the transmission of $m$ at a process $p$ and $e_2$ corresponds to its reception at a process $q$;
-    - if $e_1 \to e'$ and $e' \to e_2$, then $e_1 \to e_2$ (transitivity).
+    - *FIFO order*: $e_1$ and $e_2$ occurred at the same process $p$ and $e_1$ occurred $e_2$;
+    - *Network order*: $e_1$ corresponds to the transmission of $m$ at a process $p$ and $e_2$ corresponds to its reception at a process $q$;
+    - *Transitivity*: if $e_1 \to e'$ and $e' \to e_2$, then $e_1 \to e_2$.
 - *Clock consistency condition*: $e_1 \to e_2 \Rightarrow t(e_1) < t(e_2)$
     - If $e_1$ is the cause of $e_2$, then $t(e_1) < t(e_2)$.
     - But not necessarily the opposite:
@@ -572,3 +572,7 @@ The fail-stop distributed system model substantially simplifies the design of di
 ---
 
 # References
+
+- Alpern, Bowen, and Fred B. Schneider. "Recognizing safety and liveness." Distributed computing 2.3 (1987): 117-126.
+- Lamport, Leslie. "Time, clocks, and the ordering of events in a distributed system." Communications of the ACM 21.7 (1978): 558-565.
+- Fidge, Colin J. "Timestamps in message-passing systems that preserve the partial ordering." (1987): 56-66.

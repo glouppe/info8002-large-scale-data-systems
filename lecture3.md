@@ -465,17 +465,74 @@ class: center, middle
 
 # Motivation
 
+.center[![](figures/lec3/tweet-difficult.png)]
+
+Reliable broadcast:
+- Exactly-once delivery: *guaranteed* by the properties of RB.
+- Order of message? **Not guaranteed!**
+
+<span class="Q">[Q]</span> Does uniform reliable broadcast remedy this?
+
+---
+
+# Causal order of message
+
+.center[![](figures/lec3/causal-order.png)]
+
+A message $m_1$ may have caused another message $m_2$, denoted $m_1 \to m_2$ if any of the following relations apply:
+
+- (a) some process $p$ broadcasts $m_1$ before it broadcasts $m_2$;
+- (b) some process $p$ delivers $m_1$ and subsequently broadcasts $m_2$; or
+- (c) there exists some message $m'$ such that $m_1 \to m'$ and $m' \to m_2$.
+
+
 ---
 
 # Causal broadcast
+
+.center[![](figures/lec3/crb-interface.png)]
 
 ---
 
 # No-waiting causal broadcast
 
+.center[![](figures/lec3/nwcrb-impl.png)]
+
+point out issue of growing history size
+
+---
+
+# No-waiting CB example
+
+.center[![](figures/lec3/nwcrb-example.png)]
+
+Issue:
+- The size of the message **grows with time**, as messages include their list of
+causally preceding messages `mpast`.
+- Solution 1: *Garbage collect* old messages.
+- Solution 2: History is a *vector timestamp*!
+
 ---
 
 # Waiting causal broadcast
+
+.center[![](figures/lec3/wcrb-impl.png)]
+
+<span class="Q">[Q]</span> Show the correctness of the algorithm.
+
+---
+
+# Waiting CB example
+
+.center[![](figures/lec3/wcrb-example.png)]
+
+---
+
+# Possible execution?
+
+.center.width-100[![](figures/lec3/possible-execution.png)]
+
+<span class="Q">[Q]</span> Is this a valid execution? the order of delivery is not the same.
 
 ---
 
@@ -485,4 +542,5 @@ class: center, middle
 
 # References
 
+- Kermack, William O., and Anderson G. McKendrick. "A contribution to the mathematical theory of epidemics." Proceedings of the Royal Society of London A: mathematical, physical and engineering sciences. Vol. 115. No. 772. The Royal Society, 1927.
 - Eugster, Patrick T., et al. "Epidemic information dissemination in distributed systems." Computer 37.5 (2004): 60-67.
