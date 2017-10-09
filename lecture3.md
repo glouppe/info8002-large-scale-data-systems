@@ -274,8 +274,6 @@ Neither Lazy RB nor Eager RB ensure *uniform* agreement.
 
 ---
 
-class: smaller
-
 # Correctness of All-ack URB
 
 ## Lemma
@@ -289,8 +287,6 @@ Proof:
     - `canDeliver` becomes true and $p$ URB delivers $m$.
 
 ---
-
-class: smaller
 
 # Correctness of All-ack URB
 
@@ -324,6 +320,8 @@ class: center, middle
 
 # Probabilistic broadcast
 
+a.k.a. epidemic broadcast or gossip
+
 ---
 
 # Scalability of reliable broadcast
@@ -336,7 +334,7 @@ class: center, middle
 - Bandwidth, memory or processing resources may limit the number of messages/acknowledgements that may be sent/collected.
 - Hierarchical schemes reduce the total number of messages.
     - This reduces the load of each process.
-    - But increases the latency and fragility in case of failures.
+    - But increases the latency and fragility of the system.
 
 .center.width-100[![](figures/lec3/comm-acks.png)]
 
@@ -347,11 +345,16 @@ class: center, middle
 - **Epidemiology** studies the spread of a disease or infection in terms of populations of infected/uninfected individuals and their rates of change.
 - Nodes infect each other through messages sent in **rounds**.
     - The *fanout* $k$ determines the number of messages sent by each node.
+    - Recipients are drawn *at random* (e.g., uniformally).
     - The *number of rounds* is limited to $R$.
-- Total *number of messages* is usually less than $O(N^2)$.
+- Total number of messages is usually less than $O(N^2)$.
 - No node is overloaded.
 
-.center[![](figures/lec3/pb-rounds.png)]
+---
+
+class: middle, center
+
+![](figures/lec3/pb-rounds.png)
 
 ---
 
@@ -368,15 +371,67 @@ class: center, middle
 
 # The mathematics of epidemics
 
+- Assume an initial population of $N$ individuals.
+- At any time $t$,
+    - $S(t)$ denotes the number of uninfected individuals.
+    - $I(t)$ denotes the number of infected individuals.
+    - $S(t) + I(t) = N$, $S(0) = N-1$, $I(0)=1$.
+- Contact rate between any individual pair is $\beta$.
+- Infected-uninfected contact infects the uninfected individual, and it stays infected.
+
+---
+
+# The mathematics of epidemics
+
+- Assume a continuous time process.
+- Then, $$\frac{dS}{dt} = -\beta SI$$
+with solution
+$$S(t) = \frac{N(N-1)}{N-1+\exp(\beta N t)}$$
+$$I(t) = \frac{N}{1+ (N-1) \exp(-\beta N t)}$$
+
+<span class="Q">[Q]</span> Can you derive it?
+
+---
+
+# The mathematics of epidemics
+
+- In eager probabilistic multicast, $\beta = \frac{k}{N}$.
+- Therefore, within $t$ rounds, a fraction
+$$\frac{I(t)}{N} = \frac{1}{1 + (N-1)\exp(-kt)}$$
+of nodes receive the multicast.
+
+---
+
+class: center, middle
+
+.width-90[![](figures/lec3/I.png)]
+
+$\frac{I(t,k)}{N}$ for $N=10000$
+
+---
+
+# Probabilistic validity
+
+- Substituting $t = c \log(N)$, the fraction of infected individuals is
+$$\frac{I(t)}{N} = \frac{1}{1+(N-1)N^{-kc}} \approx \frac{1}{1+N^{-kc+1}}$$
+- When designing the system, set $c$ and $k$ to be small numbers independent of $N$.
+    - Within $c\log(N)$ rounds (*low latency*), a fraction $\frac{1}{1+N^{-kc+1}}$ of
+    nodes receive the multicast (*reliability*).
+    - Each node has transmitted no more than $kc\log(N)$ messages (*lightweight*).
+
+
+- Packet loss:
+    - 50% packet loss: analyze with $k$ replaced with $\frac{k}{2}$.
+- Node failure:
+    - 50% nodes fail: analyze with $N$ replaced with $N/2$ and $k$ replaced with $\frac{k}{2}$.
 
 ---
 
 # Lazy Probabilistic broadcast
 
-- Eager probabilistic broadcast consumes **considerable resources** and causes many **redundant transmissions**.
-    - When too many nodes are infected, the rate of newly infected node decreases.
+- Eager probabilistic broadcast consumes **considerable resources** and causes many **redundant transmissions** (in particular as $r$ gets larger).
 - Assume *a stream of messages* to be broadcast.
-- Broadcast messages in two phases:
+- Broadcast messages in **two phases**:
     - *Phase 1 (data dissemination)*: run probabilistic broadcast with a large probability $\epsilon$ that reliable delivery fails. That is, assume a constant fraction of nodes obtain the message (e.g., $\frac{1}{2}$).
     - *Phase 2 (recovery)*: upon delivery, detect omissions through sequence numbers and initiate retransmissions with gossip.
 
