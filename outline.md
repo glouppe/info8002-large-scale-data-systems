@@ -120,64 +120,66 @@ Content from *chapter 5*.
 - Paxos
 - Replication (total order broadcast)
 
-???
-
-- Possibly split into two parts.
-- Firefly consensus, impossibility
-
 ---
 
 class: middle, center
 
-# II. Distributed data storage
+# II. Distributed systems
 
 ---
 
-# 6. Distributed file systems
+# 6. Distributed hash tables
 
-- Architecture
-- RPC
-- Scalability (partitioning)
-- Case study: HDFS
+(Joeri)
+
+- Theory
+- Project 1
 
 ---
 
-# 7. NoSQL databases
+# 7. Distributed computing systems
 
-- Structured vs. Unstructured databases
+- Map Reduce
+    - Concept
+    - Case study: Hadoop
+- Computational graph systems
+    - Concept
+    - Static vs. dynamic graphs
+    - Optimization
+    - Case studies: Spark, [Tensorflow, PyTorch]
+
+---
+
+# 8. Distributed file systems
+
+- Distributed file systems
+    - RPC
+    - Scalability (partitioning)
+    - Case study: HDFS
+- Spark tutorial (Joeri)
+- Project 2
+
+---
+
+# 9. Distributed databases
+
+(Joeri)
+
+- Structured vs. Unstructured (NoSQL) databases
 - Key-value stores
-- DHT
-- Graph databases
+- [Graph databases]
 - Case study: Amazon Dynamo, Apache Cassandra
 
 ---
 
-# 8. Block chain
+(break for NIPS)
+
+---
+
+# 10. Block chain
 
 - Concept
 - Case study: Bitcoin
-
----
-
-class: middle, center
-
-# III. Computing paradigms for data science
-
----
-
-# 9. Map Reduce
-
-- Concept
-- Case study: Hadoop
-
----
-
-# 10. Computational graph systems
-
-- Concept
-- Static vs. dynamic graphs
-- Optimization
-- Case studies: Spark, Tensorflow, PyTorch
 
 ---
 
