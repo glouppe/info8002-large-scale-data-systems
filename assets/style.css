@@ -103,6 +103,14 @@ a:hover {
     width: 50%;
 }
 
+.width-40 * {
+    width: 40%;
+}
+
+.width-30 * {
+    width: 30%;
+}
+
 em {
     color: #0288d1;
     font-style: normal;
@@ -219,11 +227,6 @@ td {
 
 .title-slide {
     vertical-align: middle;
-}
-
-.remark-slide-content {
-    background: white !important;
-    text-align: left;
 }
 
 table {

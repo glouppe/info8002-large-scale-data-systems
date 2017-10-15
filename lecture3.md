@@ -8,11 +8,23 @@ Lecture 3: Reliable broadcast
 
 # Today
 
+- How do you talk to **multiple machines** at once?
+- What if some of them *fail*?
+- Can we guarantee that correct nodes all receive the same messages?
+- What about **ordering**?
+- What about *performance*?
+
 ---
 
 # Unreliable broadcast
 
 .center.width-100[![](figures/lec3/unreliable-broadcast.png)]
+
+???
+
+Correct nodes do not have the same view of the system:
+- $p_2$ and $p_4$ delivered
+- but $p_3$ did not.
 
 ---
 
@@ -78,12 +90,6 @@ Allowed.
 
 .center[![](figures/lec3/rb-interface.png)]
 
-<span class="Q">[Q]</span> Can we weaken the definition of *Validity* while preserving the interface?
-
-???
-
-Validity: if correct $p$ broadcasts $m$, then $p$ itself eventually delivers $m$.
-
 ---
 
 # RB example (1)
@@ -143,7 +149,7 @@ Allowed.
     - Sender fails
     - No correct node delivers the message
     - Failed nodes deliver the message, is this OK?
-- **Uniform** reliable broadcast ensures that if a message is delivered (by a correct or faulty process), then all correct processes deliver.
+- **Uniform** reliable broadcast ensures that if a message is delivered (by a correct *or faulty* process), then all correct processes deliver.
 
 ---
 
@@ -174,13 +180,13 @@ Correctness:
 # Lazy reliable broadcast
 
 - Assume a *fail-stop* distributed system model.
-    - i.e., require a perfect failure detector.
+    - i.e., crash-stop processes, perfect links and a perfect failure detector.
 - To broadcast $m$:
     - best-effort broadcast $m$
     - Upon `bebDeliver`:
         - Save message
         - `rbDeliver` the message
-- If sender $s$ crashes, detect and really messages from $s$ to all.
+- If sender $s$ crashes, detect and relay messages from $s$ to all.
     - case 1: get $m$ from $s$, detect crash of $s$, redistribute $m$
     - case 2: detect crash of $s$, get $m$ from $s$, redistribute $m$.
 - Filter duplicate messages.
@@ -318,147 +324,6 @@ Proof:
 
 class: center, middle
 
-# Probabilistic broadcast
-
-a.k.a. epidemic broadcast or gossip
-
----
-
-# Scalability of reliable broadcast
-
-- In order to broadcast a message, the sender needs
-    - to send messages to all other processes,
-    - to collect some form of acknowledgement.
-    - $O(N^2)$ are exchanged in total.
-        - If $N$ is large, this can become overwhelming for the system.  
-- Bandwidth, memory or processing resources may limit the number of messages/acknowledgements that may be sent/collected.
-- Hierarchical schemes reduce the total number of messages.
-    - This reduces the load of each process.
-    - But increases the latency and fragility of the system.
-
-.center.width-100[![](figures/lec3/comm-acks.png)]
-
----
-
-# Epidemic dissemination
-
-- **Epidemiology** studies the spread of a disease or infection in terms of populations of infected/uninfected individuals and their rates of change.
-- Nodes infect each other through messages sent in **rounds**.
-    - The *fanout* $k$ determines the number of messages sent by each node.
-    - Recipients are drawn *at random* (e.g., uniformally).
-    - The *number of rounds* is limited to $R$.
-- Total number of messages is usually less than $O(N^2)$.
-- No node is overloaded.
-
----
-
-class: middle, center
-
-![](figures/lec3/pb-rounds.png)
-
----
-
-# Probabilistic broadcast
-
-.center[![](figures/lec3/pb-interface.png)]
----
-
-# Eager probabilistic broadcast
-
-.center[![](figures/lec3/epb-impl.png)]
-
----
-
-# The mathematics of epidemics
-
-- Assume an initial population of $N$ individuals.
-- At any time $t$,
-    - $S(t)$ denotes the number of uninfected individuals.
-    - $I(t)$ denotes the number of infected individuals.
-    - $S(t) + I(t) = N$, $S(0) = N-1$, $I(0)=1$.
-- Contact rate between any individual pair is $\beta$.
-- Infected-uninfected contact infects the uninfected individual, and it stays infected.
-
----
-
-# The mathematics of epidemics
-
-- Assume a continuous time process.
-- Then, $$\frac{dS}{dt} = -\beta SI$$
-with solution
-$$S(t) = \frac{N(N-1)}{N-1+\exp(\beta N t)}$$
-$$I(t) = \frac{N}{1+ (N-1) \exp(-\beta N t)}$$
-
-<span class="Q">[Q]</span> Can you derive it?
-
----
-
-# The mathematics of epidemics
-
-- In eager probabilistic multicast, $\beta = \frac{k}{N}$.
-- Therefore, within $t$ rounds, a fraction
-$$\frac{I(t)}{N} = \frac{1}{1 + (N-1)\exp(-kt)}$$
-of nodes receive the multicast.
-
----
-
-class: center, middle
-
-.width-90[![](figures/lec3/I.png)]
-
-$\frac{I(t,k)}{N}$ for $N=10000$
-
----
-
-# Probabilistic validity
-
-- Substituting $t = c \log(N)$, the fraction of infected individuals is
-$$\frac{I(t)}{N} = \frac{1}{1+(N-1)N^{-kc}} \approx \frac{1}{1+N^{-kc+1}}$$
-- When designing the system, set $c$ and $k$ to be small numbers independent of $N$.
-    - Within $c\log(N)$ rounds (*low latency*), a fraction $\frac{1}{1+N^{-kc+1}}$ of
-    nodes receive the multicast (*reliability*).
-    - Each node has transmitted no more than $kc\log(N)$ messages (*lightweight*).
-
-
-- Packet loss:
-    - 50% packet loss: analyze with $k$ replaced with $\frac{k}{2}$.
-- Node failure:
-    - 50% nodes fail: analyze with $N$ replaced with $N/2$ and $k$ replaced with $\frac{k}{2}$.
-
----
-
-# Lazy Probabilistic broadcast
-
-- Eager probabilistic broadcast consumes **considerable resources** and causes many **redundant transmissions** (in particular as $r$ gets larger).
-- Assume *a stream of messages* to be broadcast.
-- Broadcast messages in **two phases**:
-    - *Phase 1 (data dissemination)*: run probabilistic broadcast with a large probability $\epsilon$ that reliable delivery fails. That is, assume a constant fraction of nodes obtain the message (e.g., $\frac{1}{2}$).
-    - *Phase 2 (recovery)*: upon delivery, detect omissions through sequence numbers and initiate retransmissions with gossip.
-
----
-
-class: smaller
-
-# Lazy Probabilistic broadcast
-
-## Phase 1: data dissemination
-
-.center.width-70[![](figures/lec3/lpb-impl1.png)]
-
----
-
-class: smaller
-
-# Lazy Probabilistic broadcast
-
-## Phase 2: recovery
-
-.center.width-70[![](figures/lec3/lpb-impl2.png)]
-
----
-
-class: center, middle
-
 # Causal reliable broadcast
 
 ---
@@ -475,7 +340,7 @@ Reliable broadcast:
 
 ---
 
-# Causal order of message
+# Causal order of messages
 
 .center[![](figures/lec3/causal-order.png)]
 
@@ -536,11 +401,175 @@ causally preceding messages `mpast`.
 
 ---
 
+class: center, middle
+
+# Probabilistic broadcast
+
+a.k.a. epidemic broadcast or gossip
+
+---
+
+# Scalability of reliable broadcast
+
+- In order to broadcast a message, the sender needs
+    - to send messages to all other processes,
+    - to collect some form of acknowledgement.
+    - $O(N^2)$ are exchanged in total.
+        - If $N$ is large, this can become overwhelming for the system.  
+- Bandwidth, memory or processing resources may limit the number of messages/acknowledgements that may be sent/collected.
+- Hierarchical schemes reduce the total number of messages.
+    - This reduces the load of each process.
+    - But increases the latency and fragility of the system.
+
+.center.width-100[![](figures/lec3/comm-acks.png)]
+
+---
+
+# Epidemic dissemination
+
+- Nodes infect each other through messages sent in **rounds**.
+    - The *fanout* $k$ determines the number of messages sent by each node.
+    - Recipients are drawn *at random* (e.g., uniformally).
+    - The *number of rounds* is limited to $R$.
+- Total number of messages is usually less than $O(N^2)$.
+- No node is overloaded.
+
+---
+
+class: middle, center
+
+![](figures/lec3/pb-rounds.png)
+
+---
+
+# Probabilistic broadcast
+
+.center[![](figures/lec3/pb-interface.png)]
+---
+
+# Eager probabilistic broadcast
+
+.center[![](figures/lec3/epb-impl.png)]
+
+---
+
+# The mathematics of epidemics
+
+- Assume an initial population of $N$ individuals.
+- At any time $t$,
+    - $S(t) =$ the number of *susceptible* individuals,
+    - $I(t) =$ the number of *infected* individuals.
+- $I(0) = 1$
+- $S(0) = N-1$
+- $S(t)+I(t)=N$ for all $t$.
+
+---
+
+# The mathematics of epidemics
+
+The dynamics of the SIS model is given as follows:
+$$S(t+1) = S(t) - \frac{\alpha \Delta t}{N} S(t) I(t) + \gamma \Delta t I(t)$$
+$$I(t+1) = I(t) + \frac{\alpha \Delta t}{N} S(t) I(t) - \gamma \Delta t I(t)$$
+where
+- $\alpha$ is the contact rate with whom infected individuals make contact per unit of time.
+- $\frac{S(t)}{N}$ is the proportion of contacts with susceptible individuals for each infected individual.
+- $\gamma$ is the probability for an infected individual to recover and switch to the pool of susceptibles.
+
+---
+
+class: center, middle
+
+.width-80[![](figures/lec3/dynamics.png)]
+
+$N=1000000$, $\alpha=5$, $\gamma=0.5$, $\Delta t = 0.1$
+
+---
+
+# The mathematics of epidemics
+
+In eager reliable broadcast,
+- $\alpha = k$
+    - An infected node selects $k$ nodes among $N$ to send its messages.
+- $\gamma = 1$
+    - An infected node immediately recovers.
+
+---
+
+# Probabilistic validity
+
+At time $t$, the probability of not receiving a message is
+$$(1 - \frac{k}{N})^{i(t)}$$
+Therefore the probability of having received of one or more gossip messages up to time $t$, that is to have PB-delivered, is
+$$p(\text{delivery}) = 1 - (1 - \frac{k}{N})^{\sum_{t_i=0}^t i(t_i)}$$
+
+<span class="Q">[Q]</span> What if nodes fail? if packets are loss?
+
+???
+
+- Node failures: replace $N$ with $N/2$ and $k$ with $k/2$.
+- Packet loss: replace $k$ with $k/2$.
+
+---
+
+class: center
+
+# Probabilistic validity
+
+$p(\text{delivery}|k, t)$
+
+.width-70[![](figures/lec3/pdelivery.png)]
+
+$N=1000000$, $\gamma=1.0$
+
+---
+
+# Probabilistic validity
+
+From this plot, we observe that:
+- Within only a few rounds (*low latency*), a large fraction of nodes receive the message (*reliability*)
+- Each node has transmitted no more than $kR$ messages (*lightweight*).
+
+---
+
+# Lazy Probabilistic broadcast
+
+- Eager probabilistic broadcast consumes **considerable resources** and causes many **redundant transmissions**.
+    - in particular as $r$ gets larger and almost all nodes have received the message once.
+- Assume *a stream of messages* to be broadcast.
+- Broadcast messages in **two phases**:
+    - *Phase 1 (data dissemination)*: run probabilistic broadcast with a large probability $\epsilon$ that reliable delivery fails. That is, assume a constant fraction of nodes obtain the message (e.g., $\frac{1}{2}$).
+    - *Phase 2 (recovery)*: upon delivery, detect omissions through sequence numbers and initiate retransmissions with gossip.
+
+---
+
+class: smaller
+
+# Lazy Probabilistic broadcast
+
+## Phase 1: data dissemination
+
+.center.width-70[![](figures/lec3/lpb-impl1.png)]
+
+---
+
+class: smaller
+
+# Lazy Probabilistic broadcast
+
+## Phase 2: recovery
+
+.center.width-70[![](figures/lec3/lpb-impl2.png)]
+
+---
+
 # Summary
+
+- Reliable multicast enable group communication, while ensuring **validity** and (uniform) **agreement**.
+- Causal broadcast extends reliable broadcast with *causal ordering* guarantees.
+- **Probabilistic broadcast** enable low-latency, reliable and lightweight group communication.
 
 ---
 
 # References
 
-- Kermack, William O., and Anderson G. McKendrick. "A contribution to the mathematical theory of epidemics." Proceedings of the Royal Society of London A: mathematical, physical and engineering sciences. Vol. 115. No. 772. The Royal Society, 1927.
-- Eugster, Patrick T., et al. "Epidemic information dissemination in distributed systems." Computer 37.5 (2004): 60-67.
+- Allen, Linda JS. "Some discrete-time SI, SIR, and SIS epidemic models." Mathematical biosciences 124.1 (1994): 83-105.
