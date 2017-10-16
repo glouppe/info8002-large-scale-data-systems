@@ -8,7 +8,10 @@ Lecture 4: Shared memory
 
 # Today
 
-XXX
+- How do you *share resources*?
+- Can we build the *illusion of single storage*?
+    - While replicating data for **fault-tolerance** and **scalability**?
+    - While maintaining **consistency**?
 
 ---
 
@@ -29,6 +32,7 @@ We want to **simulate** a *shared memory abstraction* in a distributed system, o
 
 Why?
 - Enable shared memory algorithms without being aware that processes are actually communicating by exchanging messages.
+    - This is often much easier to program.
 - Equivalent to **consistent data replication** across nodes.
     - for **fault-tolerance**
     - for **scalability**
@@ -61,7 +65,7 @@ Challenges:
     - *completed* if both invocation and response occurred.
     - *failed* if invoked but not no response was received.
 - Operation $o_1$ *precedes* $o_2$ if response of $o_1$ precedes the invocation of $o_2$.
-- Operation  $o_1$ and  $o_2$ are *concurrent* if neither precedes the other.
+- Operations  $o_1$ and  $o_2$ are *concurrent* if neither precedes the other.
 - $(1,N)$ register: 1 designated writer, multiple readers.
 - $(M,N)$ register: multiple writers, multiple readers.
 
@@ -237,6 +241,7 @@ Sequential consistency *allows* such execution.
     - Failed operations appear as
         - completed at every node, XOR
         - never occurred at any node.
+    - The hypothetical serial execution is called a *linearization* of the actual execution.
 - *Termination*:
     - If node is correct, each read and write operation eventually completes.
 
@@ -319,27 +324,80 @@ Idea:
 
 .center[![](figures/lec4/riwa-impl2.png)]
 
+<span class="Q">[Q]</span> Show the algorithm is correct.
+
+<span class="Q">[Q]</span> How to adapt to fail-silent? **Read-Impose Write-Majority**
+
 ---
 
 # Correctness
 
-XXX
+XXX improve, not convincing
+
+- *Ordering*: if a read returns $v$ and a subsequent read returns $w$, then the write of $w$ does not precede the write of $v$.
+    - $p$ writes $v$ with timestamp $ts_v$.
+    - $p$ writes $w$ with timestamp $ts_w > ts_v$.
+    - $q$ reads the values the $w$.
+    - some time later, $r$ invokes a read operation.
+    - when $q$ completes its read, all correct processes have a timestamp $ts \geq ts_w$.
+    - there is no way for $r$ to changes its value back to $v$ after this because $ts_v < ts_w$.
+
+<span class="Q">[Q]</span> Show that the termination and validity properties are satisfied.
 
 ---
 
 # $(N, N)$ atomic registers
 
-XXX
+.center[![](figures/lec4/nn-atomic-register.png)]
+
+---
+
+# $(N, N)$ atomic registers
+
+- How do we handle **multiple writers**?
+- Read-Impose Write-all does not support multiple writers:
+    - Assume $p$ and $q$ both store the same timestamp $ts$ (e.g., because of a preceding completed operation).
+    - When $p$ and $q$ proceed to write, different values would become associated with the same timestamp.
+- Fix:
+    - Together with the timestamp, pass and store the identity $pid$ of the process that writes a value $v$.
+    - Determine which message is the latest
+        - by comparing timestamps,
+        - by breaking ties using the process IDs.
+
+
+<span class="Q">[Q]</span> Show this fix is correct.
+
+<span class="Q">[Q]</span> Can we similarly fix Read-Impose Write-Majority?
+
+<span class="Q">[Q]</span> Show the execution is linearizable.
 
 ---
 
 # Simulating message passing?
 
-XXX equivalence
+- As we saw, we can simulate shared with message passing.
+    - A majority of correct nodes is all that is needed.
+- Can we *simulate message passing* in shared memory?
+    - Yes: use one register $pq$ for every channel.
+        - Modeling a directed channel from $p$ to $q$.
+    - Send messages by appending to the right channel.
+    - Receive messages by busy-polling incoming "channels".
+- Shared memory and message passing are **equivalent**.
 
 ---
 
 # Summary
+
+- Shared memory registers form a memory abstraction with read and write operations.
+    - Consistency of the data is guaranteed, even in the presence of failures and concurrency.
+- Regular registers:
+    - Bogus algorithm (does not work)
+    - Centralized algorithm (if no failures)
+    - Read-One Write-All algorithm (fail-stop)
+    - Majority voting (fail-silent)
+- Aotmic registers:
+    - Single writers
+    - Multiple writers
 
 ---
 
