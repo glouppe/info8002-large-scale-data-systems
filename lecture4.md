@@ -8,6 +8,8 @@ Lecture 4: Shared memory
 
 # Today
 
+XXX
+
 ---
 
 # Real shared memory
@@ -27,9 +29,9 @@ We want to **simulate** a *shared memory abstraction* in a distributed system, o
 
 Why?
 - Enable shared memory algorithms without being aware that processes are actually communicating by exchanging messages.
-    - Example: **consistent replication** (ultimately single system illusion, more on this later).
-        - for **fault-tolerance**,
-        - for **scalability**.
+- Equivalent to **consistent data replication** across nodes.
+    - for **fault-tolerance**
+    - for **scalability**
 
 Challenges:
 - Consistency in presence of *failures*.
@@ -65,6 +67,12 @@ Challenges:
 
 ---
 
+class: middle, center
+
+# Regular registers
+
+---
+
 # Regular registers
 
 .center[![](figures/lec4/regular-register.png)]
@@ -73,7 +81,7 @@ Challenges:
 
 # Regular register example (1)
 
-.center[![](figures/lec4/regular-example1.png)]
+.width-100[![](figures/lec4/regular-example1.png)]
 
 <span class="Q">[Q]</span> Regular or non-regular?
 
@@ -85,7 +93,7 @@ Non-regular.
 
 # Regular register example (2)
 
-.center[![](figures/lec4/regular-example2.png)]
+.width-100[![](figures/lec4/regular-example2.png)]
 
 <span class="Q">[Q]</span> Regular or non-regular?
 
@@ -97,7 +105,7 @@ Regular.
 
 # Regular register example (3)
 
-.center[![](figures/lec4/regular-example3.png)]
+.width-100[![](figures/lec4/regular-example3.png)]
 
 <span class="Q">[Q]</span> Regular or non-regular?
 
@@ -140,7 +148,7 @@ Not a single storage illusion!
 
 # Decentralized algorithm (bogus) example
 
-.center[![](figures/lec4/bogus-example.png)]
+.width-100[![](figures/lec4/bogus-example.png)]
 
 .center[**Validity is violated!**]
 
@@ -162,39 +170,172 @@ Not a single storage illusion!
 
 # Read-one Write-all algorithm
 
-.center.width-60[![](figures/lec4/r1wN-impl.png)]
+.center.width-70[![](figures/lec4/r1wN-impl.png)]
 
 ---
 
 #  Read-one Write-all example
 
-.center[![](figures/lec4/r1wN-example.png)]
+.width-100[![](figures/lec4/r1wN-example.png)]
 
 .center[Validity is no longer violated because the write response has been postponed.]
 
 ---
 
-# Majority voting algorithm
+# Quorum principle
 
 - Can we implement a regular register in *fail-silent*?
+- **Quorum principle**:
+    - Assume a majority of correct nodes.
+    - Divide the system into two overlapping *majority quorums*.
+        - i.e., each quorum  counts at least $\lfloor \frac{N}{2} \rfloor + 1$ nodes.
+    - Always write to and read from a majority of nodes.
+    - At least one node knows the most recent value.
+
+.center.width-50[![](figures/lec4/quorum.png)]
 
 ---
 
-# $(1, N)$ Atomic registers
+# Majority voting algorithm
 
-- towards single storage illusion
-- tons of examples
-- linearizability stuff
+.center.width-70[![](figures/lec4/majority-voting-impl1.png)]
 
 ---
 
-# $(N, N)$ Atomic registers
+.center.width-70[![](figures/lec4/majority-voting-impl2.png)]
+
+---
+
+class: middle, center
+
+# Atomic registers
+towards single storage illusion
+
+---
+
+# Example (1)
+
+.width-100[![](figures/lec4/atomic-example1.png)]
+
+Sequential consistency **disallows** such execution.
+
+---
+
+# Example (2)
+
+.width-100[![](figures/lec4/atomic-example2.png)]
+
+Sequential consistency *allows* such execution.
+
+---
+
+# $(1, N)$ atomic registers
+
+- *Linearizability*:
+    - Read operations appear as if **immediately** happened at all nodes at time between invocation and response.
+    - Write operations appear is if **immediately** happened at all anode at time between invocation and response.
+    - Failed operations appear as
+        - completed at every node, XOR
+        - never occurred at any node.
+- *Termination*:
+    - If node is correct, each read and write operation eventually completes.
+
+---
+
+# Example (1)
+
+.width-100[![](figures/lec4/atomic-example1.png)]
+
+Linearizability **disallows** such execution.
+
+---
+
+# Example (2)
+
+.width-100[![](figures/lec4/atomic-example2.png)]
+
+Linearizability **disallows** such execution.
+
+---
+
+# $(1, N)$ atomic registers
+
+.center[![](figures/lec4/atomic-register.png)]
+
+<span class="Q">[Q]</span> Show that linearizability is equivalent to validity + ordering.
+
+---
+
+# Atomic register example (1)
+
+.width-100[![](figures/lec4/linearization-example1.png)]
+
+<span class="Q">[Q]</span> Atomic? **No**, not possible to find linearization points.
+
+---
+
+# Atomic register example (2)
+
+.width-100[![](figures/lec4/linearization-example2.png)]
+
+<span class="Q">[Q]</span> Atomic? *Yes*
+
+---
+
+# Atomic register example (3)
+
+.width-100[![](figures/lec4/linearization-example3.png)]
+
+<span class="Q">[Q]</span> Atomic? *Yes*
+
+---
+
+# Regular but not atomic
+
+.width-100[![](figures/lec4/regular-not-atomic.png)]
+
+<span class="Q">[Q]</span> Atomic? **No**. Regular? *Yes*, using majority voting.
+
+---
+
+class: smaller
+
+# Implementation of $(1,N)$ atomic registers
+
+Idea:
+- When reading, write back the value that is about to be returned.
+- Maintain a local timestamp $ts$ and its associated value $val$.
+- Overwrite the local pair only upon a write operation of a more recent value.
+
+.center.width-70[![](figures/lec4/riwa.png)]
+
+---
+
+# Read-Impose Write-all algorithm
+
+.center[![](figures/lec4/riwa-impl1.png)]
+
+---
+
+.center[![](figures/lec4/riwa-impl2.png)]
+
+---
+
+# Correctness
+
+XXX
+
+---
+
+# $(N, N)$ atomic registers
+
+XXX
 
 ---
 
 # Simulating message passing?
 
-- equivalence
+XXX equivalence
 
 ---
 
