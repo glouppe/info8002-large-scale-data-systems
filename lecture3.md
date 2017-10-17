@@ -20,6 +20,15 @@ Lecture 3: Reliable broadcast
 
 .center.width-100[![](figures/lec3/unreliable-broadcast.png)]
 
+Constraints:
+- The sender may fail.
+- Recipients may fail.
+- Packets might get lost.
+- Packets may take long to travel.
+
+How do we define a *reliable* broadcast service?
+
+
 ???
 
 Correct nodes do not have the same view of the system:
@@ -61,7 +70,7 @@ class: center, middle
 
 ???
 
-Not allowed.
+Not allowed, because of validity.
 
 ---
 
@@ -100,7 +109,7 @@ Allowed.
 
 ???
 
-Allowed.
+Allowed, none of the messages are delivered.
 
 ---
 
@@ -112,7 +121,7 @@ Allowed.
 
 ???
 
-Allowed.
+Allowed, $p4$ crashes.
 
 ---
 
@@ -124,7 +133,7 @@ Allowed.
 
 ???
 
-Not allowed.
+Not allowed, $p2$ and $p3$ should also deliver since $p1$ delivers.
 
 ---
 
@@ -142,14 +151,16 @@ Allowed.
 
 # Uniform reliable broadcast
 
-- Assume the broadcast enforces
-    - Printing a message on paper
-    - Withdrawing money from account in variable
 - Assume sender broadcasts a message
     - Sender fails
     - No correct node delivers the message
-    - Failed nodes deliver the message, is this OK?
+    - Failed nodes deliver the message
+- Is this OK?
 - **Uniform** reliable broadcast ensures that if a message is delivered (by a correct *or faulty* process), then all correct processes deliver.
+
+???
+
+R: improve the motivation.
 
 ---
 
@@ -170,7 +181,7 @@ class: center, middle
 .center[![](figures/lec3/beb-impl.png)]
 
 Correctness:
-- *BEB1. Validity*
+- *BEB1. Validity*: If a correct process $p$ broadcasts $m$, then every correct process eventually delivers $m$.
     - If sender does not crash, every other correct node receives message by perfect channels.
 - *BEB2+3. No duplication + no creation*
     - Guaranteed by perfect channels.
@@ -228,7 +239,7 @@ Case 1
 Correctness:
 - *RB1-RB3*
     - Satisfied with best-effort broadcast.
-- *RB4. Agreement*
+- *RB4. Agreement*: If a message $m$ is delivered by some correct process, then $m$ is eventually delivered by every correct process.
     - When correct $p_j$ delivers $m$ broadcast by $p_i$
         - if $p_i$ is correct, BEB ensures correct delivery
         - if $p_i$ crashes,
@@ -243,7 +254,7 @@ Correctness:
     - Only affects performance, not correctness.
 - Can we modify Lazy RB to not use a perfect failure detector?
     - Assume all nodes have failed.
-    - Best-effort broadcast all received messages.
+    - BEB broadcast all received messages.
 
 ---
 
@@ -296,14 +307,14 @@ Proof:
 
 # Correctness of All-ack URB
 
-- *URB1. Validity*
+- *URB1. Validity*: If a correct process $p$ broadcasts $m$, then $p$ delivers $m$
     - If sender is correct, it will BEB delivers $m$ by validity (BEB1)
     - By the lemma, it will therefore eventually URB delivers $m$.
 - *URB2. No duplication*
     - Guaranteed because of the `delivered` set.
 - *URB3. No creation*
     - Ensured from best-effort broadcast.
-- *URB4. Uniform agreement*
+- *URB4. Uniform agreement*: If a message $m$ is delivered by some process (correct or faulty), then $m$ is eventually delivered by every correct process
     - Assume some node (possibly failed) URB delivers $m$.
         - Then `canDeliver` was true, and by accuracy of the failure detector, every correct node has BEB delivered $m$.
     - By the lemma, each of the nodes that BEB delivered $m$ will URB deliver $m$.
@@ -338,6 +349,10 @@ Reliable broadcast:
 
 <span class="Q">[Q]</span> Does uniform reliable broadcast remedy this?
 
+???
+
+No, uniform agreement only concerns individual messages.
+
 ---
 
 # Causal order of messages
@@ -371,10 +386,9 @@ point out issue of growing history size
 
 .center[![](figures/lec3/nwcrb-example.png)]
 
-Issue:
 - The size of the message **grows with time**, as messages include their list of
 causally preceding messages `mpast`.
-- Solution 1: *Garbage collect* old messages.
+- Solution 1: *Garbage collect* old messages by sending acknowledgements of delivery to all nodes and purging messages that have been acknowledged from all.
 - Solution 2: History is a *vector timestamp*!
 
 ---
@@ -517,7 +531,7 @@ class: center
 
 $p(\text{delivery}|k, t)$
 
-.width-70[![](figures/lec3/pdelivery.png)]
+.width-50[![](figures/lec3/pdelivery.png)]
 
 $N=1000000$, $\gamma=1.0$
 
