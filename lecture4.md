@@ -34,12 +34,24 @@ Why?
 - Enable shared memory algorithms without being aware that processes are actually communicating by exchanging messages.
     - This is often much easier to program.
 - Equivalent to **consistent data replication** across nodes.
-    - for **fault-tolerance**
-    - for **scalability**
 
-Challenges:
-- Consistency in presence of *failures*.
-- Consistency in presence of *concurrency*.
+---
+
+# Data replication
+
+- Why **replicating data** across nodes? Shared data allows to:
+    - Reduce network traffic
+    - Promote increased parallelism
+    - Be robust against failures
+    - Result in fewer page faults
+- Applications:
+    - distributed databases
+    - distributed file systems
+    - distributed cache
+    - ...
+- Challenges:
+    - Consistency in presence of *failures*.
+    - Consistency in presence of *concurrency*.
 
 ---
 
@@ -50,7 +62,7 @@ Challenges:
 - Registers have two *operations*:
     - $\text{read}()$: return the current value of the register.
     - $\text{write}(v)$: update the register to value $v$.
-- An operation is *not instantaneous*:
+- An operation is **not instantaneous**:
     - It is first *invoked* by the calling process.
     - It computes for some time.
     - It returns a *response* upon completion.
@@ -140,7 +152,7 @@ Not a single storage illusion!
     - A $\text{read}()$ reads the local value.
     - A $\text{write}(v)$ writes to all nodes.
 - To $\text{read}()$:
-    - Ask the leader for latest value.
+    - Return local value.
 - To $\text{write}(v)$:
     - Update local value to $v$.
     - Broadcast $v$ to all (each node locally updates).
@@ -162,7 +174,7 @@ Not a single storage illusion!
 
 - Bogus algorithm modified.
 - To $\text{read}()$:
-    - Ask the leader for latest value.
+    - Return local value.
 - To $\text{write}(v)$:
     - Update local value to $v$.
     - Broadcast $v$ to all (each node locally updates).
@@ -214,6 +226,18 @@ class: middle, center
 
 # Atomic registers
 towards single storage illusion
+
+---
+
+# Sequential consistency
+
+An operation $o_1$ *locally precedes* $o_2$ in $E$ if $o_1$ and $o_2$ occur at the same node and $o_1$ precedes $o_2$ in $E$.
+
+An execution $E$ is **sequentially consistent** if an execution $F$ exists such that:
+- $E$ and $F$ contain the same events;
+- $F$ is sequential;
+- Read responses have value of the preceding write invocation in $F$;
+- If $o_1$ locally precedes $o_2$ in $E$, then $o_1$ locally precedes $o_2$ in $F$.
 
 ---
 
@@ -332,8 +356,6 @@ Idea:
 
 # Correctness
 
-XXX improve, not convincing
-
 - *Ordering*: if a read returns $v$ and a subsequent read returns $w$, then the write of $w$ does not precede the write of $v$.
     - $p$ writes $v$ with timestamp $ts_v$.
     - $p$ writes $w$ with timestamp $ts_w > ts_v$.
@@ -365,11 +387,9 @@ XXX improve, not convincing
         - by breaking ties using the process IDs.
 
 
-<span class="Q">[Q]</span> Show this fix is correct.
+<span class="Q">[Q]</span> How many messages are exchanged per read and write operations?
 
 <span class="Q">[Q]</span> Can we similarly fix Read-Impose Write-Majority?
-
-<span class="Q">[Q]</span> Show the execution is linearizable.
 
 ---
 
@@ -388,17 +408,13 @@ XXX improve, not convincing
 
 # Summary
 
-- Shared memory registers form a memory abstraction with read and write operations.
+- Shared memory registers form a **shared memory abstraction** with read and write operations.
     - Consistency of the data is guaranteed, even in the presence of failures and concurrency.
 - Regular registers:
     - Bogus algorithm (does not work)
     - Centralized algorithm (if no failures)
     - Read-One Write-All algorithm (fail-stop)
     - Majority voting (fail-silent)
-- Aotmic registers:
+- Atomic registers:
     - Single writers
     - Multiple writers
-
----
-
-# References

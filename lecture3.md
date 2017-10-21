@@ -477,6 +477,10 @@ class: middle, center
 - $S(0) = N-1$
 - $S(t)+I(t)=N$ for all $t$.
 
+???
+
+R: assume we are a virus using a distributed system with human hosts as nodes.
+
 ---
 
 # The mathematics of epidemics
