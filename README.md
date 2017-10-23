@@ -23,3 +23,4 @@ Lectures for INFO8002 - Large-scale Distributed Systems, ULiège, Fall 2017.
 ## Exercise Sessions
 
 - [Session 1](https://glouppe.github.io/info8002-large-scale-database-systems/exercises/exercise_session_1.pdf)
+- [Session 2](https://glouppe.github.io/info8002-large-scale-database-systems/exercises/exercise_session_2.pdf)
