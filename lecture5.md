@@ -217,13 +217,13 @@ We will build a consensus component in *fail-noisy* by combining three abstracti
 
 # Epoch-Change
 
-- When a leader is chosen, the **Epoch-Change** abstraction signals the start of a new epoch by triggering a StartEpoch event.
+- When a leader is chosen, the **Epoch-Change** abstraction signals the start of a new epoch by triggering a `StartEpoch` event.
     - The event contains:
         - an epoch timestamp $ts$
         - a leader process $l$.
-- We require *monotonicity* of the timestamps for the epochs started at one correct process.
+- We require *monotonicity* of the timestamps for the epochs started at the same correct process.
 - We require the *same leader* for every correct process at a given timestamp.
-- **Eventually**, the component ceases to start new epochs. The last epoch started at every correct process must the same and the leader is correct.
+- **Eventually**, the component ceases to start new epochs. The last epoch started at every correct process must the same and the leader must be correct.
 
 ---
 
@@ -235,19 +235,21 @@ We will build a consensus component in *fail-noisy* by combining three abstracti
 
 # Leader-based Epoch-Change
 
-- Every process $p$ maintains *two timestamps*:
+- Every process $p$ maintains two timestamps:
     - a timestamp $lastts$ of the last epoch that is has started;
     - a timestamp $ts$ of the last epoch it attempted to start as a leader.
-- When the leader detector makes $p$ trust itself, $p$ adds $N$ to $ts$ and broadcasts a NewEpoch message with $ts$.
-- When $p$ receives a NewEpoch message with parameter $newts > lastts$ from $l$ and $p$ most recently trusted $l$, then $p$ triggers a StartEpoch message.
-- Otherwise, $p$ informs the aspiring leader $l$ with a NACK that a new epoch could not be started.
-- When $l$ receives a NACK and still trusts itself, it increments $ts$ by $N$ and tries again to start a new epoch.
+- When the leader detector makes $p$ trust itself, $p$ adds $N$ to $ts$ and broadcasts a `NewEpoch` message with $ts$.
+- When $p$ receives a `NewEpoch` message with parameter $newts > lastts$ from $l$ and $p$ most recently trusted $l$, then $p$ triggers a `StartEpoch` message.
+- Otherwise, $p$ informs the aspiring leader $l$ with a `NACK` that a new epoch could not be started.
+- When $l$ receives a `NACK` and still trusts itself, it increments $ts$ by $N$ and tries again to start a new epoch.
 
 ---
 
 # Leader-based Epoch-Change
 
-.center.width-60[![](figures/lec5/ec-impl.png)]
+.center.width-50[![](figures/lec5/ec-impl.png)]
+
+<span class="Q">[Q]</span> How many failures can be tolerated? $N-1$
 
 ---
 
@@ -261,9 +263,26 @@ We will build a consensus component in *fail-noisy* by combining three abstracti
 
 .center.width-100[![](figures/lec5/ec-exec2.png)]
 
+<span class="Q">[Q]</span> What if $p_1$ fails only later, some time after the second `bebDeliver` event?
+
 ---
 
-# Epoch Consensus
+# Epoch consensus
+
+- The **epoch consensus** abstraction is similar to *consensus*: processes propose a value and may decide a value.
+- Every epoch is identified by an *epoch timestamp* $ts$ and a designated leader $l$.
+- Epoch consensus represents an **attempt** to reach consensus.
+    - The procedure can be aborted when it does not decide or when the next epoch should already be started by the higher-level algorithm.
+- *Only the leader* proposes a value.
+- Epoch consensus is required to decide *only when the leader is correct*.
+- An instance **must terminate** when the application locally triggers an `Abort` event.
+- The state of the component is initialized
+    - with a higher timestamp than that of all instances it initialized previously;
+    - with the state of the most recently aborted epoch consensus instance.
+
+---
+
+# Epoch consensus
 
 .center[![](figures/lec5/econs-interface1.png)]
 
@@ -273,7 +292,22 @@ We will build a consensus component in *fail-noisy* by combining three abstracti
 
 ---
 
-# Read/Write Epoch Consensus
+# Read/Write Epoch consensus
+
+- The epoch consensus is initialized with the `state` of the most recently aborted epoch consensus instance.
+    - The state contains a timestamp and value.
+    - Passing `state` to the next epoch consensus serves the *validity* and *lock-in* properties.
+- The algorithm involves *two rounds of messages* from the leader to all processes.
+    - The leader **writes** its proposal value to all processes, who store the epoch timestamp and the value in their state, and acknowledge this to the leader.
+    - When the leader receives enough acknowledgements, it decides this value.
+    - However, if the leader of some previous epoch already decided some value, then no other value should be decided (to not violate *lock-in*).
+    - To prevent this, the leader first **reads** the state of the processes which return a `State` messages.
+    - The leader receives a quorum of `State` messages and choses the value that comes with the highest timestamp, if one exists.
+    - The leader *decides* and broadcasts its decision to all processes, which then decide as well.
+
+---
+
+# Read/Write Epoch consensus
 
 .center[![](figures/lec5/rwec-impl1.png)]
 
@@ -283,9 +317,45 @@ We will build a consensus component in *fail-noisy* by combining three abstracti
 
 ---
 
-# Leader-Driven Consensus
+# Sample execution (1)
 
-.center.width-60[![](figures/lec5/ld-consensus.png)]
+XXX
+
+---
+
+# Sample execution (2)
+
+XXX
+
+---
+
+# Correctness
+
+- Assume $N > 2f$, where $f$ is the number of crash faults.
+
+XXX: page 224
+
+---
+
+# Leader-Driven consensus
+
+XXX
+
+---
+
+# Leader-Driven consensus
+
+.center[![](figures/lec5/ld-consensus-impl1.png)]
+
+---
+
+.center[![](figures/lec5/ld-consensus-impl2.png)]
+
+---
+
+# Sample execution
+
+.center.width-100[![](figures/lec5/ld-consensus-exec.png)]
 
 ---
 
@@ -303,7 +373,37 @@ class: middle, center
 
 ---
 
+# Total order broadcast
+
+.center.width-80[![](figures/lec5/tob-interface.png)]
+
+---
+
+# Consensus-based TOB
+
+.center.width-80[![](figures/lec5/tob-impl.png)]
+
+---
+
+# Sample execution
+
+.center.width-80[![](figures/lec5/tob-exec.png)]
+
+---
+
 # Replicated state machines
+
+---
+
+# Replicated state machines
+
+.center[![](figures/lec5/rsm-interface.png)]
+
+---
+
+# TOB-based Replicated state machines
+
+.center[![](figures/lec5/rsm-impl.png)]
 
 ---
 
