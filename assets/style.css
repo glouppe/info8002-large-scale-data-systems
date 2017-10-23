@@ -26,6 +26,16 @@ body {
     background: #ddd;
 }
 
+.center * {
+    text-align: center !important;
+}
+
+.center p {
+    margin: 0 auto !important;
+    margin-before: 0 !important;
+    margin-after: 0 !important;
+}
+
 .remark-slide-content {
     background-image: linear-gradient(135deg, transparent, rgba(0, 0, 0, 0.02) 50%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.05));
     font-size: 1.4em;
@@ -37,6 +47,10 @@ body {
     font-size: 2.25em;
     text-align: center;
     margin: 0 0 .5em 0;
+}
+
+.remark-visible {
+    position: relative;
 }
 
 .remark-slide-content h2 {
@@ -67,6 +81,34 @@ a {
 
 a:hover {
     text-decoration: underline;
+}
+
+.width-100 * {
+    width: 100%;
+}
+
+.width-80 * {
+    width: 80%;
+}
+
+.width-70 * {
+    width: 70%;
+}
+
+.width-60 * {
+    width: 60%;
+}
+
+.width-50 * {
+    width: 50%;
+}
+
+.width-40 * {
+    width: 40%;
+}
+
+.width-30 * {
+    width: 30%;
 }
 
 em {
@@ -185,4 +227,35 @@ td {
 
 .title-slide {
     vertical-align: middle;
+}
+
+table {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+thead {
+    background: #555;
+    font-size: .9em;
+}
+
+th {
+    margin: 0;
+    padding: 7px 0;
+    text-align: center;
+    font-weight: bold;
+}
+
+tbody {
+    font-size: .8em;
+    background: #f0f0f0;
+}
+
+tr:nth-child(odd) {
+    background: #fcfcfc;
+}
+
+td {
+    padding: 5px 8px;
 }

@@ -82,7 +82,7 @@ A distributed system appears to its users as a *single* **coherent** system.
 
 ## Internet
 
-.stretch[
+.width-100[
 ![Internet](figures/lec1/internet.jpg)
 .caption[What are the *entities*? What is the *communication medium*?]
 ]
@@ -97,7 +97,7 @@ A distributed system appears to its users as a *single* **coherent** system.
 
 ## CERN data center
 
-.stretch[
+.width-100[
 ![CERN data center](figures/lec1/cern-datacenter.jpg)
 .caption[What are the *entities*? What is the *communication medium*?]
 ]
@@ -111,7 +111,7 @@ A distributed system appears to its users as a *single* **coherent** system.
 
 ## Massively multiplayer online games
 
-.stretch[
+.width-100[
 ![CERN data center](figures/lec1/wow.jpg)
 .caption[What are the *entities*? What is the *communication medium*?]
 ]
@@ -126,7 +126,7 @@ A distributed system appears to its users as a *single* **coherent** system.
 
 ## A Hadoop system
 
-.stretch[
+.width-100[
 ![A Hadoop system](figures/lec1/hadoop.jpg)
 .caption[What are the *entities*? What is the *communication medium*?]
 ]
@@ -142,7 +142,7 @@ A distributed system appears to its users as a *single* **coherent** system.
 
 ## Bitcoins
 
-.stretch[
+.width-100[
 ![Bitcoins](figures/lec1/btc.png)
 .caption[What are the *entities*? What is the *communication medium*?]
 ]
@@ -335,7 +335,7 @@ How do you talk to another machine?
 
 # What is the Internet?
 
-.stretch[![](figures/lec1/internet-1969.jpg)
+.width-100[![](figures/lec1/internet-1969.jpg)
 .caption[The Internet, 1969]]
 
 .footnote[Credits: [ARPANET maps](http://som.csudh.edu/fac/lpress/history/arpamaps/)]
@@ -344,7 +344,7 @@ How do you talk to another machine?
 
 # What is the Internet?
 
-.stretch[![](figures/lec1/internet-1974.jpg)
+.width-100[![](figures/lec1/internet-1974.jpg)
 .caption[The Internet, 1974]]
 
 .footnote[Credits: [ARPANET maps](http://som.csudh.edu/fac/lpress/history/arpamaps/)]
@@ -353,7 +353,7 @@ How do you talk to another machine?
 
 # What is the Internet?
 
-.stretch[![](figures/lec1/internet-2007.png)
+.width-100[![](figures/lec1/internet-2007.png)
 .caption[The Internet, 2007]]
 
 .footnote[Credits: [AT&T Labs](http://www.research.att.com/export/sites/att_labs/groups/infovis/news/img/ATT_Labs_InternetMap_0730_10.pdf)]
@@ -501,7 +501,7 @@ Draw picture 2: two end hosts communicating and the end hosts recording the conv
 
 # Encapsulation
 
-.stretch[![TCP/IP](figures/lec1/network.png)]
+.width-100[![TCP/IP](figures/lec1/network.png)]
 
 Each node contains a different set of layers, reflecting their differences in functionality. Intermediate nodes remain simple while complexity is put at the network boundary in the end nodes.
 
@@ -627,7 +627,7 @@ TCP is an example of *synchronous system*, where we assume that processes have a
 
 # The application layer
 
-.stretch[![](figures/lec1/socket.png)]
+.width-100[![](figures/lec1/socket.png)]
 
 - *Sockets* offer an **application programming interface** (API) of the transport layer (TCP or UDP).
 - Applications are oblivious to underlying network operations.
