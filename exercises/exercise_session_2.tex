@@ -19,32 +19,47 @@ On the other hand, in \emph{multiparticipant systems} broadcasting is slightly m
 \subsection*{Exercise 1}
 \label{sec:exercise_1}
 
-\emph{What is Best-Effort Broadcasting? Does it ensure delivery of a message?}
+\emph{What is Best-Effort Broadcasting? Does it ensure the delivery of a message? If so, what is the mechanism ensuring the delivery of the message? Describe an architecture (including requirements) which implements Best-Effort Broadcasting.}
 
 \subsection*{Exercise 2}
 \label{sec:exercise_2}
 
-\emph{Exercise two goes here.}
+\emph{Does duplication of messages occur in Best-Effort Broadcasting? Why / Why not?}
 
 \subsection*{Exercise 3}
 \label{sec:exercise_3}
 
-\emph{Exercise three goes here.}
+\emph{Describe Reliable Regular Broadcasting. How does it differ from Best-Effort Broadcasting? What is the additional liveness property that is included in the abstraction to ensure reliability? How does this additional property ensure reliable delivery?}
 
 \subsection*{Exercise 4}
 \label{sec:exercise_4}
 
-\emph{Exercise four goes here.}
+\emph{Lazy Reliable Broadcasting and Eager Reliable Broadcasting are instances of Reliable Regular Broadcasting. Describe both approaches and how they differ from each other.}
 
 \subsection*{Exercise 5}
 \label{sec:exercise_5}
 
-\emph{Exercise five goes here.}
+\emph{In order to ensure reliable broadcasting, Lazy RB and Eager RB employ a filtering mechanism to ensure that a particular message is not delivered twice to the upper-layer software. How would you design such a filtering mechanism?}
 
 \subsection*{Exercise 6}
 \label{sec:exercise_6}
 
+\emph{What is implied with Uniform Agreement? Give an high-level overview of the strategy required to implement such a requirement.}
+
+\subsection*{Exercise 7}
+\label{sec:exercise_7}
+
+\emph{Is the total ordering of messages guarenteed in reliable broadcasting? Why / Why not? What type of mechanisms are required in order to construct an ordering over the messages assuming that the number of involved processes do not change. Why?}
+
+\subsection*{Exercise 8}
+\label{sec:exercise_8}
+
 \emph{How does Ethernet (IEEE 802.3) relate to broadcasting? If Ethernet supports broadcasting, does the technique ensure reliable broadcasting? In the other case, how would you implement (reliable) broadcasting with Ethernet using the techniques you saw in class? Note: One could apply the same mechanisms to WiFi due the the presence of a shared medium. However, Ethernet is a little bit more tricky since not all machines are connected to the same physical cable.}
+
+\subsection*{Exercise 9}
+\label{sec:exercise_9}
+
+\emph{Describe gossiping, and how it relates to epidemology.}
 
 \section{Assignment}
 \label{sec:assignment}
