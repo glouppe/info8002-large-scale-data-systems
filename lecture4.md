@@ -224,6 +224,8 @@ This could not happen if we had a true single storage illusion!
 
 .center.width-70[![](figures/lec4/majority-voting-impl2.png)]
 
+<span class="Q">[Q]</span> Why resetting `acks` and `readlist` right after having received back just more than $N/2$ messages?
+
 ---
 
 class: middle, center
@@ -276,6 +278,10 @@ F: read at p2, write at p1, read at p3
     - The hypothetical serial execution is called a *linearization* of the actual execution.
 - *Termination*:
     - If node is correct, each read and write operation eventually completes.
+
+???
+
+R: show an example with linearization points first
 
 ---
 
@@ -374,6 +380,9 @@ class: smaller
 ???
 
 Make the plot.
+
+R: the explanation was not really convincing.
+R: what about the two other properties?
 
 ---
 

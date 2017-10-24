@@ -350,11 +350,38 @@ We will build a consensus component in *fail-noisy* by combining three abstracti
 
 ---
 
+class: smaller
+
 # Correctness
 
-- Assume $N > 2f$, where $f$ is the number of crash faults.
+Assume $N > 2f$, where $f$ is the number of crash faults.
 
-XXX: page 224
+- *Lock-in*:
+    - If some process ep-decided $v$ at $ts' < ts$, then it decided after receiving a `Decided` message with $v$ from leader $l'$ of epoch $ts'$.
+    - Before sending this message, $l'$ had broadcast a `Write` containing $v$ and collected `Accept` messages.
+    - These responding processes set their variables $val$ to $v$ and $valts$ to $ts'$.
+    - At the next epoch, the leader sends a `Write` message and collect `Accept` messages with the previous $(ts', v)$ pair.
+    - This pair has the highest timestamp with a non-null value.
+    - This implies that $l'$ can only ep-decides $v$.
+    - This argument can be continued until $ts$, establishing lock-in.
+
+
+---
+
+class: smaller
+
+# Correctness
+
+- *Validity*:
+    - If some process ep-decides $v$, it is because this value was delivered from a `Decided` message.
+    - Furthermore, every process stores in $val$ only the value received in a `Write` message from the leader.
+    - In both cases, this value comes from `tmpval` of the leader.
+    - In any epoch, the leader sets `tmpval` only to the value it ep-proposed or to some value it received in a `State` message from another process.
+    - By backward induction, $v$ was ep-proposed by the leader in some epoch $ts' \leq ts$.
+- *Uniform agreement* + *integrity*:
+    - $l$ sends the same value to all processes in the `Decided` message.
+- *Termination*:
+    - When $l$ is correct and no process aborts the epoch, then every process eventually receives a `Decide` message and ep-decides.
 
 ---
 
@@ -402,17 +429,25 @@ class: middle, center
 
 # Total order broadcast
 
-XXX
-
-???
-
-== atomic broadcast
+- A **total-order (reliable) broadcast** (also known as *atomic broadcast*) abstraction
+which ensures that all processes deliver the same messages in a *common global order*.
+- Total-order broadcast is the key abstraction for maintaining consistency among multiple replicas
+that implement one logical service.
 
 ---
 
 # Total order broadcast
 
 .center.width-80[![](figures/lec5/tob-interface.png)]
+
+---
+
+# Consensus-based TOB
+
+- Messages are first disseminated using a *reliable broadcast instance*.
+    - No particular order is imposed on the messages.
+    - At any point in time, it may be that no two processes have the same sets of unordered messages.
+- The processes use **consensus to decide on one set of messages** to be delivered, order the messages in this set, and finally deliver them.
 
 ---
 
@@ -430,7 +465,17 @@ XXX
 
 # Replicated state machines
 
-XXX
+- A **state machine** consists of variables and commands that transform its state and produce some output.
+    - Commands are *deterministic* programs, such that the outputs are solely determined by the initial state and the sequence of commands.
+- A state machine can be made *fault-tolerant* by replicating it on different processes.
+- This can now be easily implemented simply by disseminating all commands to execute using a uniform total-order broadcast primitive.
+- This gives a **generic recipe** to make any deterministic program distributed, consistent and fault-tolerant!
+
+---
+
+class: middle, center
+
+![](figures/lec5/rsm.png)
 
 ---
 
