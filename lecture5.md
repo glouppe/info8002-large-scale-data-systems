@@ -78,7 +78,6 @@ class: center, middle
 So, are we done? **No!**
 - The FLP impossibility result holds for *asynchronous systems* only.
 - Consensus can be implemented in **synchronous** and **partially synchronous** systems.
-- *Paxos*: consensus algorithm in asynchronous systems for which termination is not guaranteed, but where validity, integrity and agreement are guaranteed.
 
 ---
 
@@ -387,9 +386,17 @@ class: smaller
 
 # Leader-Driven consensus
 
-XXX
-
-aka Paxos
+- We now combine the epoch-change and the epoch consensus abstractions to
+form the **leader-driven consensus** algorithm.
+- The algorithm provides *uniform consensus* in *fail-noisy*.
+- It runs through a sequence of epochs, triggered by `StartEpoch` events from
+the epoch-change primitive.
+    - These events determine the timestamp and leader of the next epoch consensus to start.
+    - To switch from one epoch to the next, the algorithm aborts the running epoch consensus, obtains its state and initializes the next epoch consensus with it.
+    - As soon as process has obtained a proposal value $v$ for consensus and is the leader of the current epoch, it ep-proposes this value for epoch consensus.
+    - When the current epoch ep-decides a value, the process also decides value in consensus.
+    - The process continue to participate in the consensus to help other processes decide.
+- Leader-Driven consensus is modular formulation  of the **Paxos** consensus algorithm.
 
 ---
 
@@ -411,13 +418,12 @@ aka Paxos
 
 # Correctness
 
-XXX
+- *Validity*:
+- *Uniform agreement*:
+- *Integrity*:
+- *Termination*:
 
----
-
-# Paxos
-
-XXX some historical notes
+XXX pg 227+
 
 ---
 
