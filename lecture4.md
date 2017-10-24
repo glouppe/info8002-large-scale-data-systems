@@ -93,6 +93,10 @@ class: middle, center
 
 .center[![](figures/lec4/regular-register.png)]
 
+???
+
+Draw the schema of the component with requests and indications?
+
 ---
 
 # Regular register example (1)
@@ -129,7 +133,7 @@ Regular.
 
 Regular.
 
-Not a single storage illusion!
+This could not happen if we had a true single storage illusion!
 
 ---
 
@@ -155,7 +159,7 @@ Not a single storage illusion!
     - Return local value.
 - To $\text{write}(v)$:
     - Update local value to $v$.
-    - Broadcast $v$ to all (each node locally updates).
+    - Broadcast $v$ to all (each node then locally updates).
     - Return.
 
 <span class="Q">[Q]</span> Problem?
@@ -200,13 +204,13 @@ Not a single storage illusion!
 
 # Quorum principle
 
-- Can we implement a regular register in *fail-silent*?
+- Can we implement a regular register in *fail-silent*? (without a failure detector)
 - **Quorum principle**:
     - Assume a majority of correct nodes.
     - Divide the system into two overlapping *majority quorums*.
         - i.e., each quorum  counts at least $\lfloor \frac{N}{2} \rfloor + 1$ nodes.
     - Always write to and read from a majority of nodes.
-    - At least one node knows the most recent value.
+    - At least one node must know the most recent value.
 
 .center.width-50[![](figures/lec4/quorum.png)]
 
@@ -254,6 +258,10 @@ Sequential consistency **disallows** such execution.
 .width-100[![](figures/lec4/atomic-example2.png)]
 
 Sequential consistency *allows* such execution.
+
+???
+
+F: read at p2, write at p1, read at p3
 
 ---
 
@@ -331,7 +339,6 @@ class: smaller
 
 # Implementation of $(1,N)$ atomic registers
 
-Idea:
 - When reading, write back the value that is about to be returned.
 - Maintain a local timestamp $ts$ and its associated value $val$.
 - Overwrite the local pair only upon a write operation of a more recent value.
@@ -348,8 +355,6 @@ Idea:
 
 .center[![](figures/lec4/riwa-impl2.png)]
 
-<span class="Q">[Q]</span> Show the algorithm is correct.
-
 <span class="Q">[Q]</span> How to adapt to fail-silent? **Read-Impose Write-Majority**
 
 ---
@@ -365,6 +370,10 @@ Idea:
     - there is no way for $r$ to changes its value back to $v$ after this because $ts_v < ts_w$.
 
 <span class="Q">[Q]</span> Show that the termination and validity properties are satisfied.
+
+???
+
+Make the plot.
 
 ---
 
