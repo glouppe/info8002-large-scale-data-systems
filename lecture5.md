@@ -269,12 +269,12 @@ We will build a consensus component in *fail-noisy* by combining three abstracti
 
 # Epoch consensus
 
-- The **epoch consensus** abstraction is similar to *consensus*: processes propose a value and may decide a value.
-- Every epoch is identified by an *epoch timestamp* $ts$ and a designated leader $l$.
-- Epoch consensus represents an **attempt** to reach consensus.
-    - The procedure can be aborted when it does not decide or when the next epoch should already be started by the higher-level algorithm.
-- *Only the leader* proposes a value.
-- Epoch consensus is required to decide *only when the leader is correct*.
+- The **epoch consensus** abstraction is similar to *consensus*, but with the following simplifications:
+    - Epoch consensus represents an *attempt* to reach consensus.
+        - The procedure can be aborted when it does not decide or when the next epoch should already be started by the higher-level algorithm.
+    - Every epoch consensus instance is identified by an *epoch timestamp* $ts$ and a *designated leader* $l$.
+    - **Only the leader** proposes a value.
+        - Epoch consensus is required to decide *only when the leader is correct*.
 - An instance **must terminate** when the application locally triggers an `Abort` event.
 - The state of the component is initialized
     - with a higher timestamp than that of all instances it initialized previously;
@@ -294,16 +294,17 @@ We will build a consensus component in *fail-noisy* by combining three abstracti
 
 # Read/Write Epoch consensus
 
-- The epoch consensus is initialized with the `state` of the most recently aborted epoch consensus instance.
+- The epoch consensus is **initialized** with the state of the most recently aborted epoch consensus instance.
     - The state contains a timestamp and value.
-    - Passing `state` to the next epoch consensus serves the *validity* and *lock-in* properties.
+    - Passing the state to the next epoch consensus serves the *validity* and *lock-in* properties.
 - The algorithm involves *two rounds of messages* from the leader to all processes.
     - The leader **writes** its proposal value to all processes, who store the epoch timestamp and the value in their state, and acknowledge this to the leader.
     - When the leader receives enough acknowledgements, it decides this value.
     - However, if the leader of some previous epoch already decided some value, then no other value should be decided (to not violate *lock-in*).
-    - To prevent this, the leader first **reads** the state of the processes which return a `State` messages.
+    - To prevent this, the leader first **reads** the state of the processes which return `State` messages.
     - The leader receives a quorum of `State` messages and choses the value that comes with the highest timestamp, if one exists.
-    - The leader *decides* and broadcasts its decision to all processes, which then decide as well.
+    - The leader *decides* and broadcasts its decision to all processes, which then decide too.
+- We assume a majority of correct processes.
 
 ---
 
@@ -319,13 +320,33 @@ We will build a consensus component in *fail-noisy* by combining three abstracti
 
 # Sample execution (1)
 
-XXX
+.center.width-100[![](figures/lec5/econs-exec1.png)]
 
 ---
 
 # Sample execution (2)
 
-XXX
+.center.width-100[![](figures/lec5/econs-exec2.png)]
+
+---
+
+# Sample execution (3)
+
+.center.width-100[![](figures/lec5/econs-exec3.png)]
+
+<span class="Q">[Q]</span> What is wrong in this execution?
+
+---
+
+# Sample execution (4a)
+
+.center.width-100[![](figures/lec5/econs-exec4a.png)]
+
+---
+
+# Sample execution (4b)
+
+.center.width-100[![](figures/lec5/econs-exec4b.png)]
 
 ---
 
@@ -341,6 +362,8 @@ XXX: page 224
 
 XXX
 
+aka Paxos
+
 ---
 
 # Leader-Driven consensus
@@ -355,7 +378,19 @@ XXX
 
 # Sample execution
 
-.center.width-100[![](figures/lec5/ld-consensus-exec.png)]
+.center.width-80[![](figures/lec5/ld-consensus-exec.png)]
+
+---
+
+# Correctness
+
+XXX
+
+---
+
+# Paxos
+
+XXX some historical notes
 
 ---
 
@@ -366,6 +401,8 @@ class: middle, center
 ---
 
 # Total order broadcast
+
+XXX
 
 ???
 
@@ -393,6 +430,8 @@ class: middle, center
 
 # Replicated state machines
 
+XXX
+
 ---
 
 # Replicated state machines
@@ -404,16 +443,6 @@ class: middle, center
 # TOB-based Replicated state machines
 
 .center[![](figures/lec5/rsm-impl.png)]
-
----
-
-class: middle, center
-
-# Consensus in asynchronous systems
-
----
-
-# Paxos
 
 ---
 
