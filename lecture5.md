@@ -409,19 +409,23 @@ class: smaller
 
 ---
 
+class: smaller
+
 # Leader-Driven consensus
 
-- We now combine the epoch-change and the epoch consensus abstractions to
+- Let us now combine the epoch-change and the epoch consensus abstractions to
 form the **leader-driven consensus** algorithm.
+    - We will write the *glue* to repeatedly run epoch consensus until epoch changes stabilize and all decisions are taken.
 - The algorithm provides *uniform consensus* in *fail-noisy*.
-- It runs through a sequence of epochs, triggered by `StartEpoch` events from
+- It runs through a **sequence of epochs**, triggered by `StartEpoch` events from
 the epoch-change primitive.
-    - These events determine the timestamp and leader of the next epoch consensus to start.
-    - To switch from one epoch to the next, the algorithm aborts the running epoch consensus, obtains its state and initializes the next epoch consensus with it.
-    - As soon as process has obtained a proposal value $v$ for consensus and is the leader of the current epoch, it ep-proposes this value for epoch consensus.
-    - When the current epoch ep-decides a value, the process also decides value in consensus.
+    - The current epoch timestamp is $ets$ and the associated leader is $l$.
+    - The `StartEpoch` events determine the timestamp $newts$ and the leader $newl$ of the next epoch consensus instance to start.
+    - To switch from one epoch consensus to the next, the algorithm aborts the running epoch consensus instance, obtains its state and initializes the next epoch consensus instance with it.
+    - As soon as a process has obtained a proposal value $v$ for consensus and is the leader of the current epoch, it ep-proposes this value for epoch consensus.
+    - When the current epoch ep-decides a value, the process also decides this value for consensus.
     - The process continue to participate in the consensus to help other processes decide.
-- Leader-Driven consensus is modular formulation  of the **Paxos** consensus algorithm.
+- Leader-Driven consensus is a modular formulation  of the **Paxos** consensus algorithm.
 
 ---
 
@@ -439,16 +443,66 @@ the epoch-change primitive.
 
 .center.width-80[![](figures/lec5/ld-consensus-exec.png)]
 
+???
+
+Every process proposes a different value and then starts epoch 6 with leader q.
+The open circle depicts that process q is the leader and the arrows show that it
+drives the message exchange in the epoch consensus instance, which is
+implemented by Algorithm 5.6.
+
+Process q writes its proposal x, but only process r receives it
+and sends an ACCEPT message before the epoch ends; hence, process r updates its
+state to (6, x). Epoch 8 with leader s starts subsequently and the processes
+abort the epoch consensus instance with timestamp 6.
+
+At process r, epoch 8 starts much later, and r neither receives nor sends any
+message before the epoch is aborted again. Note that the specification of
+epoch-change would also permit that process r never starts epoch 8 and moves
+from epoch 6 to 11 directly. Process s is the leader of epoch 8. It finds no
+highest value different from ⊥ and writes its own proposal z. Subsequently, it
+sends a DECIDED message and process p ep-decides and uc-decides z in epoch 8.
+
+Note that p, q, and s now have state (8, z). Then process s crashes and epoch 11
+with leader r starts. The state of r is still (6, x); but it reads value z from
+p or q, and therefore writes z. As r is correct, all remaining processes
+ep-decide z in this epoch consensus instance and, consequently, also q and r
+uc-decide z.
+
+It could also have been that process p crashed immediately after
+deciding z; in this case, the remaining processes would also have decided z due
+to the lock-in and agreement properties of epoch consensus. This illustrates
+that the algorithm provides uniform consensus.
+
 ---
+
+class: smaller
 
 # Correctness
 
-- *Validity*:
-- *Uniform agreement*:
-- *Integrity*:
-- *Termination*:
+- *Validity*: If a process decides $v$, then $v$ was proposed by some process.
+    - A process uc-decides $v$ only when it has ep-decided $v$ in the current epoch consensus.
+    - Every decision can be attributed to a unique epoch and to a unique instance of epoch consensus.
+    - Let $ts^\*$ be the smallest timestamp of an epoch consensus in which some process decides $v$.
+    - According to the validity property of epoch consensus, this means $v$ was ep-proposed by the leader of some epoch whose timestamp is a most $ts^\*$.
+    - Since a process only ep-proposes $val$ when $val$ has been uc-proposed for consensus, the *validity* property follows for processes that uc-decide in epoch $ts^\*$.
+    - The argument extends to $ts > ts^\*$ because the lock-in property of epoch consensus forces processes to ep-decide $v$ only, which in turn make them uc-decide.
+- *Uniform agreement*: No two processes decide differently.
+    - Every decision attributed to an ep-decision of some epoch consensus instance.
+    - If two correct processes decide when they are in the same epoch, then the uniform agreement of epoch consensus ensures the decisions are the same.
+    - If they decide in different epoch, the lock-in property establishes uniform agreement.
 
-XXX pg 227+
+---
+
+class: smaller
+
+# Correctness
+
+- *Integrity*: No process decides twice.
+    - The `decided` flag in the algorithm prevents multiple decisions.
+- *Termination*: Every correct process eventually decides some value.
+    - Because of *eventual leadership* of the epoch-change primitive, there is some epoch with timestamp $ts$ and leader $l$ such that no further epoch starts and $l$ is correct.
+    - From that instant, no further abortions are triggered.
+    - The *termination* property of epoch consensus ensures that every correct process eventually ep-decides, and therefore uc-decides.
 
 ---
 
@@ -460,8 +514,8 @@ class: middle, center
 
 # Total order broadcast
 
-- A **total-order (reliable) broadcast** (also known as *atomic broadcast*) abstraction
-which ensures that all processes deliver the same messages in a *common global order*.
+- The **total-order (reliable) broadcast** (also known as *atomic broadcast*) abstraction
+ ensures that all processes deliver the same messages in a *common global order*.
 - Total-order broadcast is the key abstraction for maintaining consistency among multiple replicas
 that implement one logical service.
 
@@ -523,6 +577,15 @@ class: middle, center
 ---
 
 # Summary
+
+- **Consensus** is the problem of making processes all *agree* on one of the values they propose.
+- The **FLP impossibility result** states that no consensus protocol can be proven
+that always terminate in an asynchronous systems.
+- In fail-silent, *Hierarchical Consensus* provides an implementation based on broadcast and failure detection.
+- In fail-noisy, *Leader-Driven Consensus* achieves consensus by repeatedly running epoch consensus until all decisions are taken.
+- The consensus primitive **greatly simplifies** the implementation of any fault-tolerant consistent distributed system.
+    - Total-order broadcast
+    - Replicated state machines
 
 ---
 
