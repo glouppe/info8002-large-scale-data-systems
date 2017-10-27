@@ -8,11 +8,25 @@ Lecture 5: Consensus
 
 # Today
 
+- Most important abstraction in distributed systems: **consensus**.
+- Builds upon broadcast and failure detectors.
+- From consensus, we will build:
+    - total order broadcast
+    - replicated state machines
+
 ---
 
 # Consensus
 
-- **Consensus** is the problem of making processes all *agree* on one of the values they propose.
+**Consensus** is the problem of making processes all *agree* on one of the values they propose.
+
+.center.width-100[![](figures/lec5/consensus.png)]
+.caption[How do we reach an agreement?]
+
+---
+
+# Motivation
+
 - Solving consensus is **key** to solving many problems in distributed computing:
     - synchronizing replicated state machines;
     - electing a leader;
@@ -78,6 +92,8 @@ class: center, middle
 So, are we done? **No!**
 - The FLP impossibility result holds for *asynchronous systems* only.
 - Consensus can be implemented in **synchronous** and **partially synchronous** systems.
+    - We will prove it!
+- The result only states that termination cannot be guaranteed. Can we have other guarantees while maintaining a high probability of termination?
 
 ---
 
@@ -94,13 +110,14 @@ class: smaller
 - Assume a **perfect failure detector** (synchronous system).
 - Assume processes $1, ..., N$ form an ordered **hierarchy** as given by a $\text{rank}(p)$ function.
     - $\text{rank}(p)$ is a *unique* number between $1$ and $N$ (e.g., the pid).
-- Hierarchical consensus ensures that *the correct process with the lowest rank imposes its value* on all the other processes.
+- Hierarchical consensus ensures that the correct process with *the lowest rank imposes its value* on all the other processes.
     - If $p$ is correct and rank $1$, it imposes its values on all other processes by broadcasting its proposal.
     - If $p$ crashes immediately and $q$ is correct and rank 2, then it ensures that $q$'s proposal is decided.
     - The core of the algorithm addresses the case where $p$ is faulty but crashes after sending some of its proposal messages and $q$ is correct.
 - Hierarchical consensus works *in rounds*, with a rotating *leader*.
     - At round $i$, process $p$ with rank $i$ is the leader. It decides its proposal and broadcasts it to all processes.
     - All other processes that reach round $i$ wait before taking any actions, until they deliver this message or until they detect the crash of $p$.
+        - upon which processes move to the next round.
 
 ---
 
@@ -154,7 +171,7 @@ class: smaller
         - It will BEB $v$:
             - Every correct node gets $v$ and adopts it.
             - No older proposals can override the adoption.
-            - All future proposals ans decides will be $v$
+            - All future proposals and decisions will be $v$.
 
 ---
 
@@ -164,8 +181,9 @@ class: smaller
 - A round consists of *two communication steps*:
     - The leader BEB broadcasts its proposal
     - The leader collects acknowledgements
-- Upon reception of all acknowledgements, **RB** broadcast the decision.
+- Upon reception of all acknowledgements, **RB** broadcast the decision and decide at delivery.
     - This ensures that if a decision is made (at a faulty or correct process), then this decision will be made at all correct processes.
+    - Processes proceed to the next round only if the current leader fails.
 
 ---
 
@@ -187,7 +205,7 @@ class: middle, center
 
 # Consensus in partially synchronous systems
 
-- Hierarchical consensus requires a *perfect failure detector*. Can we switch to an *eventually perfect failure detector* (i.e.,  **fail-noisy**)?
+- Hierarchical consensus requires a *perfect failure detector*. Can we switch to an *eventually perfect failure detector* (i.e., to **fail-noisy**)?
 - A *false suspicion* (i.e., a violation of strong accuracy) might lead to the **violation of agreement**.
     - If a process is suspected while it is actually correct, then two processes might decide differently.
 - *Not suspecting* a crashed process (i.e., a violation of strong completeness) might lead to the **violation of termination**.
@@ -212,12 +230,16 @@ We will build a consensus component in *fail-noisy* by combining three abstracti
 
 <span class="Q">[Q]</span> This abstraction can be implemented from an *eventually perfect failure detector*. How?
 
+???
+
+Elect as leader the correct process with the minimal rank. Eventually the set of correct processes will be accurate at all correct processes, resulting in eventual agreement.
+
 ---
 
 # Epoch-Change
 
-- When a leader is chosen, the **Epoch-Change** abstraction signals the start of a new epoch by triggering a `StartEpoch` event.
-    - The event contains:
+- Let define an **Epoch-Change** abstraction, whose purpose it is to signal a change of epoch corresponding to the election of a leader.
+    - An indication event `StartEpoch` contains:
         - an epoch timestamp $ts$
         - a leader process $l$.
 - We require *monotonicity* of the timestamps for the epochs started at the same correct process.
@@ -234,8 +256,8 @@ We will build a consensus component in *fail-noisy* by combining three abstracti
 
 # Leader-based Epoch-Change
 
-- Every process $p$ maintains two timestamps:
-    - a timestamp $lastts$ of the last epoch that is has started;
+- Every process $p$ maintains *two timestamps*:
+    - a timestamp $lastts$ of the last epoch that it locally started;
     - a timestamp $ts$ of the last epoch it attempted to start as a leader.
 - When the leader detector makes $p$ trust itself, $p$ adds $N$ to $ts$ and broadcasts a `NewEpoch` message with $ts$.
 - When $p$ receives a `NewEpoch` message with parameter $newts > lastts$ from $l$ and $p$ most recently trusted $l$, then $p$ triggers a `StartEpoch` message.
@@ -264,11 +286,14 @@ We will build a consensus component in *fail-noisy* by combining three abstracti
 
 <span class="Q">[Q]</span> What if $p_1$ fails only later, some time after the second `bebDeliver` event?
 
+<span class="Q">[Q]</span> What if instead of crashing, $p_1$ eventually trusts $p_2$?
+
+
 ---
 
 # Epoch consensus
 
-- The **epoch consensus** abstraction is similar to *consensus*, but with the following simplifications:
+- Let define an **epoch consensus** abstraction, whose purpose is similar to *consensus*, but with the following simplifications:
     - Epoch consensus represents an *attempt* to reach consensus.
         - The procedure can be aborted when it does not decide or when the next epoch should already be started by the higher-level algorithm.
     - Every epoch consensus instance is identified by an *epoch timestamp* $ts$ and a *designated leader* $l$.
@@ -277,7 +302,7 @@ We will build a consensus component in *fail-noisy* by combining three abstracti
 - An instance **must terminate** when the application locally triggers an `Abort` event.
 - The state of the component is initialized
     - with a higher timestamp than that of all instances it initialized previously;
-    - with the state of the most recently aborted epoch consensus instance.
+    - with the state of the most recently locally aborted epoch consensus instance.
 
 ---
 
@@ -293,17 +318,17 @@ We will build a consensus component in *fail-noisy* by combining three abstracti
 
 # Read/Write Epoch consensus
 
-- The epoch consensus is **initialized** with the state of the most recently aborted epoch consensus instance.
-    - The state contains a timestamp and value.
+- Let **initialize** the *Read/Write Epoch consensus* algorithm with the state of the most recently aborted epoch consensus instance.
+    - The state contains a timestamp $valts$ and value $val$.
     - Passing the state to the next epoch consensus serves the *validity* and *lock-in* properties.
 - The algorithm involves *two rounds of messages* from the leader to all processes.
     - The leader **writes** its proposal value to all processes, who store the epoch timestamp and the value in their state, and acknowledge this to the leader.
     - When the leader receives enough acknowledgements, it decides this value.
-    - However, if the leader of some previous epoch already decided some value, then no other value should be decided (to not violate *lock-in*).
-    - To prevent this, the leader first **reads** the state of the processes which return `State` messages.
+    - However, if the leader of some previous epoch already decided some value $val$, then no other value should be decided (to not violate *lock-in*).
+    - To prevent this, the leader first **reads** the state of the processes, which return `State` messages.
     - The leader receives a quorum of `State` messages and choses the value that comes with the highest timestamp, if one exists.
     - The leader *decides* and broadcasts its decision to all processes, which then decide too.
-- We assume a majority of correct processes.
+- We assume a **majority of correct processes**.
 
 ---
 
@@ -359,9 +384,9 @@ Assume $N > 2f$, where $f$ is the number of crash faults.
     - If some process ep-decided $v$ at $ts' < ts$, then it decided after receiving a `Decided` message with $v$ from leader $l'$ of epoch $ts'$.
     - Before sending this message, $l'$ had broadcast a `Write` containing $v$ and collected `Accept` messages.
     - These responding processes set their variables $val$ to $v$ and $valts$ to $ts'$.
-    - At the next epoch, the leader sends a `Write` message and collect `Accept` messages with the previous $(ts', v)$ pair.
+    - At the next epoch, the leader sent a `Write` message and collected `Accept` messages with the previous $(ts', v)$ pair.
     - This pair has the highest timestamp with a non-null value.
-    - This implies that $l'$ can only ep-decides $v$.
+    - This implies that the leader of this epoch can only ep-decides $v$.
     - This argument can be continued until $ts$, establishing lock-in.
 
 
