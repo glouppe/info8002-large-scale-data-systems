@@ -87,6 +87,10 @@ a:hover {
     width: 100%;
 }
 
+.width-90 * {
+    width: 90%;
+}
+
 .width-80 * {
     width: 80%;
 }
@@ -109,6 +113,14 @@ a:hover {
 
 .width-30 * {
     width: 30%;
+}
+
+.width-20 * {
+    width: 20%;
+}
+
+.width-10 * {
+    width: 10%;
 }
 
 em {

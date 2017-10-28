@@ -2,11 +2,11 @@ class: middle, center, title-slide
 
 # Large-Scale Distributed Systems
 
-Lecture X: Distributed Hash Tables
+Lecture 6: Distributed Hash Tables
 
 ---
 
-# History - Napster
+# History: Napster
 
 .grid[
 .col-2-3[
@@ -16,7 +16,7 @@ Lecture X: Distributed Hash Tables
 
 ]
 .col-1-3[
-![Napster logo](assets/lectures/dht/napster.jpg)
+![Napster logo](figures/lec6/napster.jpg)
 ]
 ]
 
@@ -24,24 +24,24 @@ Lecture X: Distributed Hash Tables
 
 ## Napster Architecture (1)
 
-- Napster relied on a *centralized* directory server with *flat* filesystem.
+- Napster relied on a *centralized* directory server with *flat* file system.
   - Files with the same name are possible.
 - Storage of the data was done at node-level (*decentralized*).
   - Node informed the directory server that it is still available using *keep-alive* messages.
   - Node informed the directory server which files it serves.
 
 .width-100[
-![Napster architecture](assets/lectures/dht/napster_architecture.svg)
+![Napster architecture](figures/lec6/napster_architecture.svg)
 ]
 
 ---
 
 ## Napster Architecture (2)
 
-- Flat filesystem:
+- Flat file system:
 
 .width-100[
-![Napster directory](assets/lectures/dht/napster_directory.svg)
+![Napster directory](figures/lec6/napster_directory.svg)
 ]
 
 ---
@@ -50,8 +50,8 @@ Lecture X: Distributed Hash Tables
 
 - Joe queries the centralized directory server for a result set which satisfies the pattern $A$.
 
-.width-100[
-![Napster query](assets/lectures/dht/napster_query_1.svg)
+.center.width-90[
+![Napster query](figures/lec6/napster_query_1.svg)
 ]
 
 ---
@@ -59,23 +59,23 @@ Lecture X: Distributed Hash Tables
 ## Data querying and retrieval in Napster
 
 - Directory server selects a result set of $n$ (~ 100) filenames which satisfy pattern $A$.
-- The result-set is send to the requesting host, with the location of every entry in the result set.
+- The result-set is sent to the requesting host, with the location of every entry in the result set.
 
-.width-100[
-![Napster query](assets/lectures/dht/napster_query_2.svg)
+.center.width-90[
+![Napster query](figures/lec6/napster_query_2.svg)
 ]
 
 ---
 
 ## Data querying and retrieval in Napster
 
-- To address of every item in the result set is pinged, and sorted with respect to transfer speed / distance.
-- Joe selects the host do download the data from.
-- Message is sent to Alice to initiate file transfer with Joe.
+- The address of every item in the result set is pinged, and sorted with respect to transfer speed / distance.
+- Joe selects the host to download the data from.
+- A message is sent to Alice to initiate file transfer with Joe.
 - No other instances besides the 2 nodes are involved with the transfer.
 
-.width-100[
-![Napster query](assets/lectures/dht/napster_query.svg)
+.center.width-90[
+![Napster query](figures/lec6/napster_query.svg)
 ]
 
 ---
@@ -83,7 +83,7 @@ Lecture X: Distributed Hash Tables
 ## Issues
 
 - Centralized directory server
-  - Flat filesystem
+  - Flat file system
   - Bottleneck & security risk (e.g., DDoS) $\rightarrow$ complete network goes down.
   - Other external factors can shut down network (e.g., legal instances).
   - Query by name.
@@ -93,11 +93,12 @@ Lecture X: Distributed Hash Tables
 - No built-in replication of data.
   - Does not scale if everyone downloads from one particular peer because it is "close".
   - For example: if node $a$ is the only peer which holds a particular file $f$, and no other host copied $f$ during the time that $a$ was online, then file $f$ is "lost".
-- Not technically interesting.
+
+<span class="Q">[Q]</span> What mechanisms did we see that could solve the data replication issue?
 
 ---
 
-# History - Gnutella
+# History: Gnutella
 
 - Napster's ultimate demise, legally, but more interestingly, technically:
   - Sudden spike in interest from industry and academia in P2P systems.
@@ -105,10 +106,10 @@ Lecture X: Distributed Hash Tables
 - First, *fully decentralized* network.
 - Decentralized group membership, and search protocol.
   - With main application in file sharing.
-- Maintains a *unstructured virtual (overlay) network* among peers (see following slides).
-- Gnutella nodes (*servents*), perform both *client* (C) and *server* (S) tasks.
+- Maintains a *unstructured virtual (overlay) network* among peers.
+- Gnutella nodes (*servants*), perform both *client* (C) and *server* (S) tasks.
   - (C) User-interfaces to facilitate querying.
-  - (S) Accept queries from other servents.
+  - (S) Accept queries from other servants.
   - (S) Check for matches against local dataset, and respond.
   - (S) Manage background traffic to ensure network integrity (e.g., routing).
 
@@ -116,13 +117,13 @@ Lecture X: Distributed Hash Tables
 
 ## Bootstrapping (joining)
 
-- A new servent connects to a list of known nodes.
-  - Initial discovery of known peers in the network is *not* part of the protocol definition. Meaning, *no internally defined* ("tricks" are always possible) mechanisms to discover other servents.
+- A new servant connects to a list of known nodes.
+  - Initial discovery of known peers in the network is *not* part of the protocol definition. Meaning, *no internally defined* ("tricks" are always possible) mechanisms to discover other servants.
   - Usually, initial list of peers was fetched from an external (centralized) service which kept track of a list of long-lived peers (e.g., gnutellahosts.com).
   - Or, list of possibly working peers was shipped with the software.
 
 .width-100[
-![Gnutella network](assets/lectures/dht/gnutella_bootstrap.svg)
+![Gnutella network](figures/lec6/gnutella_bootstrap.svg)
 ]
 
 ---
@@ -130,7 +131,7 @@ Lecture X: Distributed Hash Tables
 ## Protocol
 
 - Protocol messages are routed through the virtual overlay network (application layer).
-  - A message could thus, for example, traverse the following path in the underlaying IP infrastructure: Belgium $\rightarrow$ Australia $\rightarrow$ Belgium, while the peers might be "neighbors" in the virtual overlay network.
+  - A message could thus, for example, traverse the following path in the underlying IP infrastructure: Belgium $\rightarrow$ Australia $\rightarrow$ Belgium, while the peers might be "neighbors" in the virtual overlay network.
 - Gnutella supports the following protocol messages:
 
 Type     | Description                                                                                                                                                  | Payload
@@ -145,7 +146,7 @@ Push     | A mechanism that allows a firewalled peer to contribute file-based da
 
 ## Protocol: descriptors
 
-- Servents communicate with each other by sending and receiving Gnutella protocol descriptors. Every descriptor is preceded by a Descriptor Header with the byte structure given below:
+- Servants communicate with each other by sending and receiving Gnutella protocol descriptors. Every descriptor is preceded by a Descriptor Header with the byte structure given below:
   - Descriptor ID (16 bytes)
   - Payload Descriptor (identifies message type, e.g., ping, pong, ...) (1 byte)
   - TTL (Time To Live) (1 byte)
@@ -157,7 +158,7 @@ Push     | A mechanism that allows a firewalled peer to contribute file-based da
 ## Descriptor ID
 
 - 16-byte string which *uniquely* identifies the descriptor on the network.
-- Its value must be preserved when forwarding messages between servents.
+- Its value must be preserved when forwarding messages between servants.
 - Used to allow detection of cycles and help reduce unnecessary traffic on the network.
 
 **Question:**
@@ -169,7 +170,7 @@ How would one generate such a uniquely identifiable identifier, while having onl
 ## Descriptor ID
 
 - 16-byte string which *uniquely* identifies the descriptor on the network.
-- Its value must be preserved when forwarding messages between servents.
+- Its value must be preserved when forwarding messages between servants.
 - Used to allow detection of cycles and help reduce unnecessary traffic on the network.
 
 **Question:**
@@ -190,8 +191,8 @@ Which is VERY small.
 
 TTL
 
-- Number of times the descriptor will be forwarded by Gnutella servents before it is removed from the network.
-- Servent MUST decrement the TTL before passing it on to another servent. When the TTL reaches 0, the descriptor MUST no longer be forwarded.
+- Number of times the descriptor will be forwarded by Gnutella servants before it is removed from the network.
+- Servant MUST decrement the TTL before passing it on to another servant. When the TTL reaches 0, the descriptor MUST no longer be forwarded.
 
 Hops
 
@@ -225,17 +226,15 @@ Pong payload format:
 
 ## Example: Ping / Pong (1)
 
-$x$ prepares a ping descriptor to discover to local virtual overlay network.
-
-1. $x$ prepares a descriptor:
-   - Descriptor ID = `generate_random_descriptor()` (`0x359d...`)
-   - Payload Descriptor = `0x00` (ping)
-   - TTL = `0x02` (3 hops)
-   - Hops = `0x00`
-   - Payload length = `0x00000000`
+- $x$ prepares a ping descriptor to discover to local virtual overlay network:
+    - Descriptor ID = `generate_random_descriptor()` (`0x359d...`)
+    - Payload Descriptor = `0x00` (ping)
+    - TTL = `0x02` (3 hops)
+    - Hops = `0x00`
+    - Payload length = `0x00000000`
 
 .width-100[
-![Gnutella Network Clean](assets/lectures/dht/gnutella_network_clean.svg)
+![Gnutella Network Clean](figures/lec6/gnutella_network_clean.svg)
 ]
 
 ---
@@ -248,7 +247,7 @@ $x$ prepares a ping descriptor to discover to local virtual overlay network.
   - Hops: `0x00`
 
 .width-100[
-![Gnutella Ping 1](assets/lectures/dht/gnutella_ping_1.svg)
+![Gnutella Ping 1](figures/lec6/gnutella_ping_1.svg)
 ]
 
 ---
@@ -259,17 +258,17 @@ $x$ prepares a ping descriptor to discover to local virtual overlay network.
 - Every receiving node validates Descriptor ID ("Have I seen this ID recently? If yes, drop message."), decrements TTL, increments Hops, and retransmits `Ping` to *other, non-origin* peers.
 
 .width-100[
-![Gnutella Ping 1](assets/lectures/dht/gnutella_ping_2.svg)
+![Gnutella Ping 1](figures/lec6/gnutella_ping_2.svg)
 ]
 
 ---
 
 ## Example: Ping / Pong (4)
 
-- At this point `Ping` descriptor from $x$ expires (TTL = 0). Servents $b$ and $c$ will drop the messages and send the final `Pong` descriptors to the *origin peers*.
+- At this point `Ping` descriptor from $x$ expires (TTL = 0). Servants $b$ and $c$ will drop the messages and send the final `Pong` descriptors to the *origin peers*.
 
 .width-100[
-![Gnutella Ping 1](assets/lectures/dht/gnutella_ping_3.svg)
+![Gnutella Ping 1](figures/lec6/gnutella_ping_3.svg)
 ]
 
 ---
@@ -277,7 +276,7 @@ $x$ prepares a ping descriptor to discover to local virtual overlay network.
 ## Example: Ping / Pong (5)
 
 .width-100[
-![Gnutella Ping 1](assets/lectures/dht/gnutella_ping_4.svg)
+![Gnutella Ping 1](figures/lec6/gnutella_ping_4.svg)
 ]
 
 ---
@@ -285,7 +284,7 @@ $x$ prepares a ping descriptor to discover to local virtual overlay network.
 ## Example: Ping / Pong (6)
 
 .width-100[
-![Gnutella Ping 1](assets/lectures/dht/gnutella_ping_5.svg)
+![Gnutella Ping 1](figures/lec6/gnutella_ping_5.svg)
 ]
 
 ---
@@ -296,7 +295,7 @@ $x$ prepares a ping descriptor to discover to local virtual overlay network.
 - Visible peers $V(x) = \\{b, c, d, f, g, h\\}$.
 
 .width-100[
-![Gnutella Ping 1](assets/lectures/dht/gnutella_ping_6.svg)
+![Gnutella Ping 1](figures/lec6/gnutella_ping_6.svg)
 ]
 
 ---
@@ -304,7 +303,7 @@ $x$ prepares a ping descriptor to discover to local virtual overlay network.
 ## Query / QueryHit
 
 - A `Query` for a specific pattern, and the accompanying response, `QueryHit` employs the same routing scheme as `Ping` and `Pong` (*flooding*).
-- The query pattern will only be matched against the hosts in $V(\lambda)$, where $\lambda$ is the requestor.
+- The query pattern will only be matched against the hosts in $V(\lambda)$, where $\lambda$ is the requester.
   - This implies that data which does not reside in nodes in $V(\lambda)$, is *not* accessible by $\lambda$!
 
 ---
@@ -313,13 +312,13 @@ $x$ prepares a ping descriptor to discover to local virtual overlay network.
 
 - No action needs to be undertaken unless the failed node is a *direct peer*.
   - Cleanup of connection resources.
-- Failure can be detected implicitely using `Ping` and `Pong` messages.
+- Failure can be detected implicitly using `Ping` and `Pong` messages.
 - Node does not reply to Query messages.
-- After the disconnection of a node $n$, it does *not always* hold that $V(\lambda)_{t + 1} = V(\lambda)_t - \\{n\\}$.
-- In this example: $V(x)_{t+1} = V(x)_t - \\{b, d\\} \rightarrow$ data of $b$ and $d$ is lost!
+- After the disconnection of a node $n$, it does *not always* hold that $V(\lambda)\_{t + 1} = V(\lambda)\_t - \\{n\\}$.
+- In this example: $V(x)\_{t+1} = V(x)\_t - \\{b, d\\} \rightarrow$ data of $b$ and $d$ is lost!
 
 .width-100[
-![Gnutella Failure](assets/lectures/dht/gnutella_failure.svg)
+![Gnutella Failure](figures/lec6/gnutella_failure.svg)
 ]
 
 ---
@@ -331,18 +330,18 @@ $x$ prepares a ping descriptor to discover to local virtual overlay network.
   - Probability of finding data is dependent on structure of the network (e.g., number of direct peers) and TTL.
   - What happens when we increase TTL?
 - No built-in replication.
-  - Replication is dependent on user behaviour.
+  - Replication is dependent on user behavior.
 - Security issues, due to pattern matching in queries.
   - How do we know that `metallica_enter_sandman.mp3` is not `justin_bieber_baby.mp3` or a virus?
 - Not all nodes in the network are accessible! $\rightarrow V(\lambda)$
 
 ---
 
-# Issues with these approaches.
+# Issues with these approaches
 
 - Not reliable.
   - Data is lost if a particular node fails.
-  - Node failure implicitely influence others nodes and network content (e.g., $V(\lambda)$).
+  - Node failure implicitly influence others nodes and network content (e.g., $V(\lambda)$).
 - Not private and not secure.
   - How do ensure that the contents of file named $f$ really represents $f$?
 - Not efficient and not scalable.
@@ -363,12 +362,12 @@ class: middle
 
 # Hash tables
 
-- A hash table would be able to address some of these concerns.
-  - *Efficient & scalable:* $\mathcal{O}(1)$ lookup and store operations (on a single machine).
-  - *Secure:* key $\equiv$ SHA-256 hash (or other hash function) of file $\rightarrow$ ensures file contents.
+A hash table would be able to address some of these concerns.
+- *Efficient & scalable:* $\mathcal{O}(1)$ look-up and store operations (on a single machine).
+- *Secure:* key $\equiv$ SHA-256 hash (or other hash function) of file $\rightarrow$ ensures file contents.
 
 **Core idea:** A *scalable indexing* approach for distributed systems by hashing a key to a specific machine in the network.
-- The data transfer system is scalable (direct, host-to-host) since the underlaying IP (hiearchical) infrastructure supports it.
+- The data transfer system is scalable (direct, host-to-host) since the underlying IP (hierarchical) infrastructure supports it.
 - But distributed systems need a scalable indexing system as well because of the virtual overlay network.
 
 ---
@@ -378,10 +377,10 @@ class: middle
 - Introduced by Sylvia Ratnasamy et al in 2001.
 - Basically: take a hash map and apply it to the scale of the internet.
 - Fully distributed.
-- Scalable (nodes only contain small amount of informations about adjacent nodes).
+- Scalable (nodes only contain small amount of information about adjacent nodes).
 - Fault-tolerant (can route around network disruptions).
-- Does not impose a hiearchical naming structure to achieve scalability.
-  - "*Hierachical*": ID's starting with 0 are on the left, ID's with 1 on the right (a la binary-search).
+- Does not impose a hierarchical naming structure to achieve scalability.
+  - "*Hierarchical*": ID's starting with 0 are on the left, ID's with 1 on the right (a la binary-search).
 
 ---
 
@@ -390,7 +389,7 @@ class: middle
 - As the foundation of an internet-scale application.
 - CAN operations:
   - Insertion
-  - Lookup
+  - Look-up
   - Deletion
 - Every CAN node stores:
   - A chunk (*zone*) of the entire hash table.
@@ -405,7 +404,7 @@ class: middle
 
 - Virtual overlay network is a $d$-dimensional Cartesian space $C$.
   - E.g., 2-dimensional $[0,1] \times [0,1]$ Cartesian space.
-- At any point in time, the *entire* coordinate space is *dynamically* partitioned among all nodes in the system, such that every nodes is responsible for a distinct zone.
+- At any point in time, the *entire* coordinate space is *dynamically* partitioned among all nodes in the system, such that every node is responsible for a distinct zone.
 - Using a $K, V$ pair, $K$ is hashed to a point $P \in C$ using a *uniform deterministic hash function $h$*.
   - Why uniform and deterministic?
 - If the point $P$ is not owned by the requesting node or its immediate neighbors, the request must be routed through the CAN infrastructure until it reaches the desired zone.
@@ -421,7 +420,7 @@ class: middle
   - Zone range
 
 .width-100[
-![CAN Zones](assets/lectures/dht/can_zones.png)
+![CAN Zones](figures/lec6/can_zones.png)
 ]
 
 ---
@@ -453,11 +452,11 @@ class: middle
 
 # CAN Construction
 
-- Spltting the allocated zone of an existing node, and retaining a certain half of the splitted zone to the joining node along with all points which are located in the relevant half.
+- Splitting the allocated zone of an existing node, and retaining a certain half of the splitted zone to the joining node along with all points which are located in the relevant half.
 - This process can be divided into several steps:
   1. New node must assign itself a random coordinate.
   2. Then, the new node must have a node currently associated with the CAN (can be done differently).
-  3. Using CAN routing, find the zone associated with the choosen coordinate.
+  3. Using CAN routing, find the zone associated with the chosen coordinate.
   4. The current occupant node of the zone splits its zone in half and assigns one half to the new done. The split assumes a certain *ordering of dimensions* so a split can be undone at a later time.
   5. Key-Value pairs of the reassigned half-zone are transferred to the new node.
   6. Sets of neighbors in all adjacent zones are updated. Thus, insertion: $\mathcal{O}(d)$.
@@ -471,7 +470,7 @@ class: middle
 When nodes leave a CAN, we need to ensure that the zones they occupied are taken over by the remaining nodes.
 
 *Clean exit*:
-- Node explicitely hands over the zone (including the key-value) pairs to the (newly) responsible and remaining nodes.
+- Node explicitly hands over the zone (including the key-value) pairs to the (newly) responsible and remaining nodes.
 - Zone will be handed over to the smallest adjacent zone (check correctness).
 
 ---
@@ -488,10 +487,10 @@ When nodes leave a CAN, we need to ensure that the zones they occupied are taken
 
 Every neighboring node initiates a `TAKEOVER` procedure:
 
-1. Evey neighbor zone starts a timer proportionally to the volume of the zone.
+1. Every neighbor zone starts a timer proportionally to the volume of the zone.
 2. When the timer expires, the neighbor sends a `TAKEOVER` message to all other neighbors with new zone information (including failed zones).
 
-Upon the receival of a `TAKEOVER` message, a node cancels its timer if and only if the volume of the receiving zone is smaller then its own.
+Upon the reception of a `TAKEOVER` message, a node cancels its timer if and only if the volume of the receiving zone is smaller then its own.
 
 In this manner, a neighbor is chosen *who is still alive* and has the *smallest zone* (why smallest zone?).
 
@@ -504,7 +503,7 @@ In this manner, a neighbor is chosen *who is still alive* and has the *smallest 
 - Interesting idea of applying *hash-functions* to distributed systems!
 - *Replication* by applying multiple (different) hash-functions (or one could hash a hash).
 - Several failure cases still possible. Possible routing failure handled by flooding!
-  - Inefficient consumption of bandwith in large networks.
+  - Inefficient consumption of bandwidth in large networks.
   - Same message can arrive more than once (use Gnutella random-id safeguard).
 - Rather inefficient messaging:
   - *Shortest* path length: 0
@@ -521,7 +520,7 @@ class: middle, center
 
 # Mid-lecture Recap!
 
-![There will be no order, only chaos](assets/lectures/dht/no-order.jpg)
+![There will be no order, only chaos](figures/lec6/no-order.jpg)
 
 ---
 
@@ -529,8 +528,8 @@ class: middle, center
 
 - Major challenge in P2P is how to achieve **efficient** *resource search*.
   - *Virtual overlay networks* achieve this by introducing *hierarchy* (order $\rightarrow$ no chaos :-)).
-  - Hierachy helps in this situation since it *elliminates* routes, by *reducing* the number of search-steps.
-  - *Example*: binary search is efficient ($\mathcal{O}(\text{log}(n))$) because of the hierachical, i.e., structured nature of sorted lists $\rightarrow$ the element on the left is always equal or smaller than me.
+  - Hierarchy helps in this situation since it *eliminates* routes, by *reducing* the number of search-steps.
+  - *Example*: binary search is efficient ($\mathcal{O}(\text{log}(n))$) because of the hierarchical, i.e., structured nature of sorted lists $\rightarrow$ the element on the left is always equal or smaller than me.
 - Due to the introduction of (virtual) *overlay networks*, we are able to categorize P2P systems:
   - Unstructured P2P system.
   - Structured P2P system.
@@ -555,19 +554,19 @@ Do not impose any type of structure on the overlay network, or are just loosely 
 Impose hierarchy (structure) on virtual overlay networks.
 
 - Topology of the network is tightly controlled,
-- Any content can be reached in a relatively small number of steps due to deterministic lookup through *routing*.
-- Higher search efficiency due to imposed hiearachy.
+- Any content can be reached in a relatively small number of steps due to deterministic look-up through *routing*.
+- Higher search efficiency due to imposed hierarchy.
 * Performance (search efficiency) is directly related to how nodes are arranged and how the overlay network is maintained.
 
 ---
 
 class: middle, center
 
-### Improve worst-case search efficiency of Content Adressable Networks!
+### Improve worst-case search efficiency of Content Addressable Networks!
 
 .center[
 .width-70[
-![Virtual Overlay Network](assets/lectures/dht/overlay-network.png)
+![Virtual Overlay Network](figures/lec6/overlay-network.png)
 ]
 ]
 
@@ -577,11 +576,11 @@ class: middle, center
 
 - Proposed in 2001 by Stoica et al. at MIT
 - *Consistent Hashing* (Karger et al., also at MIT) with SHA-1 hash function.
-  - Only $\mathcal{O}(\frac{k}{n})$ keys need to be reshuffeled at most when a node joins or leaves.
+  - Only $\mathcal{O}(\frac{k}{n})$ keys need to be reshuffled at most when a node joins or leaves.
 - Data-items use a *$m$-bit identifier*, where $m$ is a predefined system parameter.
 - Overlay network is arranged in a *identifier circle* ranging from $0$ to $2^m - 1$.
-- A *node identifier* is choosen by hashing the IP address.
-- A *key identifier* is choosen by hashing the key.
+- A *node identifier* is chosen by hashing the IP address.
+- A *key identifier* is chosen by hashing the key.
 - Supports a single operation: `lookup(key)`.
   - Returns the host which holds the data associated with the key.
 
@@ -604,11 +603,13 @@ class: middle, center
 
 ---
 
+class: smaller
+
 # Chord Consistent Hashing
 
 Consistent hashing in Chord assigns keys to nodes as follows:
 
-- Key $k$ is assigned to the first node whose identifier is equal to or follows $k$ in the indentifier space.
+- Key $k$ is assigned to the first node whose identifier is equal to or follows $k$ in the identifier space.
 - This node is called the *successor node* of $k$, denoted `successor(k)`.
 - Enables **minimal disruption**.
 - Which is in principle, the first node on the identifier ring starting from $k$.
@@ -628,20 +629,20 @@ To maintain the consistent (hashing) mapping, let us consider a node $n$ which
 
 class: center, middle
 
-![Chord DHT Consistent Hashing](assets/lectures/dht/dht-chord.png)
+![Chord DHT Consistent Hashing](figures/lec6/dht-chord.png)
 
 ---
 
 # Routing
 
-- In the most simple case, Chord nodes only need to maintain the address of the sucessor node.
+- In the most simple case, Chord nodes only need to maintain the address of the successor node.
   - Scalable yes, but, $\mathcal{O}(n)$ operations are required. *Unacceptable* in in large systems!
 - To accelerate this process, Chord maintains additional information.
 
 ## Finger Table
 
 - As before, let $m$ be the number of bits in the identifier.
-- Every node $n$ maints a routing (finger) table with at most $m$ entries.
+- Every node $n$ maintains a routing (finger) table with at most $m$ entries.
 - Entry $i$ in the finger table of node $n$:
   - First node $s$ that *succeeds* $n$ by at least $2^{i - 1}$ on the *identifier circle*.
   - Meaning: $s = \text{successor}(n + 2^{i-1})$
@@ -650,7 +651,7 @@ class: center, middle
 
 class: center, middle
 
-![Chord Finger Table](assets/lectures/dht/chord-finger-table.jpg)
+![Chord Finger Table](figures/lec6/chord-finger-table.jpg)
 
 ---
 
@@ -662,7 +663,7 @@ class: center, middle
 
 .center[
 .width-80[
-![Chord Finger Table Initial Situation](assets/lectures/dht/chord-clean.svg)
+![Chord Finger Table Initial Situation](figures/lec6/chord-clean.svg)
 ]
 ]
 
@@ -675,7 +676,7 @@ class: center, middle
 
 .center[
 .width-100[
-![Chord Finger Table Initial Situation](assets/lectures/dht/chord-finger-1.svg)
+![Chord Finger Table Initial Situation](figures/lec6/chord-finger-1.svg)
 ]
 ]
 
@@ -688,20 +689,20 @@ class: center, middle
 
 .center[
 .width-100[
-![Chord Finger Table Initial Situation](assets/lectures/dht/chord-finger-2.svg)
+![Chord Finger Table Initial Situation](figures/lec6/chord-finger-2.svg)
 ]
 ]
 
 ---
 
-## Finger Table: thirth entry
+## Finger Table: third entry
 
 - $i = 3$
 - $s = \text{successor}(n + 2^{i-1} \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(8) = 8$
 
 .center[
 .width-100[
-![Chord Finger Table Initial Situation](assets/lectures/dht/chord-finger-3.svg)
+![Chord Finger Table Initial Situation](figures/lec6/chord-finger-3.svg)
 ]
 ]
 
@@ -714,7 +715,7 @@ class: center, middle
 
 .center[
 .width-100[
-![Chord Finger Table Initial Situation](assets/lectures/dht/chord-finger-4.svg)
+![Chord Finger Table Initial Situation](figures/lec6/chord-finger-4.svg)
 ]
 ]
 
@@ -774,7 +775,7 @@ Why "`- j`"?
 
 $\rightarrow$ Node 0 is the preceding node of $k = 4$.
 
-Of course, one could implement a mechanism that prevents node 4 from looking up its own preceiding node in the network.
+Of course, one could implement a mechanism that prevents node 4 from looking up its own preceding node in the network.
 
 ---
 
@@ -793,7 +794,7 @@ So, what needs to happen in order to ensure a consistent network when a node $n$
 - $n$ learns it predecessor and fingers by asking $n^\prime$ to look them up $\text{find-predecessor}(n)$.
 - Finger table can also constructed through this mechanism.
   - Remember: $i$-th entry is $\text{successor}(n + 2^{i - 1}\text{~}\mathrm{mod}\text{~}2^m)$
-  - However: $\mathcal{O}(m \text{~log~} N)$ lookups, can we do better?
+  - However: $\mathcal{O}(m \text{~log~} N)$ look-ups, can we do better?
   - Check if the $i$-th finger is also correct for $i + 1$.
   - Happens when there is no node in that interval, meaning, `finger[i].node >= finger[i + 1].start`.
 
@@ -841,7 +842,7 @@ So, what needs to happen in order to ensure a consistent network when a node $n$
 - Deterministic (queries will end at the desired node, unlike Gnutella).
 - *Iterative* lookup process.
 - *Timeouts* to detect failures :(
-- No guarentees (with high probability ...) :(
+- No guarantees (with high probability ...) :(
 - Routing tables NEED to be correct :(
 
 ---
@@ -858,19 +859,19 @@ class: center, middle
 ### we can **load balance**
 
 
-# But can we obtain these properties in more efficient way with guarentees?
+# But can we obtain these properties in more efficient way with guarantees?
 
 ---
 
 # Kademlia
 
-- Configuration information spreads automatically as a side-effect of key lookups (gossipping).
+- Configuration information spreads automatically as a side-effect of key look-ups (gossiping).
 - Nodes have enough knowledge and flexibility to route queries through low-latency paths.
 - Asynchronous queries to avoid timeout delays from failed nodes.
-- Minimizes the number of configuration messages (gaurentee).
+- Minimizes the number of configuration messages (guarantee).
 - 160-bit identifiers (e.g., using SHA-1 or some other hash function, implementation specific).
 - Key-Value pairs are stored on nodes based on *closeness* in the identifier space.
-- Identifier based *routing* algorithm by imposing a *hiararchy* (virtual overlay network).
+- Identifier based *routing* algorithm by imposing a *hierarchy* (virtual overlay network).
 
 ---
 
@@ -892,7 +893,7 @@ class: middle, center
 - Allows nodes to receive lookup queries from the same distribution of nodes contained in their routing table.
   - Kademlia uses this to "learn" routing information.
   - Chord does not learn routing information from queries.
-  - Chord cannot send queries do nodes preceiding the current node (needs to go clock-wise).
+  - Chord cannot send queries do nodes preceding the current node (needs to go clock-wise).
 
 ---
 
@@ -900,12 +901,12 @@ class: middle, center
 
 - $m = 160$ bits
 - Treat nodes as leaves in an (unbalanced) binary tree (sorted by prefix)
-- The Kademlia protocol ensures that every node knows at least one other node in every subtree.
-  - Guarentees that any node can locate any other node given its identifier.
+- The Kademlia protocol ensures that every node knows at least one other node in every sub-tree.
+  - Guarantees that any node can locate any other node given its identifier.
 
 .center[
 .width-100[
-![Kademlia Subtrees](assets/lectures/dht/kademlia-subtrees.png)
+![Kademlia Subtrees](figures/lec6/kademlia-subtrees.png)
 ]
 ]
 
@@ -936,7 +937,7 @@ $\rightarrow$ Ensures redundancy
 
 .center[
 .width-80[
-![k-bucket](assets/lectures/dht/k-bucket.png)
+![k-bucket](figures/lec6/k-bucket.png)
 ]
 ]
 
@@ -971,11 +972,11 @@ The most important procedure a Kademlia participant must perform is locating the
 
 ## Storing data
 
-Using the `FIND_NODE(id)` procedure, *storing* and making data *persistant* is trivial.
+Using the `FIND_NODE(id)` procedure, *storing* and making data *persistent* is trivial.
 
 $\rightarrow$ Use $k$ closest node to store and persist the data.
 
-- To ensure persistence in the precense of *node failures*, every node periodically republishes the key-value pair to the $k$ closest nodes.
+- To ensure persistence in the presence of *node failures*, every node periodically republishes the key-value pair to the $k$ closest nodes.
 - Updating scheme can be implemented. For example: delete data after 24 after publication to limit stale information.
 
 ---
@@ -985,7 +986,7 @@ $\rightarrow$ Use $k$ closest node to store and persist the data.
 1. Find $k$ closest nodes of the specified identifier using `FIND_VALUE(id)`.
 2. Halt procedure whenever the set of closest nodes doesn't change or a value is returned.
 
-$\rightarrow$ For chaching purposes, once a lookup succeeds, the requesting node stores the key-value pair at the *closest node to the key that did not return the value*.
+$\rightarrow$ For caching purposes, once a lookup succeeds, the requesting node stores the key-value pair at the *closest node to the key that did not return the value*.
 
 - Because of the *unidirectionality* of the topology (requests will usually follow the same path), future searches for the same key are likely to hit cached entries before querying the closest node.
 
@@ -1002,7 +1003,7 @@ Very simple approach compared to other implementations.
 1. Node $n$ initializes it's k-bucket (empty).
 2. A node $n$ connects to an already participating node $j$.
 3. Node $n$ then performs a *node-lookup* for its own identifier.
-   - Yielding the $k$ closests node.
+   - Yielding the $k$ closest node.
    - By doing so $n$ inserts itself in other nodes $k$-buckets.
 
 **Note**: The new node should store keys which are the closest to its own identifier by obtaining the $k$-closest nodes.
@@ -1015,7 +1016,7 @@ Again, as is joining, leaving is very simple as well.
 
 $\rightarrow$ Just disconnect.
 
-- Failure handling is *implicit* in Kademlia due to *data persistance*.
+- Failure handling is *implicit* in Kademlia due to *data persistence*.
 - No special actions required by other nodes (failed node will just be removed from the k-bucket).
 
 ---
@@ -1039,7 +1040,7 @@ $\rightarrow$ Thus, a $k$-buckets covers some range of the 160 bit identifier sp
 
 .center[
 .width-80[
-![k-bucket](assets/lectures/dht/k-bucket.png)
+![k-bucket](figures/lec6/k-bucket.png)
 ]
 ]
 
@@ -1053,7 +1054,7 @@ $\rightarrow$ Thus, a $k$-buckets covers some range of the 160 bit identifier sp
 
 .center[
 .width-80[
-![Kademlia Routing 1](assets/lectures/dht/kademlia-routing-1.svg)
+![Kademlia Routing 1](figures/lec6/kademlia-routing-1.svg)
 ]
 ]
 
@@ -1065,7 +1066,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 2](assets/lectures/dht/kademlia-routing-2.svg)
+![Kademlia Routing 2](figures/lec6/kademlia-routing-2.svg)
 ]
 ]
 
@@ -1075,7 +1076,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 3](assets/lectures/dht/kademlia-routing-3.svg)
+![Kademlia Routing 3](figures/lec6/kademlia-routing-3.svg)
 ]
 ]
 
@@ -1085,7 +1086,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 4](assets/lectures/dht/kademlia-routing-4.svg)
+![Kademlia Routing 4](figures/lec6/kademlia-routing-4.svg)
 ]
 ]
 
@@ -1095,7 +1096,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 5](assets/lectures/dht/kademlia-routing-5.svg)
+![Kademlia Routing 5](figures/lec6/kademlia-routing-5.svg)
 ]
 ]
 
@@ -1105,7 +1106,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 6](assets/lectures/dht/kademlia-routing-6.svg)
+![Kademlia Routing 6](figures/lec6/kademlia-routing-6.svg)
 ]
 ]
 
@@ -1115,7 +1116,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 7](assets/lectures/dht/kademlia-routing-7.svg)
+![Kademlia Routing 7](figures/lec6/kademlia-routing-7.svg)
 ]
 ]
 
@@ -1127,7 +1128,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 8](assets/lectures/dht/kademlia-routing-8.svg)
+![Kademlia Routing 8](figures/lec6/kademlia-routing-8.svg)
 ]
 ]
 
@@ -1137,7 +1138,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 9](assets/lectures/dht/kademlia-routing-9.svg)
+![Kademlia Routing 9](figures/lec6/kademlia-routing-9.svg)
 ]
 ]
 
@@ -1147,7 +1148,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 10](assets/lectures/dht/kademlia-routing-10.svg)
+![Kademlia Routing 10](figures/lec6/kademlia-routing-10.svg)
 ]
 ]
 
@@ -1157,7 +1158,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 11](assets/lectures/dht/kademlia-routing-11.svg)
+![Kademlia Routing 11](figures/lec6/kademlia-routing-11.svg)
 ]
 ]
 
@@ -1167,7 +1168,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 12](assets/lectures/dht/kademlia-routing-12.svg)
+![Kademlia Routing 12](figures/lec6/kademlia-routing-12.svg)
 ]
 ]
 
@@ -1177,7 +1178,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 13](assets/lectures/dht/kademlia-routing-13.svg)
+![Kademlia Routing 13](figures/lec6/kademlia-routing-13.svg)
 ]
 ]
 
@@ -1187,7 +1188,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 14](assets/lectures/dht/kademlia-routing-14.svg)
+![Kademlia Routing 14](figures/lec6/kademlia-routing-14.svg)
 ]
 ]
 
@@ -1197,7 +1198,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 15](assets/lectures/dht/kademlia-routing-15.svg)
+![Kademlia Routing 15](figures/lec6/kademlia-routing-15.svg)
 ]
 ]
 
@@ -1207,7 +1208,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 16](assets/lectures/dht/kademlia-routing-16.svg)
+![Kademlia Routing 16](figures/lec6/kademlia-routing-16.svg)
 ]
 ]
 
@@ -1217,7 +1218,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 17](assets/lectures/dht/kademlia-routing-17.svg)
+![Kademlia Routing 17](figures/lec6/kademlia-routing-17.svg)
 ]
 ]
 
@@ -1225,12 +1226,12 @@ class: middle, center
 
 # Kademlia Summary
 
-- Efficient, guaranteed lookups $\mathcal{O}(\text{log} N)$
+- Efficient, guaranteed look-ups $\mathcal{O}(\text{log} N)$
 - XOR-based metric topology (provable consistency and performance).
 - Possibly latency minimizing (by always picking the lowest latency note when selecting $\alpha$ nodes).
 - Lookup is iterative, but concurrent ($\alpha$).
-- Kademlia protocol implicitely enables data persitance and recovery, no special failure mechanisms requires.
-- Flexibale routing table robust against DoS (route table flushing).
+- Kademlia protocol implicitly enables data persistence and recovery, no special failure mechanisms requires.
+- Flexible routing table robust against DoS (route table flushing).
 
 
 ---
@@ -1239,7 +1240,7 @@ class: middle, center
 
 # Key point of the lecture
 
-## Hiarachy imposes structure, which can be utilized to improve efficiency and scalability.
+## Hierarchy imposes structure, which can be utilized to improve efficiency and scalability.
 
 ---
 
