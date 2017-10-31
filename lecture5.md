@@ -8,11 +8,12 @@ Lecture 5: Consensus
 
 # Today
 
-- Most important abstraction in distributed systems: **consensus**.
+- *Most important* abstraction in distributed systems: **consensus**.
 - Builds upon broadcast and failure detectors.
 - From consensus, we will build:
     - total order broadcast
     - replicated state machines
+    - ... and almost all higher level distributed fault-tolerant applications!
 
 ---
 
@@ -125,6 +126,10 @@ class: smaller
 
 .center.width-60[![](figures/lec5/hierarchical-consensus.png)]
 
+???
+
+- What if a process does not propose?
+
 ---
 
 # Execution without failure
@@ -194,6 +199,8 @@ class: smaller
 ---
 
 .center.width-60[![](figures/lec5/uniform-hierarchical-consensus2.png)]
+
+<span class="Q">[Q]</span> Why is reliable non-uniform broadcast sufficient to have uniform consensus?
 
 ---
 
@@ -288,6 +295,8 @@ Elect as leader the correct process with the minimal rank. Eventually the set of
 
 <span class="Q">[Q]</span> What if instead of crashing, $p_1$ eventually trusts $p_2$?
 
+<span class="Q">[Q]</span> Could $p_1$ and $p_2$ keep bouncing NACKs to each other?
+
 
 ---
 
@@ -319,7 +328,7 @@ Elect as leader the correct process with the minimal rank. Eventually the set of
 # Read/Write Epoch consensus
 
 - Let **initialize** the *Read/Write Epoch consensus* algorithm with the state of the most recently aborted epoch consensus instance.
-    - The state contains a timestamp $valts$ and value $val$.
+    - The state contains a proposal $val$ and its associated timestamp $valts$.
     - Passing the state to the next epoch consensus serves the *validity* and *lock-in* properties.
 - The algorithm involves *two rounds of messages* from the leader to all processes.
     - The leader **writes** its proposal value to all processes, who store the epoch timestamp and the value in their state, and acknowledge this to the leader.
@@ -328,7 +337,6 @@ Elect as leader the correct process with the minimal rank. Eventually the set of
     - To prevent this, the leader first **reads** the state of the processes, which return `State` messages.
     - The leader receives a quorum of `State` messages and choses the value that comes with the highest timestamp, if one exists.
     - The leader *decides* and broadcasts its decision to all processes, which then decide too.
-- We assume a **majority of correct processes**.
 
 ---
 
@@ -378,9 +386,9 @@ class: smaller
 
 # Correctness
 
-Assume $N > 2f$, where $f$ is the number of crash faults.
+Assume a **majority of correct processes**, i.e. $N > 2f$, where $f$ is the number of crash faults.
 
-- *Lock-in*:
+- *Lock-in*: If a correct process has ep-decided $v$ in an epoch consensus with timestamp $ts' \leq ts$, then no correct process ep-decides a value different from $v$.
     - If some process ep-decided $v$ at $ts' < ts$, then it decided after receiving a `Decided` message with $v$ from leader $l'$ of epoch $ts'$.
     - Before sending this message, $l'$ had broadcast a `Write` containing $v$ and collected `Accept` messages.
     - These responding processes set their variables $val$ to $v$ and $valts$ to $ts'$.
@@ -396,16 +404,18 @@ class: smaller
 
 # Correctness
 
-- *Validity*:
+- *Validity*: If a correct process ep-decides $v$, then $v$ was ep-proposed by the leader $l'$ of some epoch consensus with timestamp $ts' \leq ts$ and leader $l'$.
     - If some process ep-decides $v$, it is because this value was delivered from a `Decided` message.
     - Furthermore, every process stores in $val$ only the value received in a `Write` message from the leader.
     - In both cases, this value comes from `tmpval` of the leader.
     - In any epoch, the leader sets `tmpval` only to the value it ep-proposed or to some value it received in a `State` message from another process.
     - By backward induction, $v$ was ep-proposed by the leader in some epoch $ts' \leq ts$.
-- *Uniform agreement* + *integrity*:
+- *Uniform agreement* + *integrity*: No two processes ep-decide differently + Every correct process ep-decides at most once.
     - $l$ sends the same value to all processes in the `Decided` message.
-- *Termination*:
+- *Termination*: If the leader $l$ is correct, has ep-proposed a value, and no correct process aborts this epoch consensus, then every correct process eventually ep-decides some value.
     - When $l$ is correct and no process aborts the epoch, then every process eventually receives a `Decide` message and ep-decides.
+
+<span class="Q">[Q]</span> What may go wrong if we do not assume a majority of correct processes?
 
 ---
 
@@ -580,7 +590,7 @@ class: middle, center
 
 - **Consensus** is the problem of making processes all *agree* on one of the values they propose.
 - The **FLP impossibility result** states that no consensus protocol can be proven
-that always terminate in an asynchronous systems.
+to always terminate in an asynchronous system.
 - In fail-silent, *Hierarchical Consensus* provides an implementation based on broadcast and failure detection.
 - In fail-noisy, *Leader-Driven Consensus* achieves consensus by repeatedly running epoch consensus until all decisions are taken.
 - The consensus primitive **greatly simplifies** the implementation of any fault-tolerant consistent distributed system.
