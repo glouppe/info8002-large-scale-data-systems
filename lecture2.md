@@ -6,11 +6,11 @@ Lecture 2: Basic abstractions
 
 ---
 
-# Outline
+# Today
 
-- In this lesson, we will define **basic abstractions** that capture the
-  fundamental characteristics of various distributed systems, and on top of
-  which we will later define more elaborate abstractions.
+- Define **basic abstractions** that capture the
+  fundamental characteristics of distributed systems.
+    - We will later define more elaborate abstractions on top of those.
 - Three main abstractions:
     - *Process* abstractions
     - *Link* abstractions
@@ -21,7 +21,7 @@ Lecture 2: Basic abstractions
 
 # Need for distributed abstractions
 
-- Core of any distributed system is a set of distributed algorithms.
+- Core of any distributed system is a *set of distributed algorithms*.
     - Implemented as a middleware between network (OS) and the application.
 - **Reliable** applications need underlying services **stronger** than transport protocols (e.g., TCP or UDP).
 
@@ -38,7 +38,8 @@ Lecture 2: Basic abstractions
     - How to do *group communication*?
 - High-level services
     - Sometimes one-to-many communication is not enough.
-    - Need *reliable high-level services*.
+    - Need reliable *higher-level services*.
+- Strategy: build complex distributed systems in a **bottom-up** fashion, from simpler ones.
 
 ---
 
@@ -52,7 +53,7 @@ class: middle, center
 
 .center[![](figures/lec2/dp-abstraction.png)]
 
-- A *distributed algorithm* is a distributed collection of $N$ processes implemented by *identical* automata.
+- A *distributed algorithm* is a distributed collection $\Pi = \\{ p, q, r, ... \\}$ of $N$ processes implemented by *identical* automata.
 - The automaton at a process regulates the way the process executes its computation steps.
 - Processes jointly implement the application.
     - Need for **coordination**.
@@ -114,7 +115,7 @@ class: middle, center
 
 ---
 
-# Correctness example (1)
+# Correctness examples
 
 .grid[
 .col-2-3[
@@ -129,11 +130,12 @@ class: middle, center
 
 ---
 
-# Correctness example (2)
+# Correctness examples
 
 ## TCP
 - Safety: messages are not duplicated and received in the order they were sent.
 - Liveness: messages are not lost.
+    - i.e., messages are eventually delivered.
 
 ---
 
@@ -145,6 +147,8 @@ class: middle, center
     - **failure** behavior of processes and channels
     - **timing** behavior of processes and channels
 
+.center[![](figures/lec2/chandra_failure_detectors.png)]
+.caption[Together, these assumptions define sets of solvable problems.]
 
 ---
 
@@ -168,10 +172,10 @@ class: middle, center
 
 # Crash-stop failures
 
-- A process stops taking steps.
+- A process **stops taking steps**.
     - Not sending messages.
     - Not receiving messages.
-- **By default**, we assume the crash-stop process abstraction.
+- We assume the crash-stop process abstraction *by default*.
     - Hence, do not recover.
     - <span class="Q">[Q]</span> Does this mean that processes are not allowed to recover?
 
@@ -179,17 +183,17 @@ class: middle, center
 
 # Omission failures
 
-- Process omits sending or receiving messages.
+- Process **omits** sending or receiving messages.
     - *Send omission*: A process omits to send a message it has to send according to its algorithm.
     - *Receive omission*: A process fails to receive a message that was sent to it.
-- In general, omission failures are due to buffer overflows.
-- With omission failures, a process deviates from is algorithm by dropping messages that should have been exchanged with other processes.
+- Often, omission failures are due to *buffer overflows*.
+- With omission failures, a process deviates from its algorithm by dropping messages that should have been exchanged with other processes.
 
 ---
 
 # Crash-recovery failures
 
-- A process might crash.
+- A process *might crash*.
     - It stops taking steps, not receiving and sending messages.
 - It may **recover** after crashing.
     - The process emits a `<Recovery>` event upon recovery.
@@ -198,17 +202,17 @@ class: middle, center
     - Storage survives crashes.
     - E.g., save state to storage, crash, recover, read saved state, ...
 - A failure is different in the crash-recovery abstraction:
-    - A process is **faulty** in an execution if
+    - A process is *faulty* in an execution if
         - It crashes and never recovers, or
         - It crashes and recovers infinitely often.
 
-    - Hence, a **correct** process may crash and recover.
+    - Hence, a *correct* process may crash and recover.
 
 ---
 
 # Byzantine failures
 
-- A process may behave arbitrarily.
+- A process may **behave arbitrarily**.
     - Sending messages not specified by its algorithm.
     - Updating its state as not specified by its algorithm.
 
@@ -223,6 +227,18 @@ class: middle, center
 
 <span class="Q">[Q]</span> Explain how failure modes are special cases of one another.
 
+???
+
+- Crash-stop special case of omission:
+    - Omission restricted to omitting everything after a certain event.
+- Crash-recovery and omission are the same:
+    - Crashing, recovering and reading last state from storage
+    - Just as same as omitting sending/receive while being crashed
+    - But in crash-recovery, it might not be possible to restore all state
+    - Therefore crash-recovery extends omission with amnesia
+- Crash-recovery special case of Byzantine
+    - Since Byzantine allows anything
+
 ---
 
 class: middle, center
@@ -233,10 +249,10 @@ class: middle, center
 
 # Links
 
-- In our abstraction, every process may **logically** communicate with every other process (a).
-- The physical implementation may differ (b-d).
+- Every process may **logically** communicate with every other process (a).
+- The physical implementation may *differ* (b-d).
 
-.stretch[![](figures/lec2/links.png)]
+.center.width-80[![](figures/lec2/links.png)]
 
 ---
 
@@ -249,12 +265,30 @@ class: middle, center
     - Channel delivers any message sent infinitely many times.
     - Can be implemented using fair-loss links.
 
-- *Perfect links* (i.e. reliable)
+- *Perfect links* (reliable)
     - Channel delivers any message sent exactly once.
     - Can be implemented using stubborn links.
     - **By default**, we assume the perfect links abstraction.
 
 - <span class="Q">[Q]</span> What abstraction do UDP and TCP implement?
+
+???
+
+- TCP: perfect links
+- UDP: fair-loss links
+
+---
+
+# Stubborn links: interface
+
+.center[![](figures/lec2/sl-interface.png)]
+
+<span class="Q">[Q]</span> Which property is safety/liveness/neither?
+
+???
+
+- SL1. Stubborn delivery: liveness
+- SL2. No creation: safety
 
 ---
 
@@ -264,6 +298,12 @@ class: middle, center
 
 <span class="Q">[Q]</span> Which property is safety/liveness/neither?
 
+???
+
+- PL1. Reliable delivery: liveness
+- PL2. No duplication: safety
+- PL3. No creation: safety
+
 ---
 
 # Perfect links: implementation
@@ -272,9 +312,13 @@ class: middle, center
 
 <span class="Q">[Q]</span> How does TCP efficiently maintain its `delivered` log?
 
+???
+
+- With sequence numbers
+
 ---
 
-# Correctness
+# Correctness of PL
 
 - *PL1. Reliable delivery*
     - Guaranteed by the Stubborn link abstraction. (The Stubborn link will deliver the message an infinite number of times.)
@@ -293,7 +337,7 @@ class: middle, center
 
 # Timing assumptions
 
-- **Timing assumptions** correspond to the behavior of processes and links with respect to the passage of time. They relate to
+- Timing assumptions correspond to the **behavior** of processes and links **with respect to the passage of time**. They relate to
     - different processing speeds of processes;
     - different speeds of messages (channels).
 - Three basic types of system:
@@ -310,10 +354,37 @@ class: middle, center
     - Processing time may vary arbitrarily.
     - No bound on transmission time.
 - But *causality* between events can still be determined.
+    - How?
 
 ---
 
-class: smaller
+# Causal order
+
+The **happened-before** relation $e_1 \to e_2$ denotes that $e_1$ may have caused $e_2$.
+It is true in the following cases:
+- *FIFO order*: $e_1$ and $e_2$ occurred at the same process $p$ and $e_1$ occurred $e_2$;
+- *Network order*: $e_1$ corresponds to the transmission of $m$ at a process $p$ and $e_2$ corresponds to its reception at a process $q$;
+- *Transitivity*: if $e_1 \to e'$ and $e' \to e_2$, then $e_1 \to e_2$.
+
+---
+
+# Causal order
+
+.center.width-100[![](figures/lec2/causality.png)]
+
+---
+
+# Similarity of executions
+
+- The **view** of $p$ in $E$, denoted $E|p$ is the subsequence of process steps in $E$ restricted to those of $p$
+- Two executions $E$ and $F$ are *similar w.r.t. to $p$* if $E|p = F|p$.
+- Two executions $E$ and $F$ are *similar* if $E|p = F|p$ for all processes $p$.
+
+## Computation theorem
+
+If two executions $E$ and $F$ have the same collection of events and their **causal order** is preserved, then $E$ and $F$ are similar executions.
+
+---
 
 # Logical clocks
 
@@ -325,27 +396,26 @@ In an asynchronous distributed system, the passage of time can be measured with 
 - When $p$ receives a message event $m$ with timestamp $t(m)$, $p$ updates its logical clock.
     - $l_p := \\max(l_p, t(m))+1$
 
-.center[![Example of logical clock](figures/lec2/logical-clock.png)]
+---
+
+# Logical clocks
+
+.center.width-100[![Example of logical clock](figures/lec2/logical-clock.png)]
 
 ---
 
-# Observing causality
+# Clock consistency condition
 
-- Logical clocks capture **cause-effect relations**.
-- The *happened-before* relation $e_1 \to e_2$ denotes that $e_1$ may have caused $e_2$.
-  It is true in the following cases:
-    - $e_1$ and $e_2$ occurred at the same process $p$ and $e_1$ occurred $e_2$;
-    - $e_1$ corresponds to the transmission of $m$ at a process $p$ and $e_2$ corresponds to its reception at a process $q$;
-    - if $e_1 \to e'$ and $e' \to e_2$, then $e_1 \to e_2$ (transitivity).
-- *Clock consistency condition*: $e_1 \to e_2 \Rightarrow t(e_1) < t(e_2)$
-    - If $e_1$ is the cause of $e_2$, then $t(e_1) < t(e_2)$.
-    - But not necessarily the opposite:
-        - $t(e_1) < t(e_2)$ does not imply $e_1 \to e_2$.
-        - $e_1$ and $e_2$ may be logically **concurrent**.
+Logical clocks capture **cause-effect relations**:
+$$e_1 \to e_2 \Rightarrow t(e_1) < t(e_2)$$
+
+- If $e_1$ is the cause of $e_2$, then $t(e_1) < t(e_2)$.
+    - Can you prove it?
+- But not necessarily the opposite:
+    - $t(e_1) < t(e_2)$ does not imply $e_1 \to e_2$.
+    - $e_1$ and $e_2$ may be logically **concurrent**.
 
 ---
-
-class: smaller
 
 # Vector clocks
 
@@ -358,7 +428,11 @@ class: smaller
     - $V_p[p] := V_p[p] + 1$
     - $V_p[i] := \\max(V_p[i], V_m[i])$, for $i \neq p$.
 
-.center[![Example of logical clock](figures/lec2/vector-clock.png)]
+---
+
+# Vector clocks
+
+.center.width-100[![Example of logical clock](figures/lec2/vector-clock.png)]
 
 ---
 
@@ -389,6 +463,16 @@ Assumption of three properties:
 
 <span class="Q">[Q]</span> Why studying synchronous systems? What services can be provided?
 
+???
+
+Services:
+- Timed failure detection, e.g. using a heartbeat mechanism.
+- Measure of transit delays
+- Coordination based on time (e.g., manipulating a specific file during a window of time)
+- Worst-case response times.
+- Synchronized clocks, which can then be used to timestamp events in the whole system.
+    - This is feasible up to some bounded offset $\delta$
+
 ---
 
 # Partially synchronous systems
@@ -398,6 +482,12 @@ A partially synchronous system is a system that is synchronous *most of the time
 - But the distributed algorithm will have a long enough time window where everything behaves nicely, so that it can achieve its goal.
 
 <span class="Q">[Q]</span> Are there such systems?
+
+???
+
+A system that is synchronous most of the time, but become asynchronous when messages are lost.
+- E.g., buffer overflow (omission) -> retransmissions -> unpredictable delays
+
 ---
 
 class: middle, center
@@ -434,6 +524,13 @@ class: smaller
 Assuming a crash-stop process abstraction, the **perfect detector** encapsulates the timing assumptions of a *synchronous system*.
 
 .center[![](figures/lec2/pfd-interface.png)]
+
+<span class="Q">[Q]</span> Which property is safety/liveness/neither?
+
+???
+
+- PFD1. Strong completeness: liveness
+- PFD2. Strong accuracy: safety
 
 ---
 
@@ -522,7 +619,7 @@ class: smaller
 
 <span class="Q">[Q]</span> Show that this implementation is correct.
 
-<span class="Q">[Q]</span> Show that reciprocally, the leader election abstraction can implement a perfect detector.
+<span class="Q">[Q]</span> Is LE a failure detector?
 
 ---
 
@@ -556,3 +653,11 @@ and (iii) a failure detector abstraction.
     - Stubborn links
 
 The fail-stop distributed system model substantially simplifies the design of distributed algorithms.
+
+---
+
+# References
+
+- Alpern, Bowen, and Fred B. Schneider. "Recognizing safety and liveness." Distributed computing 2.3 (1987): 117-126.
+- Lamport, Leslie. "Time, clocks, and the ordering of events in a distributed system." Communications of the ACM 21.7 (1978): 558-565.
+- Fidge, Colin J. "Timestamps in message-passing systems that preserve the partial ordering." (1987): 56-66.

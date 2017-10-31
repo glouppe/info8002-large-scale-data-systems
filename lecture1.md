@@ -69,61 +69,88 @@ What is a *distributed system*?
 
 ## Definition
 
-A distributed system (DS) is a collection of entities with a common goal, each of
+A distributed system is a collection of entities with a common goal, each of
 which is *autonomous*, *programmable*, *asynchronous* and *failure-prone*, and
 which communicate through an **unreliable** communication medium.
 
 - *Entity*: a process on a device.
 - *Communication medium*: Wired or wireless network.
 
-A distributed system appears to its users as a *single* coherent system.
+A distributed system appears to its users as a *single* **coherent** system.
 
 ---
 
 ## Internet
 
-.stretch[
+.width-100[
 ![Internet](figures/lec1/internet.jpg)
 .caption[What are the *entities*? What is the *communication medium*?]
 ]
+
+???
+
+- Processes = the operating systems (at servers, desktop computers, mobile devices, etc)
+- Communication = a collection of networks of different kinds (wired, wireless, phone, etc)
+- Even if the laptop of your friend crashes, the Internet should not collapse!
 
 ---
 
 ## CERN data center
 
-.stretch[
+.width-100[
 ![CERN data center](figures/lec1/cern-datacenter.jpg)
 .caption[What are the *entities*? What is the *communication medium*?]
 ]
+
+???
+
+- Processes = the worker processes of a scientific program executing in a distributed or parallel fashion (e.g., with MPI)
+- Communication = local network
 
 ---
 
 ## Massively multiplayer online games
 
-.stretch[
+.width-100[
 ![CERN data center](figures/lec1/wow.jpg)
 .caption[What are the *entities*? What is the *communication medium*?]
 ]
+
+???
+
+- Processes = game software running in player computers, game servers at Blizzard.
+- Communication = the Internet abstraction
+- Mention consensus issues
 
 ---
 
 ## A Hadoop system
 
-.stretch[
+.width-100[
 ![A Hadoop system](figures/lec1/hadoop.jpg)
 .caption[What are the *entities*? What is the *communication medium*?]
 ]
 
 .footnote[Credits: Intelligent Business Strategies, [IBM Big Data Hub](http://www.ibmbigdatahub.com/blog/what-hadoop).]
 
+???
+
+- Processes = user application, computing framework servers (Spark), distributed file systems, and various other daemons managing the resources in the system.
+- Communication = the Internet abstraction
+
 ---
 
 ## Bitcoins
 
-.stretch[
+.width-100[
 ![Bitcoins](figures/lec1/btc.png)
 .caption[What are the *entities*? What is the *communication medium*?]
 ]
+
+???
+
+- Processes = wallets (storing bitcoins), miners (discovering new bitcoins), blockchain (== a distributed and secured database) for storing the transactions.
+- Commmunication = a P2P network on top of the Internet.
 
 ---
 
@@ -137,7 +164,9 @@ A distributed system appears to its users as a *single* coherent system.
 
 - **Technical** importance:
     - Improve *scalability*
+        - Adding computational resources to a system is an easy way to scale its performance to many users.
     - Improve *reliability*
+        - We want high availability and durability of the system.
 
 ---
 
@@ -147,18 +176,32 @@ A distributed system appears to its users as a *single* coherent system.
     - *Scale*: hundreds or thousands of machines.
         - Google: 4k-machine MapReduce cluster
         - Facebook: 60k machines providing the service
-        - Hard enough to program one machine!
     - *Fault tolerance*: machines and networks do fail!
         - 50 machine failures out of 20k machine cluster per day (reported by Yahoo!)
         - 1 disk failure out of 16k disks every 6 hours (reported by Google)
     - *Concurrency*:
         - Nodes execute in parallel
         - Messages travel asynchronously
+    - *Consistency*:
+        - Distributed systems need to ensure user guarantees about the data they store.
+        - E.g., all read operations return the same value, no matter where it is stored.
 - But only a few **core problems** reoccur.
 
 ???
 
-![](figures/lec1/tweet-difficult.png)
+- Scale: Hard enough to program one machine!
+
+---
+
+# Teaser: Two Generals' Problem
+
+.center[
+<iframe width="640" height="480" src="https://www.youtube.com/embed/X7jzXlt6CgE?&loop=1&start=0" frameborder="0" volume="0" allowfullscreen></iframe>
+]
+
+???
+
+Two Generals' Problem = Teaser example of a difficult but reoccuring problem in distributed systems.
 
 ---
 
@@ -188,6 +231,8 @@ Let's try to solve the problem for generals $g_1$ and $g_2$.
 
 This problem is **impossible** to solve!
 
+(Unless we make additional assumptions)
+
 ---
 
 # Teaser: Two Generals' Problem
@@ -215,10 +260,10 @@ class: middle, center
     - Concurrency
     - Consensus
 - From these general building blocks, understand
-    - distributed *computing paradigms* for data science
-        - MapReduce, Computational Graph systems;
     - distributed *storage systems*
         - DFS, Key-value stores, Blockchain.
+    - distributed *computing paradigms* for data science
+        - MapReduce, Computational Graph systems;
 - Develop **critical thinking** about their strengths and weaknesses.
 - Exposition to *industrial software* through course projects.
 
@@ -260,16 +305,7 @@ class: middle, center
 
 ---
 
-# Theme 5: Distributed computing for data science
-
-- *What are the distributed computing systems for data science?*
-    - Map Reduce (Hadoop)
-    - Computational graph systems (Spark, Tensorflow, (Py)Torch)
-- *Is distributed computing always necessary?*
-
----
-
-# Theme 6: Distributed storage
+# Theme 5: Distributed storage
 
 - *How do you locate where things are and access them?*
     - Distributed file systems
@@ -277,6 +313,15 @@ class: middle, center
 
 - *How do you record and share sensitive data?*
     - Block chain
+
+---
+
+# Theme 6: Distributed computing for data science
+
+- *What are the distributed computing systems for data science?*
+    - Map Reduce (Hadoop)
+    - Computational graph systems (Spark, Tensorflow, (Py)Torch)
+- *Is distributed computing always necessary?*
 
 ---
 
@@ -290,7 +335,7 @@ How do you talk to another machine?
 
 # What is the Internet?
 
-.stretch[![](figures/lec1/internet-1969.jpg)
+.width-100[![](figures/lec1/internet-1969.jpg)
 .caption[The Internet, 1969]]
 
 .footnote[Credits: [ARPANET maps](http://som.csudh.edu/fac/lpress/history/arpamaps/)]
@@ -299,7 +344,7 @@ How do you talk to another machine?
 
 # What is the Internet?
 
-.stretch[![](figures/lec1/internet-1974.jpg)
+.width-100[![](figures/lec1/internet-1974.jpg)
 .caption[The Internet, 1974]]
 
 .footnote[Credits: [ARPANET maps](http://som.csudh.edu/fac/lpress/history/arpamaps/)]
@@ -308,7 +353,7 @@ How do you talk to another machine?
 
 # What is the Internet?
 
-.stretch[![](figures/lec1/internet-2007.png)
+.width-100[![](figures/lec1/internet-2007.png)
 .caption[The Internet, 2007]]
 
 .footnote[Credits: [AT&T Labs](http://www.research.att.com/export/sites/att_labs/groups/infovis/news/img/ATT_Labs_InternetMap_0730_10.pdf)]
@@ -337,7 +382,7 @@ How do you talk to another machine?
     - Internet communication **must continue** despite loss of networks or gateways.
     - The Internet must support **multiple types of communication services**.
     - The Internet architecture must accommodate **a variety of networks**.
-    - The architecture must permit *distributed management* of its resources.
+    - The architecture must permit **distributed** *management* of its resources.
     - The architecture must be *cost effective*.
     - The architecture must permit host attachment with a *low level of effort*.
     - The resources used in the architecture must be *accountable*.
@@ -349,6 +394,10 @@ How do you talk to another machine?
 - There were *many types of networks* based on various physical media (coax,
   radio, satellite, etc).
 - The original designers wanted to interconnect these networks somehow.
+
+???
+
+Example: communicating with different spoken languages with a common super polyglot translator.
 
 --
 
@@ -362,7 +411,7 @@ Issues:
     - adding $O(1)$ new types of medium requires $O(N)$ translator sub-systems;
 - Adds **complexity** inside the network;
 - Increases the barrier to host attachment;
-- Requires control over nodes.
+- Requires control over nodes one attaches to.
 
 ---
 
@@ -373,6 +422,10 @@ class: center, middle
 
 *All problems in computer science can be solved by another level of indirection.* (David Wheeler)
 
+???
+
+Example: communicating with different spoken languages with intermediary that speak a common language.
+
 ---
 
 # Connecting by layering
@@ -380,6 +433,7 @@ class: center, middle
 .grid[
 .col-1-2[
 - Sub-divide the problem by partitioning communication systems into **abstraction layers**.
+    - Layers == levels of indirection.
     - A layer serves the layer above it and is served by the layer below it.
     - Complex services are built from simpler ones.
 - *Interface* between layers defines interaction.
@@ -416,6 +470,10 @@ class: center, middle
 
 - The **network** keeps the state information about conversations.
 
+???
+
+Draw picture 1: two end hosts communicating and the network recording the conversation.
+
 ---
 
 # Two approaches to survivability
@@ -434,11 +492,16 @@ class: center, middle
     - The intermediate nodes do not provide anything other than best-effort delivery (i.e., *addressing* and *routing*).
     - The end hosts provide *protection* mechanisms for the conservation.
 
+???
+
+Draw picture 2: two end hosts communicating and the end hosts recording the conversation.
+
+
 ---
 
 # Encapsulation
 
-.stretch[![TCP/IP](figures/lec1/network.png)]
+.width-100[![TCP/IP](figures/lec1/network.png)]
 
 Each node contains a different set of layers, reflecting their differences in functionality. Intermediate nodes remain simple while complexity is put at the network boundary in the end nodes.
 
@@ -500,7 +563,7 @@ possible." (Jerome Saltzer et al, 1984)
     - The client sends a *SYN* (open) to the server.
     - The server returns a *SYN ACK* acknowledgment.
     - The client sends an *ACK* to acknowledge the SYN ACK.
-- Why three-way instead of two-way?
+- <span class="Q">[Q]</span> Why three-way instead of two-way?
 ]
 .col-1-2[
 ![](figures/lec1/tcp-handshake.png)
@@ -510,6 +573,19 @@ possible." (Jerome Saltzer et al, 1984)
 .center[]
 
 .footnote[Credits: [Computer Network: A Top-Down Approach](https://www.pearson.com/us/higher-education/program/Kurose-Computer-Networking-A-Top-Down-Approach-7th-Edition/PGM1101673.html)]
+
+???
+
+Reason for three-way handshake:
+
+TCP is bidirectional, i.e it is a pair of one way connections.
+
+A two-way handshake ensure that the client can sends messages to the server.
+However, the server does not know that it can sends messages back to the client.
+
+For this reason, we need one two-way handshake for each connection, hence 4
+events (SYN/ACK/SYN/ACK) in total. The middle events (ACK+SYN) can be sent
+through a single packet.
 
 ---
 
@@ -526,6 +602,10 @@ possible." (Jerome Saltzer et al, 1984)
 .center[![](figures/lec1/tcp-lost.png)]
 
 .footnote[Credits: [Computer Network: A Top-Down Approach](https://www.pearson.com/us/higher-education/program/Kurose-Computer-Networking-A-Top-Down-Approach-7th-Edition/PGM1101673.html)]
+
+???
+
+TCP is an example of *synchronous system*, where we assume that processes have access to local physical clocks. This allows to build the timeout mechanism.
 
 ---
 
@@ -547,7 +627,7 @@ possible." (Jerome Saltzer et al, 1984)
 
 # The application layer
 
-.stretch[![](figures/lec1/socket.png)]
+.width-100[![](figures/lec1/socket.png)]
 
 - *Sockets* offer an **application programming interface** (API) of the transport layer (TCP or UDP).
 - Applications are oblivious to underlying network operations.
@@ -586,20 +666,20 @@ possible." (Jerome Saltzer et al, 1984)
 
 # An HTTP conversation
 
-Suppose we want to visit `http://www.montefiore.ulg.ac.be`:
+Suppose we want to visit `http://www.uliege.be`:
 
-1a) The HTTP client initiates a TCP connection to the server `www.montefiore.ulg.ac.be` on port number 80.
+1a) The HTTP client initiates a TCP connection to the server `www.uliege.be` on port number 80.
 ```python
 import socket
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(("www.montefiore.ulg.ac.be", 80))
+s.connect(("www.uliege.be", 80))
 ```
 
-1b) The HTTP server at `www.montefiore.ulg.ac.be` accepts and establishes the TCP connection from the client.
+1b) The HTTP server at `www.uliege.be` accepts and establishes the TCP connection from the client.
 
 2) The HTTP client sends an HTTP message to the server via its TCP socket. The request includes the path name `/index.html`.
 ```python
-request = b"GET /index.html HTTP/1.1\nHost: www.montefiore.ulg.ac.be\n\n"
+request = b"GET /index.html HTTP/1.1\nHost: www.uliege.be\n\n"
 s.send(request)
 ```
 

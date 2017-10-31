@@ -14,12 +14,28 @@ Fall 2017
 
 .pull-right[![Textbook](./figures/textbook.jpg)]
 ## Notes
-Rachid Guerraoui, Luis Rodrigues, "Introduction to Reliable Distributed Programming", Springer. (*recommended*)
+- Christian Cachin, Rachid Guerraoui, Luis Rodrigues, "Introduction to Reliable and Secure Distributed Programming", Springer. (*recommended*)
+- Slides available on [GitHub](https://github.com/glouppe/info8002-large-scale-database-systems).
+- Slides are partially adapted from:
+    - [CSE 486/585 Distributed systems](https://www.cse.buffalo.edu/~stevko/courses/cse486/spring16/schedule.html) (University at Buffalo)
+    - [CS425 Distributed systems](https://courses.engr.illinois.edu/cs425/fa2017/lectures.html) (University of Illinois UC)
+    - ID2203 Introduction to Distributed Systems (KTH).
 
-Slides are partially adapted from:
-- [CSE 486/585 Distributed systems](https://www.cse.buffalo.edu/~stevko/courses/cse486/spring16/schedule.html) (University at Buffalo)
-- [CS425 Distributed systems](https://courses.engr.illinois.edu/cs425/fa2017/lectures.html) (University of Illinois UC)
-- ID2203 Introduction to Distributed Systems (KTH).
+---
+
+# Lectures
+
+- Theoretical lectures (10-12)
+- Exercise sessions (5-6)
+- Tutorials (2-3)
+
+---
+
+# Evaluation
+
+- Oral exam (50%)
+- Programming project 1 (25%)
+- Programming project 2 (25%)
 
 ---
 
@@ -39,23 +55,6 @@ which distributed *databases* and *computing* systems are operating.
 
 - Assess the benefits and disadvantages of distributed systems.
 - No hype!
-
----
-
-# Lectures
-
-- Theoretical lectures 
-- Exercise sessions
-- Tutorials
-
-
----
-
-# Evaluation
-
-- Oral exam (50%)
-- Programming project 1 (25%)
-- Programming project 2 (25%)
 
 ---
 
@@ -95,11 +94,11 @@ Content from *chapters 1* and *2*.
 
 ---
 
-# 3. Reliable delivery
+# 3. Reliable broadcast
 
 Content from *chapter 3*.
 
-- Reliable multicast
+- Reliable broadcast
 - Gossiping
 
 ---
@@ -121,69 +120,73 @@ Content from *chapter 5*.
 - Paxos
 - Replication (total order broadcast)
 
-???
-
-- Possibly split into two parts.
-- Firefly consensus, impossibility
-
 ---
 
 class: middle, center
 
-# II. Computing paradigms for data science
+# II. Distributed systems
 
 ---
 
-# 6. Map Reduce
+# 6. Distributed hash tables
 
-- Concept
-- Case study: Hadoop
+(Joeri)
 
----
-
-# 7. Computational graph systems
-
-- Concept
-- Static vs. dynamic graphs
-- Optimization
-- Case studies: Spark, Tensorflow, PyTorch
+- Theory
+- Project 1
 
 ---
 
-# 8. Data science on a budget
+# 7. Distributed computing systems
 
-- A lot can be done using a laptop only
-- Algorithmic solutions to large-scale data science problems
-
----
-
-class: middle, center
-
-# III. Distributed data storage
-
----
-
-# 9. Distributed file systems
-
-- Architecture
-- RPC
-- Scalability (partitioning)
-- Case study: GFS, HDFS
+- Map Reduce
+    - Concept
+    - Case study: Hadoop
+- Computational graph systems
+    - Concept
+    - Static vs. dynamic graphs
+    - Optimization
+    - Case studies: Spark, [Tensorflow, PyTorch]
 
 ---
 
-# 10. Key-value stores / NoSQL
+# 8. Distributed file systems
 
-- Structured vs. Unstructured databases
-- DHT
+- Distributed file systems
+    - RPC
+    - Scalability (partitioning)
+    - Case study: HDFS
+- Spark tutorial (Joeri)
+- Project 2
+
+---
+
+# 9. Distributed databases
+
+(Joeri)
+
+- Structured vs. Unstructured (NoSQL) databases
+- Key-value stores
+- [Graph databases]
 - Case study: Amazon Dynamo, Apache Cassandra
 
 ---
 
-# 11. Block chain
+(break for NIPS)
+
+---
+
+# 10. Block chain
 
 - Concept
 - Case study: Bitcoin
+
+---
+
+# 11. Data science on a budget
+
+- A lot can be done using a laptop only
+- Algorithmic solutions to large-scale data science problems
 
 ---
 
