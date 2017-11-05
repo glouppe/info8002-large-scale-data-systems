@@ -65,10 +65,29 @@ Furthermore, these emmision lines and their accompanying fluxes (number of photo
 
 The data collection procedure is done by drilling several holes in an aluminimum plate which are positioned in a particular way to obtain individual fluxes of target objects, as shown in Figure~\ref{fig:sdss_plate}. This approach the eBOSS survey to observe multiple targets at once by attaching an optical \emph{fiber} to every drilled hole, causing the individual observations to be independent of each other. Furthermore, this approach allows SDSS to filter out nearby galaxies which are known to be \emph{blueshifted}, and obtain the individual background flux for every observed object.
 
+\section{Data Products}
+\label{sec:data_products}
+
+The eBOSS survey data that I will provide you with mainly consists in 3 types of files in the FITS format.
+
+\newpage
 \section{Deliverables}
 \label{sec:deliverables}
 
-To complete this project succesfully.
+To complete this project succesfully, I would like you to solve and provide proof for the following main questions with Apache Spark and provide a \emph{reproducable} Jupyter Notebook with a full description what you are doing (using Markdown cells).
+
+\begin{enumerate}
+  \item \emph{Is the expansion of the Universe uniform across all regions of the sky?}
+  \item \emph{Is the expansion of the Universe accelerating?}
+  \item \emph{What is the average velocity of the galaxies which are redshifted?}
+  \item \emph{What is the average velocity of the quasars which are redshifted?}
+  \item \emph{Are there galaxies with a relatively small flux which are blueshifted?}.
+  \item \emph{What is the distribution of the spectral type of all observed stars?}
+\end{enumerate}
+
+To solve these questions, you will be reading and parsing the data products described in Section~\ref{sec:data_products}. However, in order to do this in an efficient manner, you most likely have to come up with an intermediate representation constructed from the original data products to perform efficient IO. Before obtaining such a representation, you also have to figure out a way to efficiently parse the original data products (in FITS).\\
+
+Finally, to improve the SDSS query engine, I would like you to come up with a method which is able to efficiently generate plots such as in Figure~\ref{fig:spectra_galaxy}, and Figure~\ref{fig:spectra_star}, for a specific region of the sky, i.e., given a specific range of \emph{right ascension} and \emph{declination}. This method will be utilized to perform the efficiency of your data representation (so optimize your schema for these type of queries).
 
 \section{Bonus}
 \label{sec:bonus}
