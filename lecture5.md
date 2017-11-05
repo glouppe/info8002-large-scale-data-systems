@@ -550,6 +550,11 @@ that implement one logical service.
 
 .center.width-80[![](figures/lec5/tob-impl.png)]
 
+???
+
+R: clarify the initialization phase
+R: note that consensus is necessarily started at all correct process, since it is trigger at the RB delivery, which all correct process reach.
+
 ---
 
 # Sample execution
