@@ -25,33 +25,45 @@ In physical terms, redshift, described in Equation~\ref{eq:redshift}, happens wh
   \label{eq:redshift}
 \end{equation}
 
-In astronomy, redshift can be utilized to measure the \emph{accelerating} expansion of the universe. This is exactly one of the key questions posed by the eBOSS survey. In princple, eBOSS measures this by identifying the wavelenghts of emission and absorption lines, and then comparing with the known spectra in a vacuum for those elements according to Equation~\ref{eq:redshift}.
+In astronomy, redshift can be utilized to measure the \emph{accelerating} expansion of the universe. This is exactly one of the key questions posed by the eBOSS survey. In princple, eBOSS measures this by identifying the wavelenghts of emission and absorption lines, and then comparing with the known spectra in a vacuum for those elements and thereby obtaining an average redshift for all spectra using Equation~\ref{eq:redshift}.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=.5\textwidth]{figures/hydrogen-spectra}
-  \caption{Balmer Series of the Hydrogen Spectra. Shows absorption and emission lines from orbital 2 to orbital 3 and higher.}
-  \label{fig:balmer_series}
 \end{figure}
+
+Furthermore, these emmision lines and their accompanying fluxes (number of photons that caused a certain amount of electrons to move) can be utilized whether the observed instance is a \emph{star} (subclasses of the spectral types can also be identified\footnote{\href{https://en.wikipedia.org/wiki/Stellar\_classification\#Spectral\_types}{en.wikipedia.org/wiki/Stellar\_classification\#Spectral\_types}}), \emph{galaxy} or a \emph{quasar}, as shown in Figure~\ref{fig:spectra_galaxy} and Figure~\ref{fig:spectra_star}.
 
 \begin{figure}[H]
   \centering
     \begin{minipage}[b]{0.48\textwidth}
     \includegraphics[width=\textwidth]{figures/spectra_galaxy_1}
-    \caption{Spectra of a galaxy with identified absorption lines.}
+    \caption{Spectra with accompanying fluxes of a galaxy with identified absorption lines.}
+    \label{fig:spectra_galaxy}
   \end{minipage}
   \hfill
   \begin{minipage}[b]{0.48\textwidth}
     \includegraphics[width=\textwidth]{figures/spectra_star_1}
-    \caption{Spectra of a star with identified absorption lines.}
+    \caption{Spectra with accompanying of a star with identified absorption lines.}
+    \label{fig:spectra_star}
   \end{minipage}
-  \label{fig:spectra_galaxy_star}
 \end{figure}
 
-\begin{equation}
-  \label{eq:redshift_observed}
-  \lambda_\text{observed} = (z + 1) \cdot \lambda_\text{rest}
-\end{equation}
+\begin{figure}[H]
+  \centering
+  \begin{minipage}[b]{.4\textwidth}
+    \includegraphics[width=\textwidth]{figures/plate}
+    \caption{SDSS plate and target selection (green for galaxies and purple for quasars).}
+    \label{fig:sdss_plate}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{.45\textwidth}
+    \includegraphics[width=\textwidth]{figures/hydrogen-spectra}
+    \caption{Balmer Series of the Hydrogen. Shows absorption and emission lines from orbital 2 to 3 and higher.}
+    \label{fig:balmer_series}
+  \end{minipage}
+\end{figure}
+
+The data collection procedure is done by drilling several holes in an aluminimum plate which are positioned in a particular way to obtain individual fluxes of target objects, as shown in Figure~\ref{fig:sdss_plate}. This approach the eBOSS survey to observe multiple targets at once by attaching an optical \emph{fiber} to every drilled hole, causing the individual observations to be independent of each other. Furthermore, this approach allows SDSS to filter out nearby galaxies which are known to be \emph{blueshifted}, and obtain the individual background flux for every observed object.
 
 \section{Deliverables}
 \label{sec:deliverables}
