@@ -11,12 +11,59 @@ The Sloan Digital Sky Survey\footnote{\href{https://www.sdss.org}{https://www.sd
 
 In this project, you will be working with data from the eBOSS (Extended Baryon Oscillation Spectroscopic Survey) experiment. eBOSS precisely measures the expansion history of the Universe throughout eighty percent of cosmic history, back to when the Universe was less than three billion years old, and improve constraints on the nature of dark energy. “Dark energy” refers to the observed phenomenon that the expansion of the Universe is currently accelerating, which is one of the most mysterious experimental results in modern physics.
 
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.5\textwidth]{figures/eboss_coverage}
+  \caption{Converage of the eBOSS experiment up to redshift ($z$) = 3.}
+  \label{fig:eboss_coverage}
+\end{figure}
+
+In physical terms, redshift, described in Equation~\ref{eq:redshift}, happens when light or other electromagnetic radiation from an object is increased in wavelength, or shifted to the red end of the spectrum. In general, whether or not the radiation is within the visible spectrum, "redder" means an increase in wavelength – equivalent to a lower frequency and a lower photon energy, in accordance with, respectively, the wave and quantum theories of light. Some redshifts are an example of the Doppler effect, familiar in the change of apparent pitches of sirens and frequency of the sound waves emitted by speeding vehicles. A redshift occurs whenever a light source moves away from an observer.
+
+\begin{equation}
+  z = \Bigg(\frac{\lambda_\text{observed}}{\lambda_\text{rest}}\Bigg) - 1
+  \label{eq:redshift}
+\end{equation}
+
+In astronomy, redshift can be utilized to measure the \emph{accelerating} expansion of the universe. This is exactly one of the key questions posed by the eBOSS survey. In princple, eBOSS measures this by identifying the wavelenghts of emission and absorption lines, and then comparing with the known spectra in a vacuum for those elements according to Equation~\ref{eq:redshift}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=.5\textwidth]{figures/hydrogen-spectra}
+  \caption{Balmer Series of the Hydrogen Spectra. Shows absorption and emission lines from orbital 2 to orbital 3 and higher.}
+  \label{fig:balmer_series}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+    \begin{minipage}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{figures/spectra_galaxy_1}
+    \caption{Spectra of a galaxy with identified absorption lines.}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[b]{0.48\textwidth}
+    \includegraphics[width=\textwidth]{figures/spectra_star_1}
+    \caption{Spectra of a star with identified absorption lines.}
+  \end{minipage}
+  \label{fig:spectra_galaxy_star}
+\end{figure}
+
+\begin{equation}
+  \label{eq:redshift_observed}
+  \lambda_\text{observed} = (z + 1) \cdot \lambda_\text{rest}
+\end{equation}
+
+\section{Deliverables}
+\label{sec:deliverables}
+
+To complete this project succesfully.
+
 \section{Bonus}
 \label{sec:bonus}
 
 \emph{TO BE CONFIRMED BY GILLES}
 
-A bonus point (1/20) is awarded to the group which is able to provide the fastest average random query time over the complete eBOSS dataset (171 GB). The query that will be ran to evaluate the performance of your data architecture, will be concerned with selecting objects in a particular region in the sky for a particular redshift. Furthermore, we also might be interested in only selecting particular objects, i.e., \emph{starts}, \emph{galaxies}, and \emph{quasars}.
+A bonus point (1/20) is awarded to the group which is able to provide the fastest average random query time over the complete eBOSS dataset (171 GB). The query that will be ran to evaluate the performance of your data architecture, will be concerned with selecting objects in a particular region in the sky for a particular redshift. Furthermore, we also might be interested in only selecting particular objects, i.e., \emph{starts}, \emph{galaxies}, and \emph{quasars}. Your result might have practical implications as well, since the current SDSS query tool is \emph{very} slow.
 
 % Include the footer of the document.
 \input{template_footer}
