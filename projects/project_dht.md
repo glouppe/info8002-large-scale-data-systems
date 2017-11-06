@@ -8,6 +8,31 @@ Fall 2017
 
 ---
 
-# Introduction
+class: center, middle
+
+## Build your own Distributed Hash Table
+
+---
+
+# TODO
+
+---
+
+# Deliverables
+
+- A *report* (pdf) describing your architecture, implementation, and experiments you conducted.
+- A *zip* file containing your implementation.
+
+---
+
+class: middle, center
+
+## Deadline: 31 December 2017 at 23:59:59
+
+---
+
+class: middle, center
+
+## Have Fun!
 
 ---
