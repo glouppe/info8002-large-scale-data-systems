@@ -96,6 +96,14 @@ These are the API endpoints you *have* to implement:
 # `/store`
 
 - `POST`
+- Should accept a `json` of the following format:
+```json
+{
+    "key": "[hash]",
+    "value": {whatever}
+}
+```
+- After accepting the message, it should store the specified `key` and `value` in the DHT.
 
 ---
 
@@ -103,6 +111,12 @@ These are the API endpoints you *have* to implement:
 
 - A *report* (pdf) describing your architecture, implementation, and experiments you conducted.
 - A *zip* file containing your implementation.
+
+---
+
+# Evaluation Criteria
+
+TODO
 
 ---
 
