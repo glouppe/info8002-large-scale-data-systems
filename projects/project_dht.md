@@ -40,7 +40,7 @@ These are the API endpoints you *have* to implement:
 - `GET`
 - Fetches the value for the specified hash, possibly looks over the complete network.
 - Can respond in two ways:
-  - HTTP 404 (empty response) if specified hash is not found.
+  - HTTP 404 (empty response) if specified hash is not found in the DHT.
   - HTTP 200:
   ```json
   {
@@ -54,7 +54,7 @@ These are the API endpoints you *have* to implement:
 # `/identifier`
 
 - `GET`
-- Returns the identifier of the current process hosting the webserver.
+- Returns the (overlay network) identifier of the current process hosting the webserver.
 
 ```json
 {"identifier": "0123456789abcdef"}
@@ -66,6 +66,15 @@ These are the API endpoints you *have* to implement:
 
 - `GET`
 - Returns the keys which are associated with the process running the webserver.
+
+```json
+{
+    "keys": [
+        {"key": "[hash]", "value": {whatever}},
+        {"key": "[hash]", "value": {whatever}}
+    ]
+}
+```
 
 ---
 
