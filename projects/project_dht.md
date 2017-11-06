@@ -26,10 +26,41 @@ Meaning, instead of having to program a custom network protocol, you will have t
 
 These are the API endpoints you *have* to implement:
 
+- `/find/[hash]` (GET)
+- `/keys` (GET)
 - `/ping` (GET)
-- `/keys` (GET / POST)
 - `/state` (GET)
-- `/find` (POST)
+- `/store` (POST)
+
+---
+
+# `/find/[hash]`
+
+- `GET`
+
+---
+
+# `/keys`
+
+- `GET`
+
+---
+
+# `/ping`
+
+- `GET`
+
+---
+
+# `/state`
+
+- `GET`
+
+---
+
+# `/store`
+
+- `POST`
 
 ---
 
