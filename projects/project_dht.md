@@ -14,7 +14,22 @@ class: center, middle
 
 ---
 
-# TODO
+# Constraints
+
+To make your life a little bit easier, we will impose some constraints with regards to network programming.
+
+Meaning, instead of having to program a custom network protocol, you will have to build a small REST API to exchange information with other peers. This also makes the verification process easier.
+
+---
+
+# Endpoints
+
+These are the API endpoints you *have* to implement:
+
+- `/ping` (GET)
+- `/keys` (GET / POST)
+- `/state` (GET)
+- `/find` (POST)
 
 ---
 
