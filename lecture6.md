@@ -187,27 +187,6 @@ Which is VERY small.
 
 ---
 
-## Time To Live / Hops
-
-TTL
-
-- Number of times the descriptor will be forwarded by Gnutella servants before it is removed from the network.
-- Servant MUST decrement the TTL before passing it on to another servant. When the TTL reaches 0, the descriptor MUST no longer be forwarded.
-
-Hops
-
-- Number of times the descriptor has been forwarded.
-
-TTL & Hops invariants:
-
-- $\text{TTL}_0 + \text{Hops}_i = \text{TTL}_0$
-- $\text{TTL}_{i + 1} < \text{TTL}_i$
-- $\text{Hops}_{i + 1} > \text{Hops}_i$
-
-$\rightarrow \text{TTL}_i + \text{Hops}_i = \text{TTL}_0$
-
----
-
 ## Ping / Pong
 
 Ping payload format:
@@ -733,34 +712,6 @@ What happens when a node $n$ does not know the successor of a key $k$ (probably 
 $\rightarrow$ Find the *immediate predecessor* node of the desired identifier (with high probability it knows more about the desired identifier).
 
 *Invariant required*: Every node's successor is correctly maintained.
----
-
-## Example: finding $k$ from $n$.
-
-- *Remember*: $\text{successor}(k) = \text{predecessor}(k)\text{.successor}$
-
-```python
-def find_predecessor(n, id):
-    j = n
-    while not id in chord_interval(j, j.successor) - j:
-        j = j.closest_preceding_finger(id)
-    return j
-
-def closest_preceding_finger(n, id):
-    for i in range(m - 1, 0, -1):
-        if n.finger[i].node in chord_interval(n, id) - n - id:
-            return finger[i].node
-    return n
-```
-
-**Question**:
-
-```python
-while not id in chord_interval(j, j.successor) - j:
-```
-
-Why "`- j`"?
-
 ---
 
 ## Example: finding $k$ from $n$ ($k = 4$).
