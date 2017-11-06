@@ -294,14 +294,16 @@ A hash table would be able to address some of these concerns.
 
 # Distributed Hash Tables
 
+In principle analogous to a regular Hash Table (using Hash Table abstraction).
+
 ## Interface
 
-- `put($k$, $v$)`
-- `get($k$)`
+- `put(k, v)`
+- `get(k)`
 
 ## Properties
 
-- When `put($k$, $v$)` is completed, $k$ and $v$ are reliably stored on the DHT.
+- When `put(k, v)` is completed, $k$ and $v$ are reliably stored on the DHT.
 - If $k$ is stored on the DHT, a process will eventually find a node which stores $k$.
 
 ---
