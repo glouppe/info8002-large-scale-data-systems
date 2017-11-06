@@ -130,7 +130,7 @@ Lecture 6: Distributed Hash Tables
 
 ## Protocol
 
-- Protocol messages are routed through the virtual overlay network (application layer).
+- Protocol messages are routed through the virtual overlay network.
   - A message could thus, for example, traverse the following path in the underlying IP infrastructure: Belgium $\rightarrow$ Australia $\rightarrow$ Belgium, while the peers might be "neighbors" in the virtual overlay network.
 - Gnutella supports the following protocol messages:
 
@@ -141,65 +141,6 @@ Pong     | The response to a Ping. Includes the address of a connected Gnutella 
 Query    | The primary mechanism for searching the distributed network. A peer receiving a Query descriptor will respond with a QueryHit if a match is found against its local data set. | Minimum network bandwidth of responding peer and search criteria
 QueryHit | The response to a Query. This descriptor provides the recipient with enough information to acquire the data matching the corresponding Query. | IP address, port, network bandwidth of responding peer, number of results and result set
 Push     | A mechanism that allows a firewalled peer to contribute file-based data to the network. | Peer identifier, index of requested file, IP address and port to send file to
-
----
-
-## Protocol: descriptors
-
-- Servants communicate with each other by sending and receiving Gnutella protocol descriptors. Every descriptor is preceded by a Descriptor Header with the byte structure given below:
-  - Descriptor ID (16 bytes)
-  - Payload Descriptor (identifies message type, e.g., ping, pong, ...) (1 byte)
-  - TTL (Time To Live) (1 byte)
-  - Hops (1 byte)
-  - Payload length (4 bytes)
-
----
-
-## Descriptor ID
-
-- 16-byte string which *uniquely* identifies the descriptor on the network.
-- Its value must be preserved when forwarding messages between servants.
-- Used to allow detection of cycles and help reduce unnecessary traffic on the network.
-
-**Question:**
-
-How would one generate such a uniquely identifiable identifier, while having only local knowledge of your peers?
-
----
-
-## Descriptor ID
-
-- 16-byte string which *uniquely* identifies the descriptor on the network.
-- Its value must be preserved when forwarding messages between servants.
-- Used to allow detection of cycles and help reduce unnecessary traffic on the network.
-
-**Question:**
-
-How would one generate such a uniquely identifiable identifier, while having only local knowledge of your peers?
-
-**Answer:**
-
-Use a cryptographically strong random generator. Because:
-
-$P(\text{collision}) = \frac{1}{2^{128} - 1}$
-
-Which is VERY small.
-
----
-
-## Ping / Pong
-
-Ping payload format:
-
-- No payload format!
-
-Pong payload format:
-
-- Port (2 bytes)
-- IP(v4) address (4 bytes)
-- Number of shared files (4 bytes)
-- Number of Kilobytes shared (4 bytes)
-- Optional Pong Data (...)
 
 ---
 
