@@ -35,9 +35,9 @@ Meaning, instead of having to program a custom network protocol, you will have t
 
 These are the API endpoints you *have* to implement:
 
-- `/fetch/[hash]` (GET)
+- `/fetch/[key-identifier]` (GET)
 - `/identifier` (GET)
-- `/key/[hash]` (GET)
+- `/key/[key-identifier]` (GET)
 - `/keys` (GET)
 - `/ping` (GET)
 - `/state` (GET)
@@ -46,16 +46,16 @@ These are the API endpoints you *have* to implement:
 
 ---
 
-# `/fetch/[hash]`
+# `/fetch/[key-identifier]`
 
 - `GET`
-- Fetches the value for the specified hash, possibly looks over the complete network.
+- Fetches the value for the specified key-identifier, querying the DHT if needed.
 - Can respond in two ways:
   - HTTP 404 (empty response) if specified hash is not found in the DHT.
   - HTTP 200:
   ```json
   {
-    "key": "[hash]",
+    "key": "[key-identifier]",
     "value": {whatever}
   }
   ```
@@ -73,14 +73,14 @@ These are the API endpoints you *have* to implement:
 
 ---
 
-# `/key/[hash]`
+# `/key/[key-identifier]`
 
 - `GET`
 - Returns HTTP 404 if the *process* does not hold the specified identifier.
 - Returns HTTP 200 with the following payload if the *process* hold the key:
 ```json
 {
-  "key": "[hash]",
+  "key": "[key-identifier]",
   "value": {whatever}
 }
 ```
@@ -95,8 +95,8 @@ These are the API endpoints you *have* to implement:
 ```json
 {
     "keys": [
-        {"key": "[hash]", "value": {whatever}},
-        {"key": "[hash]", "value": {whatever}}
+        {"key": "[key-identifier]", "value": {whatever}},
+        {"key": "[key-identifier]", "value": {whatever}}
     ]
 }
 ```
@@ -124,7 +124,7 @@ These are the API endpoints you *have* to implement:
 - Should accept a `json` of the following format:
 ```json
 {
-    "key": "[hash]",
+    "key": "[key-identifier]",
     "value": {whatever}
 }
 ```
@@ -134,7 +134,7 @@ These are the API endpoints you *have* to implement:
 
 # `/store/local`
 
-- Identical behaviour to the `/store` endpoint.
+- Identical behaviour to the `/store` endpoint. Can be viewed as a primitive function.
 - With the difference that it will force a store on the *process* level.
 
 # Deliverables
