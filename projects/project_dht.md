@@ -35,6 +35,7 @@ These are the API endpoints you *have* to implement:
 
 - `/fetch/[hash]` (GET)
 - `/identifier` (GET)
+- `/key/[hash]` (GET)
 - `/keys` (GET)
 - `/ping` (GET)
 - `/state` (GET)
@@ -65,6 +66,20 @@ These are the API endpoints you *have* to implement:
 
 ```json
 {"identifier": "0123456789abcdef"}
+```
+
+---
+
+# `/key/[hash]`
+
+- `GET`
+- Returns HTTP 404 if the *process* does not hold the specified identifier.
+- Returns HTTP 200 with the following payload if the *process* hold the key:
+```json
+{
+  "key": "[hash]",
+  "value": {whatever}
+}
 ```
 
 ---
@@ -123,7 +138,10 @@ These are the API endpoints you *have* to implement:
 
 # Evaluation Criteria
 
-TODO
+- Resilliance against failures.
+  - Number of nodes that can fail before data is lost.
+- Scalability.
+  - Routing (number of nodes that have to be contacted before key is found).
 
 ---
 
