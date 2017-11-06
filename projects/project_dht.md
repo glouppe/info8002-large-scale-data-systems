@@ -137,6 +137,8 @@ These are the API endpoints you *have* to implement:
 - Identical behaviour to the `/store` endpoint. Can be viewed as a primitive function.
 - With the difference that it will force a store on the *process* level.
 
+---
+
 # Deliverables
 
 - A *report* (pdf) describing your architecture, implementation, and experiments you conducted.
