@@ -308,8 +308,8 @@ associated to their partition.
 - *Mahout*: A library of machine learning algorithms, implemented on top of MapReduce, for finding meaningful patterns in HDFS datasets.
 - *Yarn*: A system to schedule applications and services on an HDFS cluster and manage the cluster resources like memory and CPU.
 - *Flume*: A tool to collect, aggregate, reliably move and ingest large amounts of data into HDFS.
-- *Kafka*: A distributed messaging system with partitioned topics for very high scalability.
 - *Spark*: An in-memory data processing engine that can run a DAG of operations. It provides libraries for Machine Learning, SQL interface and near real-time Stream Processing
+- ... and many others!
 
 ---
 
@@ -319,17 +319,80 @@ class: middle, center
 
 ---
 
-# Limitations of MapReduce
+# MapReduce programmability
 
-- MR programmability (slide 9)
+- Most applications require multiple MR steps.
+    - Google indexing pipeline: 21 steps
+    - Analytics queries (e.g., count clicks and top-K): 2-5 steps
+    - Iterative algorithms (e.g., PageRank): 10s of steps
+- Multi-step jobs create **spaghetti** code
+    - 21 MR steps $\rightarrow$ 21 mapper and reducer classes
+    - Lots of boilerplate code per step
+
+.center.width-70[![](figures/lec7/mr-chaining.png)]
+.caption[Chaining MapReduce jobs.]
+
+---
+
+# Problems with MapReduce
+
+- Over time, MapReduce use cases showed two major limitations:
+    - difficulty of programming directly in MapReduce.
+        - e.g., a **linear dataflow** is forced.
+    - performance bottlenecks.
+        - e.g., due to **expensive** write to stable storage (HDFS) in-between chained jobs.
+- That is, MapReduce does not compose so well for large applications.
+- Hence the emergence of high level frameworks and specialized systems.
+    - e.g., Pregel, Dremel, FI, Drill, GraphLab, Storm, Impala, etc.
 
 ---
 
 # Spark
 
+- Like Hadoop MapReduce, **Spark** is a framework for performing distributed computations.
+- Unlike the various specialized systems, the goal of Spark is to *generalize* MapReduce.
+- Two small additions are enough:
+    - *fast data sharing*
+    - general *direct acyclic graphs* (DAGs).
+- More efficient engine.
+- Simpler for end users.
+
+---
+
+# Spark ecosystem
+
+.center.width-70[![](figures/lec7/spark-eco.jpg)]
+
+---
+
+# Programmability
+
+---
+
+
+# Performance
+
 ---
 
 # RDD
+
+connection to the shared memory abstraction
+
+---
+
+# RDD graph
+
+---
+
+# Execution process
+
+---
+
+# DAG scheduler
+
+---
+
+# Job scheduler
 
 ---
 
