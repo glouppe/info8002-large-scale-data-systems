@@ -2,38 +2,35 @@ class: middle, center, title-slide
 
 # Large-scale Distributed Systems
 
-## Project: Distributed Hash Table
-
-Fall 2017
+Project 1: Distributed Hash Table
 
 ---
 
 class: center, middle
 
-## Build your own Distributed Hash Table
+## Build your own distributed hash table
 
 ---
 
-# Group Formation
+# Group formation
 
 - Groups of one or two persons.
-- Please register your group at ![http://submit.montefiore.ulg.ac.be](http://submit.montefiore.ulg.ac.be) for the DHT project.
-
-**Group Formation Deadline**: 12th of November.
+- Register your group at [submit.montefiore.ulg.ac.be](http://submit.montefiore.ulg.ac.be).
+- **Group formation deadline**: 12th of November.
 
 ---
 
 # Constraints
 
-To make your life a little bit easier, we will impose some constraints with regards to network programming.
-
-Meaning, instead of having to program a custom network protocol, you will have to build a small REST API to exchange information with other peers. This also makes the verification process easier.
+- To make your life a little bit easier, we will impose some constraints with regards to network programming.
+- Instead of having to program a custom network protocol, you will have to build a small REST API to exchange information with other peers.
+- This also makes the verification process easier.
 
 ---
 
 # Endpoints
 
-These are the API endpoints you *have* to implement:
+These are the API endpoints you must implement:
 
 - `/fetch/[key-identifier]` (GET)
 - `/identifier` (GET)
@@ -146,29 +143,27 @@ These are the API endpoints you *have* to implement:
 
 ---
 
-# Evaluation Criteria
+# Evaluation criteria
 
-- Resilliance against failures.
+- Resilience against failures.
   - Number of nodes that can fail before data is lost.
 - Scalability.
   - Routing (number of nodes that have to be contacted before key is found).
 - Report Quality
-  - Experiments (see above)
-  - Architecture description
-  - Method
+  - Experiments to proving fault-tolerance and scalability.
+  - Architecture description.
+  - Method.
 
 ---
 
 class: middle, center
 
-## Deadline: 31 December 2017 at 23:59:59
+## Deadline: 22 December 2017 at 23:59:59
 
-### Submit to: submit.montefiore.ulg.ac.be
+### Submit to [submit.montefiore.ulg.ac.be](http://submit.montefiore.ulg.ac.be).
 
 ---
 
 class: middle, center
 
 ## Have Fun!
-
----
