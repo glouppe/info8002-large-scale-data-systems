@@ -294,7 +294,8 @@ A hash table would be able to address some of these concerns.
 
 # Distributed Hash Tables
 
-In principle analogous to a regular Hash Table (using Hash Table abstraction).
+- In principle analogous to a regular Hash Table (using Hash Table abstraction).
+- Extends upon replicated machines in the case when the data is so large we cannot store it on a single machine. However, we still need *fault-tolerance* (how do we prevent data-loss).
 
 ## Interface
 
