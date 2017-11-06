@@ -23,24 +23,14 @@ Consensus is the problem of making processes agree on one of the values they pro
 \emph{Describe Hierarchical Consensus. How does the hierarchical approach ensure the correctness of the concensus properties?}
 
 \subsection*{Exercise 3}
-\label{sec:exercise_3}
-
-\emph{How does a Leader-Driven approach achieve consensus?}
-
-\subsection*{Exercise 4}
 \label{sec:exercise_4}
 
 \emph{How does Read/Write Epoch Consensus prevent a violation of the lock-in property? Why is it important that lock-in is not violated in order to ensure consensus?}
 
-\subsection*{Exercise 5}
+\subsection*{Exercise 4}
 \label{sec:exercise_5}
 
 \emph{We have $n$ nodes conducting an asynchronous computation. Meaning, given an input $I$, every node applies some computation $f$ to $I$, i.e., $f(I)$, and forwards it to the next node in the chain. However, in order to speed up the computation (due to unmodeled delays), we could pass on the result of $f(I)$ to some other node in the network if and only if the next node in the chain is not ready. However, in order to provide some sense of fairness, finished nodes should be adressed in a FIFO manner. Basically, the desired product is a shared variable, which holds a queue of nodes which are in a ready state. How would you implement this? Assume no node failures.}
-
-\subsection*{Exercise 6}
-\label{sec:exercise_6}
-
-\emph{Let us take the same setting in as Exercise 5. However, contrary to the other setting, nodes can fail. What needs to change in other to ensure consensus?}
 
 % Include the footer of the document.
 \input{template_footer}
