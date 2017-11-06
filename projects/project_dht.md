@@ -26,7 +26,8 @@ Meaning, instead of having to program a custom network protocol, you will have t
 
 These are the API endpoints you *have* to implement:
 
-- `/find/[hash]` (GET)
+- `/fetch/[hash]` (GET)
+- `/identifier` (GET)
 - `/keys` (GET)
 - `/ping` (GET)
 - `/state` (GET)
@@ -34,27 +35,52 @@ These are the API endpoints you *have* to implement:
 
 ---
 
-# `/find/[hash]`
+# `/fetch/[hash]`
 
 - `GET`
+- Fetches the value for the specified hash, possibly looks over the complete network.
+- Can respond in two ways:
+  - HTTP 404 (empty response) if specified hash is not found.
+  - HTTP 200:
+  ```json
+  {
+    "key": "[hash]",
+    "value": {whatever}
+  }
+  ```
+
+---
+
+# `/identifier`
+
+- `GET`
+- Returns the identifier of the current process hosting the webserver.
+
+```json
+{"identifier": "0123456789abcdef"}
+```
 
 ---
 
 # `/keys`
 
 - `GET`
+- Returns the keys which are associated with the process running the webserver.
 
 ---
 
 # `/ping`
 
 - `GET`
+- Needs to respond with HTTP code 200.
+- Used to check if the node is still alive.
 
 ---
 
 # `/state`
 
 - `GET`
+- Returns the complete state of the current process (includes identifier, keys, and others).
 
 ---
 
