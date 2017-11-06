@@ -150,7 +150,7 @@ These are the API endpoints you must implement:
 - Scalability.
   - Routing (number of nodes that have to be contacted before key is found).
 - Report Quality
-  - Experiments to proving fault-tolerance and scalability.
+  - Experiments proving fault-tolerance and scalability.
   - Architecture description.
   - Method.
 
