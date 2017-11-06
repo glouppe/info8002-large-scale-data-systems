@@ -42,6 +42,7 @@ These are the API endpoints you *have* to implement:
 - `/ping` (GET)
 - `/state` (GET)
 - `/store` (POST)
+- `/store/local` (POST)
 
 ---
 
@@ -130,6 +131,11 @@ These are the API endpoints you *have* to implement:
 - After accepting the message, it should store the specified `key` and `value` in the DHT.
 
 ---
+
+# `/store/local`
+
+- Identical behaviour to the `/store` endpoint.
+- With the difference that it will force a store on the *process* level.
 
 # Deliverables
 
