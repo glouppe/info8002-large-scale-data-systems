@@ -351,6 +351,20 @@ A hash table would be able to address some of these concerns.
 
 ---
 
+# Distributed Hash Tables
+
+## Interface
+
+- `put($k$, $v$)`
+- `get($k$)`
+
+## Properties
+
+- When `put($k$, $v$)` is completed, $k$ and $v$ are reliably stored on the DHT.
+- If $k$ is stored on the DHT, a process will eventually find a node which stores $k$.
+
+---
+
 # Content Addressable Network
 
 - Introduced by Sylvia Ratnasamy et al in 2001.
