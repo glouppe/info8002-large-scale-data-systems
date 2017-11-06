@@ -150,6 +150,10 @@ These are the API endpoints you *have* to implement:
   - Number of nodes that can fail before data is lost.
 - Scalability.
   - Routing (number of nodes that have to be contacted before key is found).
+- Report Quality
+  - Experiments (see above)
+  - Architecture description
+  - Method
 
 ---
 
