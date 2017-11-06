@@ -19,6 +19,8 @@ class: center, middle
 - Groups of one or two persons.
 - Please register your group at ![http://submit.montefiore.ulg.ac.be](http://submit.montefiore.ulg.ac.be) for the DHT project.
 
+**Group Formation Deadline**: 12th of November.
+
 ---
 
 # Constraints
