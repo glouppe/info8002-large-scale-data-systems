@@ -14,6 +14,13 @@ class: center, middle
 
 ---
 
+# Group Formation
+
+- Groups of one or two persons.
+- Please register your group at ![http://submit.montefiore.ulg.ac.be](http://submit.montefiore.ulg.ac.be) for the DHT project.
+
+---
+
 # Constraints
 
 To make your life a little bit easier, we will impose some constraints with regards to network programming.
