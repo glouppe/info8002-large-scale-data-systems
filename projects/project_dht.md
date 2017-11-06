@@ -29,6 +29,8 @@ class: middle, center
 
 ## Deadline: 31 December 2017 at 23:59:59
 
+### Submit to: submit.montefiore.ulg.ac.be
+
 ---
 
 class: middle, center
