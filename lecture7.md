@@ -124,7 +124,7 @@ class: middle, center
 
 ---
 
-# The complete picture
+# Overview
 
 .center.width-100[![](figures/lec7/mr-full.png)]
 
@@ -337,10 +337,11 @@ class: middle, center
 # Problems with MapReduce
 
 - Over time, MapReduce use cases showed two major limitations:
-    - difficulty of programming directly in MapReduce.
+    - not all algorithms are suited for MapReduce.
         - e.g., a **linear dataflow** is forced.
-    - performance bottlenecks.
-        - e.g., due to **expensive** write to stable storage (HDFS) in-between chained jobs.
+    - it is difficult to use for exploration and **interactive** programming.
+    - there are significant performance bottlenecks in iterative algorithms that *reuse* intermediate results.
+        - e.g., saving intermediate results to stable storage is **very costly** (Why?).
 - That is, MapReduce does not compose so well for large applications.
 - Hence the emergence of high level frameworks and specialized systems.
     - e.g., Pregel, Dremel, FI, Drill, GraphLab, Storm, Impala, etc.
@@ -349,50 +350,86 @@ class: middle, center
 
 # Spark
 
+.center.width-40[![](figures/lec7/spark-logo.png)]
+
 - Like Hadoop MapReduce, **Spark** is a framework for performing distributed computations.
-- Unlike the various specialized systems, the goal of Spark is to *generalize* MapReduce.
-- Two small additions are enough:
-    - *fast data sharing*
-    - general *direct acyclic graphs* (DAGs).
-- More efficient engine.
-- Simpler for end users.
-
----
-
-# Spark ecosystem
-
-.center.width-70[![](figures/lec7/spark-eco.jpg)]
+- Unlike various earlier specialized systems, the goal of Spark is to *generalize* MapReduce.
+- Two small additions are enough to achieve that goal:
+    - **fast data sharing**
+    - general **direct acyclic graphs** (DAGs).
+- It is designed with data reuse and interactive programming use cases in mind.
 
 ---
 
 # Programmability
 
+.center.width-100[![](figures/lec7/spark-short.png)]
+
 ---
 
-
 # Performance
+
+Time to sort $100\text{TB}$:
+
+.center.width-80[![](figures/lec7/spark-sort.png)]
+
+.footnote[Credits: [sortbenchmark.org](http://sortbenchmark.org/)]
 
 ---
 
 # RDD
 
-connection to the shared memory abstraction
+- Programs in Spark are written in terms of a **Resilient Distributed Dataset** (RDD) abstraction and operations on them.
+- An RDD is a **fault-tolerant** *read-only*, partitioned collection of records.
+    - Resilient: built-in fault-tolerance with the help of RDD *lineage graph* (more later).
+    - Distributed: data resides on multiple nodes in a cluster, can be stored in RAM or on disk.
+    - Dataset: collection of partitioned data with primitive values or values of values.
+- RDDs can only be created through deterministic operations on either:
+    - data in stable storage, or
+    - other RDDs.
 
 ---
 
-# RDD graph
+# Operations on RDDs
+
+- *Transformations*: $f(\text{RDD}) \rightarrow \text{RDD'}$
+    - Lazy evaluation (not computed immediately).
+    - e.g., $\text{map}$, $\text{filter}$ or $\text{groupByKey}$.
+- *Actions*: $f(\text{RDD}) \rightarrow v$
+    - Triggers computation.
+    - e.g., $\text{count}$, $\text{collect}$ or $\text{save}$.
+- The interface also offers explicit *persistence* mechanisms to indicate that an RDD will be reused in future operations.
+    - This allows for internal optimizations.
 
 ---
 
-# Execution process
+# Working with RDDs
+
+.center.width-100[![](figures/lec7/spark-operations.png)]
 
 ---
 
-# DAG scheduler
+# Example: Log mining
 
 ---
 
-# Job scheduler
+# Job scheduling
+
+---
+
+# Memory management
+
+---
+
+# Fault tolerance
+
+lineage graph
+coarse grained tolerance
+(vs. replicating data, which is expensive)
+
+---
+
+# DataFrames
 
 ---
 
@@ -407,3 +444,7 @@ class: middle, center
 ---
 
 # References
+
+- Dean, Jeffrey, and Sanjay Ghemawat. "MapReduce: simplified data processing on large clusters." Communications of the ACM 51.1 (2008): 107-113.
+- Zaharia, Matei, et al. "Resilient distributed datasets: A fault-tolerant abstraction for in-memory cluster computing." Proceedings of the 9th USENIX conference on Networked Systems Design and Implementation. USENIX Association, 2012.
+- Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.

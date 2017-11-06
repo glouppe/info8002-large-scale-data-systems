@@ -1160,5 +1160,3 @@ class: middle, center
 - http://conferences.sigcomm.org/sigcomm/2001/p13-ratnasamy.pdf (CAN)
 - https://pdos.csail.mit.edu/papers/chord:sigcomm01/chord_sigcomm.pdf (Chord)
 - https://pdos.csail.mit.edu/~petar/papers/maymounkov-kademlia-lncs.pdf (Kademlia)
-
----
