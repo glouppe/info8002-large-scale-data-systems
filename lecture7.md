@@ -53,7 +53,7 @@ How do we program this thing?
 
 # Data-Parallel models
 
-- **Restrict** the programming interface so that the system can *do more automatically*.
+- **Restrict** and **simplify** the programming interface so that the system can *do more automatically*.
 - "Here is an operation, run it on all of the data".
     - I do not care *where* it runs (you schedule that).
     - In fact, feel free to run it *twice* on different nodes if needed.
@@ -75,7 +75,7 @@ class: middle, center
 # What is MapReduce?
 
 - **MapReduce** is a *parallel programming* model for processing distributed data on a cluster.
-- Simple *high-level* API limited two operations: **Map** and **Reduce**, as inspired by Lisp:
+- Simple *high-level* API limited two operations: **Map** and **Reduce**, as inspired by Lisp primitives:
     - `map`: apply function to each value in a set.
         - `(map 'length '(() (a) (a b) (a b c)))` $\rightarrow$ `(0 1 2 3)`
     - `reduce`: combines all the values using a binary function.
@@ -93,14 +93,12 @@ class: middle, center
 
 # Programming model
 
-- **Map**: input shard $\rightarrow$ intermediate key/value pairs
-    - Map calls are distributed across machines by automatically partitioning the input data into $M$ *shards*.
-    - User function gets called for each shard of input.
-    - The MapReduce framework groups together all intermediate values associated with the same intermediate key and passes them to the Reduce function.
+- **Map**: input key/value pairs $\rightarrow$ intermediate key/value pairs
+    - User function gets called for each input key/value pairs.
+    - Produces a set of intermediate key/value pairs.
 - **Reduce**: intermediate key/value pairs $\rightarrow$  result files
-    - Accepts an intermediate key and a set of values for the key.
-    - Merges these values together to form a smaller set of values by calling a user function for each unique key.
-    - Reduce calls are distributed by partitioning the intermediate key space into $R$ pieces.
+    - Combine all intermediate values for a particular key through a user-defined function.
+    - Produces a set of merged output values.
 
 ---
 
@@ -108,7 +106,9 @@ class: middle, center
 
 - **Map worker**:
     - Map:
-        - Parse the input data into key/value pairs.
+        - Map calls are distributed across machines by automatically partitioning the input data into $M$ *shards*.
+        - Parse the input shards into input key/value pairs.
+        - Process the input pairs through a user-defined `map` function to produce a set of intermediate key/value pairs.
         - Write the result to an intermediate file.
     - Partition:
         - Assign the result to one of $R$ reduce workers based on a partitioning function.
@@ -119,8 +119,8 @@ class: middle, center
         - Sort by keys.
             - Different mappers may have output the same key.
     - Reduce:
-        - Input is the sorted output of mappers.
-        - To aggregate the results, call the user-defined reduce function for each key, along with the list of values for that key.
+        - Accept an intermediate key and a set of values for the key.
+        - For each unique, combine these values through a user-defined `reduce` function to form a smaller set of values.
 
 ---
 
@@ -160,9 +160,9 @@ class: middle, center
 .center.width-50[![](figures/lec7/mr-read.png)]
 
 - Read content of the input shard assigned to it.
-- Parse key/value pairs out of the input data.
-- Pass each pair to a user-defined `map` function.
-    - Produce intermediate key/value pairs.
+- Parse key/value pairs $(k,v)$ out of the input data.
+- Pass each pair to a **user-defined** `map` function.
+    - Produce (one or more) intermediate key/value pairs $(k',v')$.
     - These are buffered in memory.
 
 ---
@@ -171,7 +171,7 @@ class: middle, center
 
 .center.width-70[![](figures/lec7/mr-if.png)]
 
-- Intermediate key/value pairs produced by the user's `map` function are periodically written to *local* disk.
+- Intermediate key/value pairs $(k',v')$ produced by the user's `map` function are periodically written to *local* disk.
     - These files are partitioned into $R$ regions by a partitioning function, one for each reduce worker.
     - e.g., `hash(key) mod R`
 - Notify master when complete.
@@ -190,8 +190,8 @@ class: middle, center
 associated to their partition.
 - RPC to read the data from the local disks for the map workers.
 - When the reduce worker reads intermediate data for its partition:
-    - it sorts the data by intermediate keys.
-    - all occurrences of the same key are grouped together.
+    - it sorts the data by intermediate keys $k'$.
+    - all occurrences $v_i'$ of the same key are grouped together.
 
 ---
 
@@ -200,8 +200,8 @@ associated to their partition.
 .center.width-60[![](figures/lec7/mr-reduce2.png)]
 
 - The sorting phase grouped data with a unique intermediate key.
-- The user-defined `reduce` function is given the key and the set of intermediate values for that key.
-    - `<key, (value1, value2, value3, ...)>`
+- The **user-defined** `reduce` function is given the key and the set of intermediate values for that key.
+    - $(k', (v_1', v_2', v_3', ...))$
 - The output of the `reduce` function is appended to an output file.
 
 ---
@@ -214,9 +214,33 @@ associated to their partition.
 
 ---
 
-# Example
+# Example: Counting words
 
-XXX
+.center.width-100[![](figures/lec7/mr-example.png)]
+
+---
+
+# Other examples
+
+- *Distributed grep*
+    - Search for words in lots of documents.
+    - Map: emit a line if it matches a given pattern. Produce $(file,line)$ pairs.
+    - Reduce: copy the intermediate data to the output.
+- *Count URL access frequency*
+    - Find the frequency of each URL in web logs.
+    - Map: process logs of web page access. Produce $(url,1)$ pairs.
+    - Reduce: add all values for the same URL.
+- *Reverse web-link graph*
+    - Find where page links come from.
+    - Map: output $(target,source)$ pairs for each link $target$ in a web page $source$.
+    - Reduce: concatenate the list of all source URLs associated with a target.
+
+---
+
+# MapReduce is widely applicable
+
+.center[![](figures/lec7/mr-programs.png)]
+.caption[Number of MapReduce programs in Google code source tree.]
 
 ---
 
@@ -225,10 +249,23 @@ XXX
 - Master *pings* each worker periodically.
     - If no response is received within a certain delay, the worker is marked as **failed**.
     - Map or Reduce tasks given to this worker are reset back to the initial state and rescheduled for other workers.
+    - Task completion is committed through master to keep track of history.
 
 <span class="Q">[Q]</span> What abstraction does this use?
 
 <span class="Q">[Q]</span> What if the master node fails?
+
+---
+
+# Redundant execution
+
+- Slow workers significantly lengthen completion time
+    - Other jobs consuming resources on machine
+    - Bad disks with soft errors transfer data very slowly
+    - Weird things: processor caches disabled (!!)
+- Solution: Near end of phase, spawn backup copies of tasks
+    - Whichever one finishes first "wins"
+- Effect: Dramatically shortens job completion time
 
 ---
 
@@ -238,19 +275,41 @@ XXX
     - e.g., GFS or HDFS.
 - Master tries to schedule Map workers near the data they are assigned to.
     - e.g., on the same machine or in the same rack.
-- This results in less network communication and better performance.
+- This results in thousands of machines reading input at local disk speed.
+    - Without this, rack switches limit read rate.
 
 ---
 
-# History of MapReduce
+.center.width-100[![](figures/lec7/mr-paper.png)]
+.caption[Google, 2004.]
 
 ---
 
-MR paper
+# Hadoop Ecosystem (1)
+
+.center.width-100[![](figures/lec7/hadoop-eco.png)]
 
 ---
 
-# Hadoop Ecosystem
+# Hadoop Ecosystem (2)
+
+- *Hadoop HDFS*: A distributed file system for reliably storing huge amounts of unstructured, semi-structured and structured data in the form of files.
+- **Hadoop MapReduce**: A distributed algorithm framework for the parallel processing of large datasets on *HDFS* filesystem. It runs on Hadoop cluster but also supports other database formats like *Cassandra* and *HBase*.
+- *Cassandra*: A key-value pair NoSQL database, with column family data representation and asynchronous masterless replication.
+- *HBase*: A key-value pair NoSQL database, with column family data representation, with master-slave replication. It uses HDFS as underlying storage.
+- *Zookeeper*:  A distributed coordination service for distributed applications. It is based on **Paxos algorithm** variant called Zab.
+
+---
+
+# Hadoop Ecosystem (3)
+
+- *Pig*: Pig is a scripting interface over MapReduce for developers who prefer scripting interface over native Java MapReduce programming.
+- *Hive*:  Hive is a SQL interface over MapReduce for developers and analysts who prefer SQL interface over native Java MapReduce programming.
+- *Mahout*: A library of machine learning algorithms, implemented on top of MapReduce, for finding meaningful patterns in HDFS datasets.
+- *Yarn*: A system to schedule applications and services on an HDFS cluster and manage the cluster resources like memory and CPU.
+- *Flume*: A tool to collect, aggregate, reliably move and ingest large amounts of data into HDFS.
+- *Kafka*: A distributed messaging system with partitioned topics for very high scalability.
+- *Spark*: An in-memory data processing engine that can run a DAG of operations. It provides libraries for Machine Learning, SQL interface and near real-time Stream Processing
 
 ---
 
