@@ -140,6 +140,7 @@ These are the API endpoints you must implement:
 
 - A *report* (pdf, max 5 pages) describing your architecture, implementation, and experiments you conducted.
 - A *zip* file containing your implementation.
+- Bash script which prints the PID (Process Identifier) and port number of the service for a given number of nodes.
 
 ---
 
