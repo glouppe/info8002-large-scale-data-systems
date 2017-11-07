@@ -384,7 +384,7 @@ Time to sort $100\text{TB}$:
 - Programs in Spark are written in terms of a **Resilient Distributed Dataset** (RDD) abstraction and operations on them.
 - An RDD is a **fault-tolerant** *read-only*, partitioned collection of records.
     - Resilient: built for fault-tolerance (it can be recreated).
-    - Distributed: stored *in memory* across multiple nodes.
+    - Distributed: content is divided into atomic *partitions*, stored *in memory* or on disk across multiple nodes.
     - Dataset: collection of partitioned data with primitive values or values of values.
 - RDDs can only be created through deterministic operations on either:
     - data in stable storage, or
@@ -599,6 +599,7 @@ class: smaller
     - the shuffle operations required for wide dependencies, or
     - already computed partitions that can short-circuit the computation of a parent RDD.
 - The scheduler launches *tasks* to a lower-level scheduler to compute missing partitions from each stage until it has computed the target RDD.
+    - One task per partition.
 - Tasks are assigned to machines based on *data locality*.
 
 ---
