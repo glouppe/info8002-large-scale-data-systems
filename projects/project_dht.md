@@ -138,7 +138,7 @@ These are the API endpoints you must implement:
 
 # Deliverables
 
-- A *report* (pdf) describing your architecture, implementation, and experiments you conducted.
+- A *report* (pdf, max 5 pages) describing your architecture, implementation, and experiments you conducted.
 - A *zip* file containing your implementation.
 
 ---
@@ -146,13 +146,15 @@ These are the API endpoints you must implement:
 # Evaluation criteria
 
 - Resilience against failures.
-  - Number of nodes that can fail before data is lost.
+    - Number of nodes that can fail before data is lost.
 - Scalability.
-  - Routing (number of nodes that have to be contacted before key is found).
+    - Routing (number of nodes that have to be contacted before key is found).
 - Report Quality
-  - Experiments proving fault-tolerance and scalability.
-  - Architecture description.
-  - Method.
+    - Experiments proving fault-tolerance and scalability.
+    - Architecture description.
+    - Method:
+        - You are free to implement any DHT algorithm.
+        - We will evaluate its performance (in terms of resilience and scalability).
 
 ---
 

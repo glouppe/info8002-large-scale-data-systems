@@ -341,9 +341,9 @@ class: middle, center
         - e.g., a **linear dataflow** is forced.
     - it is difficult to use for exploration and **interactive** programming.
     - there are significant performance bottlenecks in iterative algorithms that *reuse* intermediate results.
-        - e.g., saving intermediate results to stable storage is **very costly** (Why?).
+        - e.g., saving intermediate results to stable storage (HDFS) is **very costly**.
 - That is, MapReduce does not compose so well for large applications.
-- Hence the emergence of high level frameworks and specialized systems.
+- For this reason, dozens of high level frameworks and specialized systems were developed.
     - e.g., Pregel, Dremel, FI, Drill, GraphLab, Storm, Impala, etc.
 
 ---
@@ -357,13 +357,15 @@ class: middle, center
 - Two small additions are enough to achieve that goal:
     - **fast data sharing**
     - general **direct acyclic graphs** (DAGs).
-- It is designed with data reuse and interactive programming use cases in mind.
+- Designed for data reuse and interactive programming.
 
 ---
 
 # Programmability
 
 .center.width-100[![](figures/lec7/spark-short.png)]
+
+.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
 
 ---
 
@@ -381,8 +383,8 @@ Time to sort $100\text{TB}$:
 
 - Programs in Spark are written in terms of a **Resilient Distributed Dataset** (RDD) abstraction and operations on them.
 - An RDD is a **fault-tolerant** *read-only*, partitioned collection of records.
-    - Resilient: built-in fault-tolerance with the help of RDD *lineage graph* (more later).
-    - Distributed: data resides on multiple nodes in a cluster, can be stored in RAM or on disk.
+    - Resilient: built for fault-tolerance (it can be recreated).
+    - Distributed: stored *in memory* across multiple nodes.
     - Dataset: collection of partitioned data with primitive values or values of values.
 - RDDs can only be created through deterministic operations on either:
     - data in stable storage, or
@@ -394,22 +396,165 @@ Time to sort $100\text{TB}$:
 
 - *Transformations*: $f(\text{RDD}) \rightarrow \text{RDD'}$
     - Lazy evaluation (not computed immediately).
-    - e.g., $\text{map}$, $\text{filter}$ or $\text{groupByKey}$.
+    - e.g., `map` or `filter`.
 - *Actions*: $f(\text{RDD}) \rightarrow v$
     - Triggers computation.
-    - e.g., $\text{count}$, $\text{collect}$ or $\text{save}$.
+    - e.g., `count`.
 - The interface also offers explicit *persistence* mechanisms to indicate that an RDD will be reused in future operations.
     - This allows for internal optimizations.
 
 ---
 
-# Working with RDDs
+# Workflow
 
 .center.width-100[![](figures/lec7/spark-operations.png)]
 
+.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
+
 ---
 
-# Example: Log mining
+# Example: Log mining (1)
+
+Goal: Load error messages in memory, then interactively search for various patterns.
+
+.center.width-100[![](figures/lec7/spark-ex1.png)]
+
+.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
+
+---
+
+# Example: Log mining (2)
+
+Goal: Load error messages in memory, then interactively search for various patterns.
+
+.center.width-100[![](figures/lec7/spark-ex2.png)]
+
+.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
+
+---
+
+# Example: Log mining (3)
+
+Goal: Load error messages in memory, then interactively search for various patterns.
+
+.center.width-100[![](figures/lec7/spark-ex3.png)]
+
+.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
+
+---
+
+# Example: Log mining (4)
+
+Goal: Load error messages in memory, then interactively search for various patterns.
+
+.center.width-100[![](figures/lec7/spark-ex4.png)]
+
+.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
+
+---
+
+# Example: Log mining (5)
+
+Goal: Load error messages in memory, then interactively search for various patterns.
+
+.center.width-100[![](figures/lec7/spark-ex5.png)]
+
+.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
+
+---
+
+# Example: Log mining (6)
+
+Goal: Load error messages in memory, then interactively search for various patterns.
+
+.center.width-100[![](figures/lec7/spark-ex6.png)]
+
+.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
+
+---
+
+# Example: Log mining (7)
+
+Goal: Load error messages in memory, then interactively search for various patterns.
+
+.center.width-100[![](figures/lec7/spark-ex7.png)]
+
+.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
+
+---
+
+# Example: Log mining (8)
+
+Goal: Load error messages in memory, then interactively search for various patterns.
+
+.center.width-100[![](figures/lec7/spark-ex8.png)]
+
+.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
+
+---
+
+# Example: Log mining (9)
+
+Goal: Load error messages in memory, then interactively search for various patterns.
+
+.center.width-100[![](figures/lec7/spark-ex9.png)]
+
+.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
+
+---
+
+# Rich, high-level API
+
+.grid.center[
+.col-1-3[
+`map`<br>
+`filter`<br>
+`sort`<br>
+`groupBy`<br>
+`union`<br>
+`join`<br>
+...
+]
+.col-1-3[
+`reduce`<br>
+`count`<br>
+`fold`<br>
+`reduceByKey`<br>
+`groupByKey`<br>
+`cogroup`<br>
+`zip`<br>
+...
+]
+.col-1-3[
+`sample`<br>
+`take`<br>
+`first`<br>
+`partitionBy`<br>
+`mapWith`<br>
+`pipe`<br>
+`save`<br>
+...
+]
+]
+
+---
+
+# Lineage
+
+---
+
+# Execution model
+
+---
+
+# Fault tolerance
+
+coarse grained tolerance
+(vs. replicating data, which is expensive)
+
+---
+
+# Representing RDDs
 
 ---
 
@@ -419,13 +564,7 @@ Time to sort $100\text{TB}$:
 
 # Memory management
 
----
-
-# Fault tolerance
-
-lineage graph
-coarse grained tolerance
-(vs. replicating data, which is expensive)
+intermediate results are persisted in memory rather than on disks
 
 ---
 
