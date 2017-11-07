@@ -395,6 +395,8 @@ Time to sort $100\text{TB}$:
 # Operations on RDDs
 
 - *Transformations*: $f(\text{RDD}) \rightarrow \text{RDD'}$
+    - Coarse-grained operations only.
+        - It is not possible to write to a single specific location in an RDD.
     - Lazy evaluation (not computed immediately).
     - e.g., `map` or `filter`.
 - *Actions*: $f(\text{RDD}) \rightarrow v$
@@ -541,44 +543,84 @@ Goal: Load error messages in memory, then interactively search for various patte
 
 # Lineage
 
----
+- RDDs need not be materialized at all times.
+- Instead, an RDD internally stores *how it was derived* from other datasets (its **lineage**) to compute its partitions from data in stable storage.
+    - This derivation is expressed as coarse-grained transformations.
+- Therefore, a program cannot reference an RDD that it cannot reconstruct after a failure.
 
-# Execution model
-
----
-
-# Fault tolerance
-
-coarse grained tolerance
-(vs. replicating data, which is expensive)
+.center.width-50[![](figures/lec7/lineage.png)]
 
 ---
 
 # Representing RDDs
 
----
-
-# Job scheduling
-
----
-
-# Memory management
-
-intermediate results are persisted in memory rather than on disks
-
----
-
-# DataFrames
+- RDDs are built around a **graph-based** representation (a DAG).
+- RDDs share a common interface:
+    - Lineage information:
+        - Set of *partitions*.
+        - List of *dependencies* on parents RDDs.
+        - Function to *compute* a partition (as an iterator) given its parents.
+    - Optimized execution (optional):
+        - *Preferred locations* for each partition.
+        - Partitioner (hash, range)
 
 ---
 
-class: middle, center
+class: smaller
 
-# Computational graph systems
+# Dependencies
+
+.center.width-60[![](figures/lec7/spark-deps.png)]
+
+- *Narrow dependencies*: each partition of the parent RDD is used by at most one partition of the child RDD.
+    - Allow for pipelined execution on one node.
+    - Recovery after failure is more efficient with a narrow dependency, as only the lost parents partitions need to be recomputed.
+- *Wide dependencies*: multiple child partitions may depend on a parent partition.
+    - A child partition requires data from all its parents to be recomputed.
+---
+
+# Execution process
+
+.center.width-100[![](figures/lec7/spark-execution-process.png)]
+
+.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
+
+---
+
+class: smaller
+
+# Job scheduler
+
+.center.width-40[![](figures/lec7/spark-stages.png)]
+
+- Whenever an *action* is called, the scheduler examines that RDD's lineage graph to build a **DAG of stages** to execute.
+- Each *stage* contains as many pipeline transformations with narrow dependencies as possible.
+- The boundaries of the stages are
+    - the shuffle operations required for wide dependencies, or
+    - already computed partitions that can short-circuit the computation of a parent RDD.
+- The scheduler launches *tasks* to a lower-level scheduler to compute missing partitions from each stage until it has computed the target RDD.
+- Tasks are assigned to machines based on *data locality*.
+
+---
+
+# Fault tolerance
+
+- If a task fails, it is rescheduled on another node, as long as its stage's parents are still available.
+- If some stages have become unavailable, all corresponding tasks are resubmit to compute the missing partitions in parallel.
+
+.center.width-70[![](figures/lec7/spark-failure.png)]
+
+---
+
+# Dataflow programming
+
+XXX
 
 ---
 
 # Summary
+
+xxx
 
 ---
 

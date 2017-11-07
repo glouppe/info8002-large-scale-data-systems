@@ -14,7 +14,7 @@ Lectures for INFO8002 - Large-scale Distributed Systems, ULiège, Fall 2017.
 - [Lecture 4: Shared memory](https://glouppe.github.io/info8002-large-scale-database-systems/?p=lecture4.md), [PDF](https://raw.githubusercontent.com/glouppe/info8002-large-scale-database-systems/master/pdf/lec4.pdf)
 - [Lecture 5: Consensus](https://glouppe.github.io/info8002-large-scale-database-systems/?p=lecture5.md), [PDF](https://raw.githubusercontent.com/glouppe/info8002-large-scale-database-systems/master/pdf/lec5.pdf)
 - [Lecture 6: Distributed hash tables](https://glouppe.github.io/info8002-large-scale-database-systems/?p=lecture6.md), [PDF](https://raw.githubusercontent.com/glouppe/info8002-large-scale-database-systems/master/pdf/lec6.pdf)
-- Lecture 7: Distributed computing systems
+- [Lecture 7: Cloud computing](https://glouppe.github.io/info8002-large-scale-database-systems/?p=lecture7.md)
 - Lecture 8: Distributed file systems
 - Lecture 9: Distributed databases
 - Lecture 10: Block chain
