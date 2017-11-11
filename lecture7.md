@@ -13,7 +13,6 @@ Lecture 7: Cloud computing
 How do we program this thing?
 - MapReduce
 - Spark
-- Computational graph systems
 
 ---
 
@@ -56,7 +55,7 @@ How do we program this thing?
 - **Restrict** and **simplify** the programming interface so that the system can *do more automatically*.
 - "Here is an operation, run it on all of the data".
     - I do not care *where* it runs (you schedule that).
-    - In fact, feel free to run it *twice* on different nodes if needed.
+    - In fact, feel free to run it *twice* on different nodes if that can help.
 
 ---
 
@@ -75,7 +74,7 @@ class: middle, center
 # What is MapReduce?
 
 - **MapReduce** is a *parallel programming* model for processing distributed data on a cluster.
-- Simple *high-level* API limited two operations: **Map** and **Reduce**, as inspired by Lisp primitives:
+- Simple *high-level* API limited two operations: **map** and **reduce**, as inspired by Lisp primitives:
     - `map`: apply function to each value in a set.
         - `(map 'length '(() (a) (a b) (a b c)))` $\rightarrow$ `(0 1 2 3)`
     - `reduce`: combines all the values using a binary function.
@@ -83,7 +82,7 @@ class: middle, center
 - MapReduce is best suited for *embarrassingly parallel* tasks.
     - When processing can be broken into parts of equal size.
     - When processes can concurrently work on these parts.
-- Programmers do not have to worry about handling
+- This abstraction makes it possible to not worry about handling
     - parallelization
     - data distribution
     - load balancing
@@ -106,12 +105,12 @@ class: middle, center
 
 - **Map worker**:
     - Map:
-        - Map calls are distributed across machines by automatically partitioning the input data into $M$ *shards*.
+        - Map calls are distributed across machines by automatically **partitioning** the input data into $M$ *shards*.
         - Parse the input shards into input key/value pairs.
-        - Process the input pairs through a user-defined `map` function to produce a set of intermediate key/value pairs.
+        - Process each input pair through a user-defined `map` function to produce a set of intermediate key/value pairs.
         - Write the result to an intermediate file.
     - Partition:
-        - Assign the result to one of $R$ reduce workers based on a partitioning function.
+        - Assign an intermediate result to one of $R$ reduce tasks based on a partitioning function.
             - Both $R$ and the partitioning function are user defined.
 - **Reduce worker**:
     - Sort:
@@ -120,7 +119,7 @@ class: middle, center
             - Different mappers may have output the same key.
     - Reduce:
         - Accept an intermediate key and a set of values for the key.
-        - For each unique, combine these values through a user-defined `reduce` function to form a smaller set of values.
+        - For each unique key, combine all values through a user-defined `reduce` function to form a smaller set of values.
 
 ---
 
@@ -172,7 +171,7 @@ class: middle, center
 .center.width-70[![](figures/lec7/mr-if.png)]
 
 - Intermediate key/value pairs $(k',v')$ produced by the user's `map` function are periodically written to *local* disk.
-    - These files are partitioned into $R$ regions by a partitioning function, one for each reduce worker.
+    - These files are partitioned into $R$ regions by a partitioning function, one for each reduce task.
     - e.g., `hash(key) mod R`
 - Notify master when complete.
     - Pass locations of intermediate data to the master.
@@ -191,7 +190,7 @@ associated to their partition.
 - RPC to read the data from the local disks for the map workers.
 - When the reduce worker reads intermediate data for its partition:
     - it sorts the data by intermediate keys $k'$.
-    - all occurrences $v_i'$ of the same key are grouped together.
+    - all occurrences $v_i'$ associated to a same key are grouped together.
 
 ---
 
@@ -199,7 +198,7 @@ associated to their partition.
 
 .center.width-60[![](figures/lec7/mr-reduce2.png)]
 
-- The sorting phase grouped data with a unique intermediate key.
+- The sorting phase grouped data sharing a unique intermediate key.
 - The **user-defined** `reduce` function is given the key and the set of intermediate values for that key.
     - $(k', (v_1', v_2', v_3', ...))$
 - The output of the `reduce` function is appended to an output file.
@@ -239,7 +238,7 @@ associated to their partition.
 
 # MapReduce is widely applicable
 
-.center[![](figures/lec7/mr-programs.png)]
+.center.width-100[![](figures/lec7/mr-programs.png)]
 .caption[Number of MapReduce programs in Google code source tree.]
 
 ---
@@ -249,18 +248,22 @@ associated to their partition.
 - Master *pings* each worker periodically.
     - If no response is received within a certain delay, the worker is marked as **failed**.
     - Map or Reduce tasks given to this worker are reset back to the initial state and rescheduled for other workers.
-    - Task completion is committed through master to keep track of history.
+    - Task completion is committed to master to keep track of history.
 
 <span class="Q">[Q]</span> What abstraction does this use?
 
-<span class="Q">[Q]</span> What if the master node fails?
+<span class="Q">[Q]</span> What if the master node fails? How would you fix that?
+
+???
+
+The master single-point of failure is fixed in Hadoop 2.0 ("high availability").
 
 ---
 
 # Redundant execution
 
-- Slow workers significantly lengthen completion time
-    - Other jobs consuming resources on machine
+- Slow workers significantly **lengthen completion time**
+    - Because of other jobs consuming resources on machine
     - Bad disks with soft errors transfer data very slowly
     - Weird things: processor caches disabled (!!)
 - Solution: Near end of phase, spawn backup copies of tasks
@@ -296,8 +299,10 @@ associated to their partition.
 - *Hadoop HDFS*: A distributed file system for reliably storing huge amounts of unstructured, semi-structured and structured data in the form of files.
 - **Hadoop MapReduce**: A distributed algorithm framework for the parallel processing of large datasets on *HDFS* filesystem. It runs on Hadoop cluster but also supports other database formats like *Cassandra* and *HBase*.
 - *Cassandra*: A key-value pair NoSQL database, with column family data representation and asynchronous masterless replication.
+    - Cassandra is built upon an architecture similar to a DHT.
 - *HBase*: A key-value pair NoSQL database, with column family data representation, with master-slave replication. It uses HDFS as underlying storage.
-- *Zookeeper*:  A distributed coordination service for distributed applications. It is based on **Paxos algorithm** variant called Zab.
+- *Zookeeper*:  A distributed coordination service for distributed applications.
+    - It is based on a **Paxos algorithm** variant called Zab.
 
 ---
 
@@ -308,7 +313,6 @@ associated to their partition.
 - *Mahout*: A library of machine learning algorithms, implemented on top of MapReduce, for finding meaningful patterns in HDFS datasets.
 - *Yarn*: A system to schedule applications and services on an HDFS cluster and manage the cluster resources like memory and CPU.
 - *Flume*: A tool to collect, aggregate, reliably move and ingest large amounts of data into HDFS.
-- *Spark*: An in-memory data processing engine that can run a DAG of operations. It provides libraries for Machine Learning, SQL interface and near real-time Stream Processing
 - ... and many others!
 
 ---
@@ -326,7 +330,7 @@ class: middle, center
     - Analytics queries (e.g., count clicks and top-K): 2-5 steps
     - Iterative algorithms (e.g., PageRank): 10s of steps
 - Multi-step jobs create **spaghetti** code
-    - 21 MR steps $\rightarrow$ 21 mapper and reducer classes
+    - 21 MR steps $\rightarrow$ 21 mapper + 21 reducer classes
     - Lots of boilerplate code per step
 
 .center.width-70[![](figures/lec7/mr-chaining.png)]
@@ -339,12 +343,16 @@ class: middle, center
 - Over time, MapReduce use cases showed two major limitations:
     - not all algorithms are suited for MapReduce.
         - e.g., a **linear dataflow** is forced.
-    - it is difficult to use for exploration and **interactive** programming.
-    - there are significant performance bottlenecks in iterative algorithms that *reuse* intermediate results.
+    - it is difficult to use for exploration and *interactive programming*.
+    - there are significant performance bottlenecks in iterative algorithms that need to *reuse* intermediate results.
         - e.g., saving intermediate results to stable storage (HDFS) is **very costly**.
 - That is, MapReduce does not compose so well for large applications.
 - For this reason, dozens of high level frameworks and specialized systems were developed.
     - e.g., Pregel, Dremel, FI, Drill, GraphLab, Storm, Impala, etc.
+
+???
+
+Draw a diagram illustrating the issue with intermediate writes.
 
 ---
 
@@ -384,7 +392,7 @@ Time to sort $100\text{TB}$:
 - Programs in Spark are written in terms of a **Resilient Distributed Dataset** (RDD) abstraction and operations on them.
 - An RDD is a **fault-tolerant** *read-only*, partitioned collection of records.
     - Resilient: built for fault-tolerance (it can be recreated).
-    - Distributed: content is divided into atomic *partitions*, stored *in memory* or on disk across multiple nodes.
+    - Distributed: content is divided into atomic *partitions*, usually stored *in memory* and across multiple nodes.
     - Dataset: collection of partitioned data with primitive values or values of values.
 - RDDs can only be created through deterministic operations on either:
     - data in stable storage, or
@@ -392,10 +400,18 @@ Time to sort $100\text{TB}$:
 
 ---
 
+# RDD
+
+.center.width-100[![](figures/lec7/rdd-1.png)]
+
+.footnote[Credits: [Tony Duarte](https://www.slideshare.net/sparkInstructor/apache-spark-rdd-101)]
+
+---
+
 # Operations on RDDs
 
 - *Transformations*: $f(\text{RDD}) \rightarrow \text{RDD'}$
-    - Coarse-grained operations only.
+    - Coarse-grained operations only (à la pandas/numpy).
         - It is not possible to write to a single specific location in an RDD.
     - Lazy evaluation (not computed immediately).
     - e.g., `map` or `filter`.
@@ -403,7 +419,7 @@ Time to sort $100\text{TB}$:
     - Triggers computation.
     - e.g., `count`.
 - The interface also offers explicit *persistence* mechanisms to indicate that an RDD will be reused in future operations.
-    - This allows for internal optimizations.
+    - This allows for significant internal optimizations.
 
 ---
 
@@ -509,7 +525,7 @@ Goal: Load error messages in memory, then interactively search for various patte
 
 .grid.center[
 .col-1-3[
-`map`<br>
+*`map`*<br>
 `filter`<br>
 `sort`<br>
 `groupBy`<br>
@@ -518,7 +534,7 @@ Goal: Load error messages in memory, then interactively search for various patte
 ...
 ]
 .col-1-3[
-`reduce`<br>
+*`reduce`*<br>
 `count`<br>
 `fold`<br>
 `reduceByKey`<br>
@@ -549,6 +565,16 @@ Goal: Load error messages in memory, then interactively search for various patte
 - Therefore, a program cannot reference an RDD that it cannot reconstruct after a failure.
 
 .center.width-50[![](figures/lec7/lineage.png)]
+
+---
+
+# Lineage
+
+`newRDD = myRDD.map(myfund)`
+
+.center.width-90[![](figures/lec7/rdd-2.png)]
+
+.footnote[Credits: [Tony Duarte](https://www.slideshare.net/sparkInstructor/apache-spark-rdd-101)]
 
 ---
 
@@ -615,13 +641,27 @@ class: smaller
 
 # Dataflow programming
 
-XXX
+- Spark builds upon the **dataflow programming** paradigm.
+- Dataflow programming models a program as a *directed graph* of the data flowing between operations.
+- An operation runs as soon as all of its inputs become valid.
+- Dataflow languages are inherently parallel and work well in large, decentralized systems.
+- Modern examples:
+    - Scala
+    - Spark
+    - *Tensorflow*
 
 ---
 
 # Summary
 
-xxx
+- High-level abstractions enable *cloud programming* over clusters.
+    - Without having to handle parallelization, data distribution, load balancing, fault tolerance, ...
+- **MapReduce** is a parallel programming model based on map and reduce operations.
+    - Best suited for embarrassingly parallel and linear tasks.
+    - Its simplicity is a disadvantage for complex iterative programs for interactive exploration.
+- **Spark** generalizes MapReduce by making use of:
+    - fast data sharing (data resides in memory)
+    - general direct acyclic graphs of operations.
 
 ---
 
