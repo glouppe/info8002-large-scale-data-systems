@@ -4,6 +4,10 @@ class: middle, center, title-slide
 
 Lecture 2: Basic abstractions
 
+???
+
+R: take time to explain the reactive programming model
+
 ---
 
 # Today

@@ -130,8 +130,6 @@ class: middle, center
 
 # 6. Distributed hash tables
 
-(Joeri)
-
 - Theory
 - Project 1
 
@@ -163,8 +161,6 @@ class: middle, center
 
 # 9. Distributed databases
 
-(Joeri)
-
 - Structured vs. Unstructured (NoSQL) databases
 - Key-value stores
 - [Graph databases]
@@ -181,7 +177,7 @@ class: middle, center
 - Concept
 - Case study: Bitcoin
 
----
+???
 
 # 11. Data science on a budget
 
