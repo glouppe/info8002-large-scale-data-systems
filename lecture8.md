@@ -147,7 +147,7 @@ class: middle, center
     - To detect failures
     - To send instructions and collect state information
 - An *operation log* persists master's state to permanent storage.
-    - In case master crashes, its state can be recovered.
+    - In case master crashes, its state can be recovered (more later).
 
 ---
 
@@ -202,20 +202,6 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 
 ---
 
-# <strike>Caching</strike>
-
-- Clients do **not** cache file data.
-    - They do cache metadata.
-- Chunckservers do **not** cache file data.
-    - Responsibility of the underlying file system (e.g., Linux's buffer cache).
-- Client caches offer *little benefit* because most applications
-    - stream through huge files
-        - disk seek time negligible compared to transfer time.
-    - have working sets too large to be cached.
-- Not having a caching system **simplifies the overall system** by eliminating cache coherence issues.
-
----
-
 # Chunk sizes
 
 - Default size = 64MB.
@@ -242,7 +228,21 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 
 ---
 
-# Operation log
+# <strike>Caching</strike>
+
+- Clients do **not** cache file data.
+    - They do cache metadata.
+- Chunckservers do **not** cache file data.
+    - Responsibility of the underlying file system (e.g., Linux's buffer cache).
+- Client caches offer *little benefit* because most applications
+    - stream through huge files
+        - disk seek time negligible compared to transfer time.
+    - have working sets too large to be cached.
+- Not having a caching system **simplifies the overall system** by eliminating cache coherence issues.
+
+---
+
+# Consistency model
 
 ---
 
@@ -250,9 +250,6 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 
 3.1 3.2
 
----
-
-# Consistency model
 
 ---
 
@@ -277,6 +274,20 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 5.1
 
 shadow replicas of master
+
+---
+
+# Operation log
+
+- The **operation log** is a persistent historical record of critical changes on metadata.
+- Critical to the *recovery* of the system.
+    - Master recovers its file system state by replaying the operation log.
+    - Master periodically checkpoints its state to minimize startup time.
+- Changes to metadata are only made visible to the clients **after** they have been written to the operation log.
+- The operation log is *replicated* on multiple remote machines.
+    - Before responding to a client operation, the log record must have been flushed locally and remotely.
+- Serve as a **logical timeline** that defines the order of concurrent operations.
+
 
 ---
 
