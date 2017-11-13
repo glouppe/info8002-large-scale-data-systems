@@ -53,14 +53,15 @@ class: middle, center
 # Assumptions
 
 - Hardware **failures are common** (commodity hardware).
-- Files are *large* (multi-GB files are the norm) and their number is limited (millions, not billions).
-- Two main types of reads:
-    - *large streaming reads*
+- Files are *large* (multi-GB files are the norm) and their number is (relatively) limited (millions).
+- Reads:
+    - *large streaming reads* ($\geq$ 1MB in size)
     - *small random reads*
-- Workloads with **sequential writes** that *append* data to files.
-- Once written, files are *seldom modified* ($\neq$ append) again.
-    - Random modification in files is possible, but not efficient in GFS.
-- Well-defined **semantics** for multiple clients that *concurrently* append to the same file.
+- Writes:
+    - Large **sequential writes** that *append* to files.
+    - Concurrent appends by multiple clients.
+    - Once written, files are *seldom modified* ($\neq$ append) again.
+        - Random modification in files is possible, but not efficient in GFS.
 - High sustained bandwidth, but low latency.
 
 ---
@@ -73,17 +74,6 @@ class: middle, center
 - A hospital's medical imaging data generated from an MRI scan.
 - Data sent by the Hubble telescope.
 - A search engine's index (used to serve search results to users).
-
----
-
-# Disclaimer
-
-- GFS (and HDFS) are **not a good fit** for:
-    - Low latency data access (in the ms range).
-        - Solution: distributed databases, such as HBase.
-    - Many small files.
-    - Constantly changing data.
-- Not all details of GFS are public knowledge.
 
 ---
 
@@ -103,12 +93,33 @@ class: middle, center
 
 ---
 
+# Disclaimer
+
+- GFS (and HDFS) are **not a good fit** for:
+    - Low latency data access (in the ms range).
+        - Solution: distributed databases, such as HBase.
+    - Many small files.
+    - Constantly changing data.
+- Not all details of GFS are public knowledge.
+
+---
+
+# Design aims
+
+- Maintain data and system availability.
+- Handle failures gracefully and transparently.
+- Low synchronization overhead between entities.
+- Exploit parallelism of numerous entities.
+- Ensure high sustained throughput over low latency for individual reads/writes.
+
+---
+
 # Architecture
 
 .center.width-100[![](figures/lec8/gfs-architecture.png)]
 
 - A single **master** node.
-- Multiple *chunkservers* storing the data.
+- Multiple *chunkservers* (100s - 1000s) storing the data.
 - Multiple clients.
 
 ???
@@ -127,6 +138,8 @@ class: middle, center
 - Chunkservers store chunks on local disks as plain Linux files.
     - Read or write data specified by a pair (chunk handle, byte range).
     - By default **three replicas** of a chunk stored across chunkservers.
+
+.center.width-50[![](figures/lec8/gfs-chunks.png)]
 
 ---
 
@@ -167,7 +180,20 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 
 ---
 
-# Reading (1)
+# Interface
+
+- No file system interface at the operating-system level (e.g., under the VFS layer).
+    - User-level API is provided instead.
+    - Does not support all the features of POSIX file system access.
+        - But looks similar (i.e., `open`, `close`, `read`, ...)
+- Two special operations are supported:
+    - *Snapshot*: efficient way of creating a copy of the current instance of a file or directory tree.
+    - *Append*: append data to a file as an **atomic operation**, without having to lock the file.
+        - Multiple processes can append to the same file concurrently without overwriting one another's data.
+
+---
+
+# Reads (1)
 
 .center.width-100[![](figures/lec8/gfs-read1.png)]
 
@@ -175,7 +201,7 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 
 ---
 
-# Reading (2)
+# Reads (2)
 
 .center.width-100[![](figures/lec8/gfs-read2.png)]
 
@@ -183,7 +209,7 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 
 ---
 
-# Reading (3+4)
+# Reads (3+4)
 
 .center.width-100[![](figures/lec8/gfs-read3.png)]
 
@@ -194,7 +220,7 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 
 ---
 
-# Reading (5)
+# Reads (5)
 
 .center.width-100[![](figures/lec8/gfs-read4.png)]
 
@@ -202,9 +228,34 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 
 ---
 
+# Consistency model
+
+2.7
+
+---
+
+# Writes
+
+- include leases
+
+---
+
+# Appends
+
+3.3
+
+---
+
+# Snapshots
+
+3.4
+
+---
+
 # Chunk sizes
 
 - Default size = 64MB.
+    - This a **key design parameter** in GFS!
 - Advantages of large (but not too large) chunk size:
     - **Reduced** need for client/master interaction.
     - 1 request per chunk suits the target workloads.
@@ -242,17 +293,6 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 
 ---
 
-# Consistency model
-
----
-
-# Writing
-
-3.1 3.2
-
-
----
-
 # Namespace management and locking
 
 ---
@@ -261,19 +301,15 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 
 ---
 
+# Creation, re-replication and rebalancing
+
+---
+
 # Garbage collection
 
 ---
 
 # Stale replica detection
-
----
-
-# Fault tolerance
-
-5.1
-
-shadow replicas of master
 
 ---
 
@@ -288,6 +324,17 @@ shadow replicas of master
     - Before responding to a client operation, the log record must have been flushed locally and remotely.
 - Serve as a **logical timeline** that defines the order of concurrent operations.
 
+---
+
+# Fault tolerance (master)
+
+5.1
+
+shadow replicas of master
+
+---
+
+# Fault tolerance (chunkserver)
 
 ---
 
