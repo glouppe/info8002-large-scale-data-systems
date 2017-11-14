@@ -84,10 +84,12 @@ class: middle, center
 - We want *single system illusion* for data storage.
 - Although data is too large be stored in a single system.
 - Hardware **will** fail.
+
+![](figures/lec8/google-first-server_a.jpg)
+.caption[Google first servers]
 ]
 .col-1-2[
 ![](figures/lec8/google-first-server.jpg)
-.caption[Google first server]
 ]
 ]
 
@@ -118,9 +120,10 @@ class: middle, center
 
 .center.width-100[![](figures/lec8/gfs-architecture.png)]
 
-- A single **master** node.
-- Multiple *chunkservers* (100s - 1000s) storing the data.
-- Multiple clients.
+- A *single* **master** node.
+- Many *chunkservers* (100s - 1000s) storing the data.
+    - Physically spread in different racks.
+- Many clients.
 
 ???
 
@@ -180,12 +183,42 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 
 ---
 
+# Chunks
+
+- Default size = 64MB.
+    - This a **key design parameter** in GFS!
+- Advantages of large (but not too large) chunk size:
+    - **Reduced** need for client/master interaction.
+    - 1 request per chunk suits the target workloads.
+    - Client can cache *all the locations* for a multi-TB working set.
+    - **Reduced size** of metadata on master (kept in memory).
+- Disadvantage:
+    - A chunkserver can become a **hotspot** for popular files.
+
+<br><br><br><br><br><br><span class="Q">[Q]</span> How to fix the hotspot problem?
+
+---
+
+# <strike>Caching</strike>
+
+- Clients do **not** cache file data.
+    - They do cache metadata.
+- Chunckservers do **not** cache file data.
+    - Responsibility of the underlying file system (e.g., Linux's buffer cache).
+- Client caches offer *little benefit* because most applications
+    - stream through huge files
+        - disk seek time negligible compared to transfer time.
+    - have working sets too large to be cached.
+- Not having a caching system **simplifies the overall system** by eliminating cache coherence issues.
+
+---
+
 # Interface
 
 - No file system interface at the operating-system level (e.g., under the VFS layer).
     - User-level API is provided instead.
     - Does not support all the features of POSIX file system access.
-        - But looks similar (i.e., `open`, `close`, `read`, ...)
+        - But looks similar (i.e., `open`, `close`, `read`, `write`, ...)
 - Two special operations are supported:
     - *Snapshot*: efficient way of creating a copy of the current instance of a file or directory tree.
     - *Append*: append data to a file as an **atomic operation**, without having to lock the file.
@@ -228,68 +261,89 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 
 ---
 
-# Consistency model
+# Leases and mutation order
 
-2.7
+- A **mutation** is an operation that changes the contents or metadata of a chunk.
+    - `write`
+    - `append`
+- Each mutation is performed at all the chunk's replicas.
+- **Leases** are used to maintain a consistent mutation order across replicas.
+    - Master grants a chunk lease to one of the replicas, called the *primary*.
+    - Leases are renewed using the periodic heartbeat messages between master and chunkservers.
+- The primary picks a serial order for all mutations to the chunk.
+    - All replicas follow this order when applying mutations.
+- Leases and serial order at the primary define a *global ordering* of the operations on a chunk.
+
 
 ---
 
-# Writes
+# Writes (1+2)
 
-- include leases
+.center.width-40[![](figures/lec8/gfs-write12.png)]
+
+1) The GFS client asks master for the primary and the secondary replicas for each chunk.
+
+2) Master replies with the locations of the primary and secondary replicas. This information is cached.
+
+---
+
+# Writes (3)
+
+.center.width-40[![](figures/lec8/gfs-write3.png)]
+
+3) The client pushes the data to all replicas.
+- Each chunkserver stores the data in an internal buffer.
+- Each chunkserver sends back an acknowledgement to the client once the data is received.
+- Data flow is decoupled control flow.
+
+---
+
+# Writes (4)
+
+.center.width-40[![](figures/lec8/gfs-write4.png)]
+
+4) Once all replicas have acknowledged, a **write request** is sent to the primary.
+- This request identifies the data pushed earlier.
+- The primary assigns consecutive serial numbers to all the mutations it receives, possibly from multiple clients.
+    - This provides ordering.
+- The primary applies the mutations, in the chosen order, to its local state.
+
+---
+
+# Writes (5)
+
+.center.width-40[![](figures/lec8/gfs-write5.png)]
+
+5) The primary forwards the write request to all secondary replicas.
+- Mutations are applied locally in the serial order decided by the primary.
+
+---
+
+# Writes (6+7)
+
+.center.width-40[![](figures/lec8/gfs-write67.png)]
+
+6) The secondaries all reply to the primary upon completion of the operation.
+
+7) The primary replies to the client.
+- Errors are reported to the client.
+    - The client request is considered to have failed.
+    - The modified region is left in an **inconsistent state**.
+    - The client handles errors by retrying the failed mutation.
 
 ---
 
 # Appends
 
-3.3
+
 
 ---
 
-# Snapshots
+# Consistency model
 
-3.4
+- Relaxed consistency model.
 
----
-
-# Chunk sizes
-
-- Default size = 64MB.
-    - This a **key design parameter** in GFS!
-- Advantages of large (but not too large) chunk size:
-    - **Reduced** need for client/master interaction.
-    - 1 request per chunk suits the target workloads.
-    - Client can cache *all the locations* for a multi-TB working set.
-    - **Reduced size** of metadata on master (kept in memory).
-- Disadvantage:
-    - A chunkserver can become a **hotspot** for popular files.
-
-<br><br><br><br><br><br><br><span class="Q">[Q]</span> How to fix the hotspot problem?
-
----
-
-# Chunk locations
-
-- Master does not keep a persistent record of chunk replica locations.
-- Instead, it **polls** chunkservers about their chunks at startup.
-- Master keeps up to date through *hearbeat* messages.
-- A chunkserver has the **final word** over what chunks it stores.
-
-<br><br><br><br><br><br><br><br><br><br><br><span class="Q">[Q]</span> What does this design decision simplify?
-
----
-
-# <strike>Caching</strike>
-
-- Clients do **not** cache file data.
-    - They do cache metadata.
-- Chunckservers do **not** cache file data.
-    - Responsibility of the underlying file system (e.g., Linux's buffer cache).
-- Client caches offer *little benefit* because most applications
-    - stream through huge files
-        - disk seek time negligible compared to transfer time.
-    - have working sets too large to be cached.
-- Not having a caching system **simplifies the overall system** by eliminating cache coherence issues.
+- table
 
 ---
 
@@ -323,6 +377,17 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 - The operation log is *replicated* on multiple remote machines.
     - Before responding to a client operation, the log record must have been flushed locally and remotely.
 - Serve as a **logical timeline** that defines the order of concurrent operations.
+
+---
+
+# Chunk locations
+
+- Master does not keep a persistent record of chunk replica locations.
+- Instead, it **polls** chunkservers about their chunks at startup.
+- Master keeps up to date through *hearbeat* messages.
+- A chunkserver has the **final word** over what chunks it stores.
+
+<br><br><br><br><br><br><br><br><br><br><br><span class="Q">[Q]</span> What does this design decision simplify?
 
 ---
 

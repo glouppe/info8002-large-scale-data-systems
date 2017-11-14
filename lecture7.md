@@ -229,6 +229,7 @@ associated to their partition.
     - Find the frequency of each URL in web logs.
     - Map: process logs of web page access. Produce $(url,1)$ pairs.
     - Reduce: add all values for the same URL.
+        - Is this efficient?
 - *Reverse web-link graph*
     - Find where page links come from.
     - Map: output $(target,source)$ pairs for each link $target$ in a web page $source$.
@@ -344,6 +345,7 @@ class: middle, center
     - not all algorithms are suited for MapReduce.
         - e.g., a **linear dataflow** is forced.
     - it is difficult to use for exploration and *interactive programming*.
+        - e.g., inside a notebook.
     - there are significant performance bottlenecks in iterative algorithms that need to *reuse* intermediate results.
         - e.g., saving intermediate results to stable storage (HDFS) is **very costly**.
 - That is, MapReduce does not compose so well for large applications.
