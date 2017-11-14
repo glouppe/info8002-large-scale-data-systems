@@ -340,32 +340,31 @@ Decision decisions:
     - Client pushes data to replicas of *last chunk* of file.
     - Client send an append request to the primary.
     - The request fits in current last chunk:
-        - Primary appends data to own replica
+        - Primary appends data to own replica.
         - Primary tells secondaries to do same at same byte offset in theirs.
-        - Primary replies with success to client.
+        - Primary replies with success to client, specifying the offset the data was written.
     - When the data does not fit in last chunk:
         - Primary fills current chunk with padding.
         - Primary tells secondaries to do the same.
         - Primary replies to client to *retry on next chunk*.
-- If record append fails at any replica, the client has to retry the operation.
-    - Replicas of same chunk may contain different data!
-        - Even duplicates!
+- If a record append fails at any replica, the client has to retry the operation.
+    - Replicas of same chunk may contain may not be bytewise identical!
 
 ---
 
-# Consistency model
+# (Relaxed) Consistency model
 
-- Changes to metadata are *atomic*.
-    - Done by single master server.
+- Changes to metadata are always *atomic*.
+    - Guaranteed by having a single master server.
 - Mutations are *ordered* as chosen by a primary node.
     - All replicas will be consistent if they all successfully  perform mutations in the same order.
     - Multiple writes from the same client may be interleaved or overwritten by concurrent operations from other clients.
+        - i.e., a file region is defined only if client see mutations in entirety, it is undefined otherwise.
 - Record append completes *at least once*, at offset of GFS's choosing.
-    - **Application must cope with possible duplicates**.
-    - GFS does not guarantee that all replicas are bytewise identical!
+    - There might be duplicate entries.
 - Failures can cause inconsistency.
 
-.center.width-70[![](figures/lec8/gfs-consistency.png)]
+.center.width-60[![](figures/lec8/gfs-consistency.png)]
 
 ---
 
@@ -435,11 +434,23 @@ Scenario: a chunkserver misses a mutation applied to a chunk (e.g., a chunk was 
 
 ---
 
-# What if master fails and/or reboots?
+# What if master fails?
+
+- ... and does not recover?
+- This represents a *single point of failure* of system.
+- Solution:
+    - Maintain shadow *read-only* replicas of master.
+    - Use these replicas in case master fails.
+    - Eventually elect a new leader if master never recovers.
 
 ---
 
 # What if a chunkserver fails?
+
+- Master notices missing hearbeats.
+- Master decrements count of replicas for all chunks on dead chunkserver.
+- Master re-replicates chunks missing replicas.
+    - Highest priority for chunks missing greatest number of replicas.
 
 ---
 
@@ -457,12 +468,40 @@ Scenario: a chunkserver misses a mutation applied to a chunk (e.g., a chunk was 
 
 ---
 
-# Colossus
+# Performance: reads
 
-???
+.center.width-70[![](figures/lec8/perf-read.png)]
 
-https://www.systutorials.com/3202/colossus-successor-to-google-file-system-gfs/
+---
 
+# Performance: writes
+
+.center.width-70[![](figures/lec8/perf-write.png)]
+
+---
+
+# Performance: appends
+
+.center.width-70[![](figures/lec8/perf-append.png)]
+
+---
+
+# Summary
+
+- Success: used actively by Google to support search service and other applications.
+    - Availability and recoverability on cheap hardware.
+    - High throughput by decoupling control and data.
+    - Supports massive data sets and concurrent appends.
+- Semantics not transparent to applications.
+    - Must verify file contents to avoid inconsistent regions, repeated appends (at-least-once semantics).
+- Performance not good for all applications.
+- Assumes read-once, write-once workload (no client caching!)
+- Replaced in 2010 by Colossus
+    - Eliminate master node as single point of failure  
+    - Targets latency problems due to more latency sensitive applications
+    - Reduce block size to be between 1~8 MB
+    - Few public details.
+    
 ---
 
 class: middle, center
@@ -472,6 +511,28 @@ class: middle, center
 ---
 
 # HDFS
+
+XXX
+
+---
+
+# HDFS in one figure
+
+.center.width-90[![](figures/lec8/hdfs-vs-gfs.png)]
+
+---
+
+# GFS vs. HDFS
+
+| GFS | HDFS |
+| --- | ---- |
+| Master | NameNode |
+| Chunkserver | DataNode |
+| Operation log | Journal, edit log |
+| Chunk | Block |
+| Random file writes are possible | Only append is possible |
+| Multiple writers, multiple readers model | Single writer, multiple reader model |
+| Default chunk size = 64MB | Default block size = 128MB |
 
 ---
 
