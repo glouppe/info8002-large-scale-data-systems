@@ -108,11 +108,11 @@ class: middle, center
 
 # Design aims
 
-- Maintain data and system availability.
-- Handle failures gracefully and transparently.
-- Low synchronization overhead between entities.
-- Exploit parallelism of numerous entities.
-- Ensure high sustained throughput over low latency for individual reads/writes.
+- Maintain data and system *availability*.
+- Handle **failures** gracefully and transparently.
+- *Low synchronization* overhead between entities.
+- Exploit *parallelism* of numerous entities.
+- Ensure **high sustained throughput** over low latency for individual reads/writes.
 
 ---
 
@@ -201,6 +201,7 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 
 # <strike>Caching</strike>
 
+Decision decisions:
 - Clients do **not** cache file data.
     - They do cache metadata.
 - Chunckservers do **not** cache file data.
@@ -261,7 +262,7 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 
 ---
 
-# Leases and mutation order
+# Leases
 
 - A **mutation** is an operation that changes the contents or metadata of a chunk.
     - `write`
@@ -270,10 +271,9 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 - **Leases** are used to maintain a consistent mutation order across replicas.
     - Master grants a chunk lease to one of the replicas, called the *primary*.
     - Leases are renewed using the periodic heartbeat messages between master and chunkservers.
-- The primary picks a serial order for all mutations to the chunk.
+- The primary picks a **serial order** for all mutations to the chunk.
     - All replicas follow this order when applying mutations.
 - Leases and serial order at the primary define a *global ordering* of the operations on a chunk.
-
 
 ---
 
@@ -305,7 +305,7 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 4) Once all replicas have acknowledged, a **write request** is sent to the primary.
 - This request identifies the data pushed earlier.
 - The primary assigns consecutive serial numbers to all the mutations it receives, possibly from multiple clients.
-    - This provides ordering.
+    - This provides *ordering* and *consistency*.
 - The primary applies the mutations, in the chosen order, to its local state.
 
 ---
@@ -326,8 +326,8 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 6) The secondaries all reply to the primary upon completion of the operation.
 
 7) The primary replies to the client.
-- Errors are reported to the client.
-    - The client request is considered to have failed.
+- Errors may be reported to the client.
+    - Upon errors, the client request is considered to have failed.
     - The modified region is left in an **inconsistent state**.
     - The client handles errors by retrying the failed mutation.
 
@@ -335,35 +335,79 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 
 # Appends
 
-
+- Google uses large files as queues between multiple *producers* and *consumers*.
+- Same control flow as for writes, except that:
+    - Client pushes data to replicas of *last chunk* of file.
+    - Client send an append request to the primary.
+    - The request fits in current last chunk:
+        - Primary appends data to own replica
+        - Primary tells secondaries to do same at same byte offset in theirs.
+        - Primary replies with success to client.
+    - When the data does not fit in last chunk:
+        - Primary fills current chunk with padding.
+        - Primary tells secondaries to do the same.
+        - Primary replies to client to *retry on next chunk*.
+- If record append fails at any replica, the client has to retry the operation.
+    - Replicas of same chunk may contain different data!
+        - Even duplicates!
 
 ---
 
 # Consistency model
 
-- Relaxed consistency model.
+- Changes to metadata are *atomic*.
+    - Done by single master server.
+- Mutations are *ordered* as chosen by a primary node.
+    - All replicas will be consistent if they all successfully  perform mutations in the same order.
+    - Multiple writes from the same client may be interleaved or overwritten by concurrent operations from other clients.
+- Record append completes *at least once*, at offset of GFS's choosing.
+    - **Application must cope with possible duplicates**.
+    - GFS does not guarantee that all replicas are bytewise identical!
+- Failures can cause inconsistency.
 
-- table
-
----
-
-# Namespace management and locking
+.center.width-70[![](figures/lec8/gfs-consistency.png)]
 
 ---
 
 # Replica placement
 
----
-
-# Creation, re-replication and rebalancing
+- Policy is to maximize:
+    - data reliability and availability,
+    - network bandwidth utilization.
+- Chunks are created initially empty.
+    - Preferably create chunks at *under-utilized* chunkservers, spread across different racks.
+    - Limit number of recent creations on each chunk server.
+- Re-replication.
+    - Started once the available replicas fall below a user-defined threshold.
+    - Master instructs chunkserver to copy chunk data directly from existing valid replica.
+    - Number of active clone operations/bandwidth is limited.
+- Re-balancing
+    - Changes in replica distribution for better load balancing.
+    - New chunk servers are gradually filled.
 
 ---
 
 # Garbage collection
 
+How can a file be **deleted** from the cluster?
+- Deletion is *logged* by master.
+- The file is *renamed* to a hidden file and the deletion timestamp is kept.
+- Periodic scan of the master's file system namespace.
+    - Hidden files older than 3 days are deleted from master's memory.
+    - I.e., there is no further connection a file and its chunks.
+- Periodic scan of the master's chunk namespace.
+    - Orphaned chunks (not reachable from any file) are identified and their metadata is deleted.
+- Hearbeat messages are used to synchronize deletion between master and chunkservers.
+
 ---
 
 # Stale replica detection
+
+Scenario: a chunkserver misses a mutation applied to a chunk (e.g., a chunk was appended).
+- Master maintains a **chunk version number*** to distinguish up-to-date and stale replicas.
+- Before an operation on a chunk, master ensures that the version number advances.
+    - Each time master grants new lease, the version is incremented and informed to all replicas.
+- Stale replicas are removed in the regular garbage collection cycle.
 
 ---
 
@@ -391,19 +435,25 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 
 ---
 
-# Fault tolerance (master)
-
-5.1
-
-shadow replicas of master
+# What if master fails and/or reboots?
 
 ---
 
-# Fault tolerance (chunkserver)
+# What if a chunkserver fails?
 
 ---
 
 # Data corruption
+
+- Data corruption or loss can occur at any time.
+- Chunkservers use **checksums** to detect corruption of stored data.
+    - Alternative: compare replicas across chunk servers.
+- A chunk is broken into 64KB blocks, each has a 32bit checksum.
+    - These are kept in memory and stored persistently.
+- Read requests: the chunkserver *verifies the checksum* of the data blocks that overlap with the read range.
+    - Corrupted data are not sent to the clients.
+
+<br><br><br><br><br><br><br><span class="Q">[Q]</span> What if a read request fails because of corrupted data?
 
 ---
 
