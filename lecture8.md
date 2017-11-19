@@ -55,7 +55,7 @@ class: middle, center
 - Hardware **failures are common** (commodity hardware).
 - Files are *large* (multi-GB files are the norm) and their number is (relatively) limited (millions).
 - Reads:
-    - *large streaming reads* ($\geq$ 1MB in size)
+    - *large streaming reads* ($\geq$ 1MB in size), or
     - *small random reads*
 - Writes:
     - Large **sequential writes** that *append* to files.
@@ -125,6 +125,8 @@ class: middle, center
     - Physically spread in different racks.
 - Many clients.
 
+<span class="Q">[Q]</span> Why spreading across racks?
+
 ???
 
 - Remember: one way, not the way.
@@ -188,9 +190,9 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 - Default size = 64MB.
     - This a **key design parameter** in GFS!
 - Advantages of large (but not too large) chunk size:
-    - **Reduced** need for client/master interaction.
-    - 1 request per chunk suits the target workloads.
-    - Client can cache *all the locations* for a multi-TB working set.
+    - **Reduced need** for client/master interaction.
+        - 1 request per chunk suits the target workloads.
+        - Client can cache *all the locations* for a multi-TB working set.
     - **Reduced size** of metadata on master (kept in memory).
 - Disadvantage:
     - A chunkserver can become a **hotspot** for popular files.
@@ -201,7 +203,7 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 
 # <strike>Caching</strike>
 
-Decision decisions:
+Design decisions:
 - Clients do **not** cache file data.
     - They do cache metadata.
 - Chunckservers do **not** cache file data.
@@ -264,7 +266,7 @@ Decision decisions:
 
 # Leases
 
-- A **mutation** is an operation that changes the contents or metadata of a chunk.
+- A **mutation** is an operation that changes the content or metadata of a chunk.
     - `write`
     - `append`
 - Each mutation is performed at all the chunk's replicas.
@@ -335,7 +337,7 @@ Decision decisions:
 
 # Appends
 
-- Google uses large files as queues between multiple *producers* and *consumers*.
+- Google uses large files as **queues** between multiple *producers* and *consumers*.
 - Same control flow as for writes, except that:
     - Client pushes data to replicas of *last chunk* of file.
     - Client send an append request to the primary.
@@ -348,7 +350,7 @@ Decision decisions:
         - Primary tells secondaries to do the same.
         - Primary replies to client to *retry on next chunk*.
 - If a record append fails at any replica, the client has to retry the operation.
-    - Replicas of same chunk may contain may not be bytewise identical!
+    - Replicas of same chunk may not be bytewise identical!
 
 ---
 
@@ -362,7 +364,7 @@ Decision decisions:
         - i.e., a file region is defined only if client see mutations in entirety, it is undefined otherwise.
 - Record append completes *at least once*, at offset of GFS's choosing.
     - There might be duplicate entries.
-- Failures can cause inconsistency.
+- Failures can cause **inconsistency**.
 
 .center.width-60[![](figures/lec8/gfs-consistency.png)]
 
@@ -371,7 +373,7 @@ Decision decisions:
 # Replica placement
 
 - Policy is to maximize:
-    - data reliability and availability,
+    - data *reliability* and *availability*,
     - network bandwidth utilization.
 - Chunks are created initially empty.
     - Preferably create chunks at *under-utilized* chunkservers, spread across different racks.
@@ -393,7 +395,7 @@ How can a file be **deleted** from the cluster?
 - The file is *renamed* to a hidden file and the deletion timestamp is kept.
 - Periodic scan of the master's file system namespace.
     - Hidden files older than 3 days are deleted from master's memory.
-    - I.e., there is no further connection a file and its chunks.
+    - I.e., there is no further connection between a file and its chunks.
 - Periodic scan of the master's chunk namespace.
     - Orphaned chunks (not reachable from any file) are identified and their metadata is deleted.
 - Hearbeat messages are used to synchronize deletion between master and chunkservers.
@@ -403,7 +405,7 @@ How can a file be **deleted** from the cluster?
 # Stale replica detection
 
 Scenario: a chunkserver misses a mutation applied to a chunk (e.g., a chunk was appended).
-- Master maintains a **chunk version number*** to distinguish up-to-date and stale replicas.
+- Master maintains a **chunk version number** to distinguish up-to-date and stale replicas.
 - Before an operation on a chunk, master ensures that the version number advances.
     - Each time master grants new lease, the version is incremented and informed to all replicas.
 - Stale replicas are removed in the regular garbage collection cycle.
@@ -413,7 +415,7 @@ Scenario: a chunkserver misses a mutation applied to a chunk (e.g., a chunk was 
 # Operation log
 
 - The **operation log** is a persistent historical record of critical changes on metadata.
-- Critical to the *recovery* of the system.
+- Critical to the *recovery* of the system, upon restart of master.
     - Master recovers its file system state by replaying the operation log.
     - Master periodically checkpoints its state to minimize startup time.
 - Changes to metadata are only made visible to the clients **after** they have been written to the operation log.
@@ -437,7 +439,7 @@ Scenario: a chunkserver misses a mutation applied to a chunk (e.g., a chunk was 
 # What if master fails?
 
 - ... and does not recover?
-- This represents a *single point of failure* of system.
+- This represents a **single point of failure** of system.
 - Solution:
     - Maintain shadow *read-only* replicas of master.
     - Use these replicas in case master fails.
@@ -484,6 +486,10 @@ Scenario: a chunkserver misses a mutation applied to a chunk (e.g., a chunk was 
 
 .center.width-70[![](figures/lec8/perf-append.png)]
 
+???
+
+XXX conclusions?
+
 ---
 
 # Summary
@@ -501,7 +507,7 @@ Scenario: a chunkserver misses a mutation applied to a chunk (e.g., a chunk was 
     - Targets latency problems due to more latency sensitive applications
     - Reduce block size to be between 1~8 MB
     - Few public details.
-    
+
 ---
 
 class: middle, center
@@ -512,7 +518,12 @@ class: middle, center
 
 # HDFS
 
-XXX
+- Hadoop Distributed File System (HDFS) is an *open source* distributed file system.
+- HDFS shares the same goals as GFS.
+- HDFS's design is **strongly** inspired from GFS.
+- HDFS uses a distributed cache.
+- No leases (client decides where to write).
+- Used by Facebook, Yahoo, IBM, etc.
 
 ---
 
@@ -533,10 +544,6 @@ XXX
 | Random file writes are possible | Only append is possible |
 | Multiple writers, multiple readers model | Single writer, multiple reader model |
 | Default chunk size = 64MB | Default block size = 128MB |
-
----
-
-# Summary
 
 ---
 
