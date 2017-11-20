@@ -74,7 +74,7 @@ The data of the eBOSS survey that I will provide you with is a relatively small 
 \section{Deliverables}
 \label{sec:deliverables}
 
-To complete this project succesfully, I would like you to solve and provide proof for the following main questions with Apache Spark and provide a \emph{reproducable} Jupyter Notebook with a full description what you are doing (using Markdown cells).
+To complete this project succesfully, I would like you to solve and provide proof for the following questions. These questions have to be solved with Apache Spark. The proof for these questions need to be provided in a \emph{reproducable} Jupyter Notebook with a full description what you are doing (using Markdown cells). This will suffice as your report.
 
 \begin{enumerate}
   \item \emph{Is the expansion of the Universe uniform across all regions of the sky?}
@@ -85,14 +85,12 @@ To complete this project succesfully, I would like you to solve and provide proo
   \item \emph{What is the distribution of the spectral type of all observed stars?}
 \end{enumerate}
 
-To solve these questions, you will be reading and parsing the data products described in Section~\ref{sec:data_products}. However, in order to do this in an efficient manner, you most likely have to come up with an intermediate representation constructed from the original data products to perform efficient IO. Before obtaining such a representation, you also have to figure out a way to efficiently parse the original data products (in FITS).\\
+To solve these questions, you will be reading and parsing the data products described in Section~\ref{sec:data_products}. However, in order to do this in an efficient manner, you most likely have to come up with an intermediate representation constructed from the original data products to perform efficient IO. Before obtaining such a representation, you also have to figure out a way to efficiently parse the original data products (in FITS). To summarize, you need to provide \emph{code to transform the original data into some other representation} (DataFrame). Then you have to provide a \emph{notebook} which uses this representation to solve the above questions efficiently.\\
 
 Finally, to improve the SDSS query engine, I would like you to come up with a method which is able to efficiently generate plots such as in Figure~\ref{fig:spectra_galaxy}, and Figure~\ref{fig:spectra_star}, for a specific region of the sky, i.e., given a specific range of \emph{right ascension} and \emph{declination}. This method will be utilized to evaluate the efficiency of your data representation (so optimize your schema for these type of queries).
 
 \section{Bonus}
 \label{sec:bonus}
-
-\emph{TO BE CONFIRMED BY GILLES}
 
 A bonus point (1/20) is awarded to the group which is able to provide the fastest average random query time over the complete eBOSS dataset (171 GB). The query that will be ran to evaluate the performance of your data architecture, will be concerned with selecting objects in a particular region in the sky for a particular redshift. Furthermore, we also might be interested in only selecting particular objects, i.e., \emph{starts}, \emph{galaxies}, and \emph{quasars}. Your result might have practical implications as well, since the current SDSS query tool is \emph{very} slow.
 
