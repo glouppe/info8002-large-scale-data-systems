@@ -94,6 +94,16 @@ consistent, safe, and robust manner.
 
 ---
 
+# Performance
+
+- DBMSs are designed to store **massive** amounts of data (TB, PB).
+- High throughput is desired (thousands to millions transactions/hour).
+- High availability ($\geq$ 99.999%).
+
+<span class="Q">[Q]</span> How can we address these issues, at large-scale?
+
+---
+
 class: middle, center
 
 # Distributed databases
