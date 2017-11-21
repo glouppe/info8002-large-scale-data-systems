@@ -25,7 +25,7 @@ In physical terms, redshift, described in Equation~\ref{eq:redshift}, happens wh
   \label{eq:redshift}
 \end{equation}
 
-In astronomy, redshift can be utilized to measure the \emph{accelerating} expansion of the universe. This is exactly one of the key questions posed by the eBOSS survey. In princple, eBOSS measures this by identifying the wavelenghts of emission and absorption lines, and then comparing with the known spectra in a vacuum for those elements and thereby obtaining an average redshift for all spectra using Equation~\ref{eq:redshift}.
+In astronomy, redshift can be utilized to measure the \emph{accelerating} expansion of the universe. This is exactly one of the key questions posed by the eBOSS survey. In princple, eBOSS measures this by identifying the wavelengths of emission and absorption lines, and then comparing with the known spectra in a vacuum for those elements and thereby obtaining an average redshift for all spectra using Equation~\ref{eq:redshift}.
 
 \begin{figure}[H]
   \centering
@@ -63,21 +63,30 @@ Furthermore, these emmision lines and their accompanying fluxes (number of photo
   \end{minipage}
 \end{figure}
 
-The data collection procedure is done by drilling several holes in an aluminimum plate which are positioned in a particular way to obtain individual fluxes of target objects, as shown in Figure~\ref{fig:sdss_plate}. This approach the eBOSS survey to observe multiple targets at once by attaching an optical \emph{fiber} to every drilled hole, causing the individual observations to be independent of each other. Furthermore, this approach allows SDSS to filter out nearby galaxies which are known to be \emph{blueshifted}, and obtain the individual background flux for every observed object.
+The data collection procedure is done by drilling several holes in an aluminimum plate which are positioned in a particular way to obtain individual fluxes of target objects, as shown in Figure~\ref{fig:sdss_plate}. This approach allows the eBOSS survey to observe multiple targets at once by attaching an optical \emph{fiber} to every drilled hole, causing the individual observations to be independent of each other. Furthermore, this approach allows SDSS to filter out nearby galaxies which are known to be \emph{blueshifted} (negative redshift, i.e., objects which are blueshifted have a component which move towards us), and obtain the individual background flux for every observed object.
 
 \newpage
 \section{Data Products}
 \label{sec:data_products}
 
-The data of the eBOSS survey that I will provide you with is a relatively small 171 GB, split up over 6125 files. For every plate and MJD (Modified Julian Data), SDSS provides
+The data of the eBOSS survey that I will provide you with is only a partial subset of the complete eBOSS survey data. For every plate and MJD (Modified Julian Data), SDSS provides several processed data products:
+
+\begin{itemize}
+  \item A collection of \emph{spZall} data files.
+  \item A collection of \emph{spZbest} data files.
+  \item A collection of \emph{spZline} data files.
+  \item A single \emph{platelist} file describes all plates and their data quality.
+\end{itemize}
+
+The most relevant data product to this project, \emph{spZall}, contains the summary statistics of all fibers on a single plate, including the class and subclass of the object that is being observed. The remaining data files, \emph{spZbest} and \emph{spZline}, hold the data on the best fits of the observed data, and data on the fluxes of the received wavelengths respectively. All data in stored in the FITS format, which is a common format in astronomy. Intuitively, the format can be described as a collection of tables, and images. For instance, you could produce a FITS file which stores an image of the object you are observing, and also a table which describes every wavelength of the light that has been received.
 
 \section{Deliverables}
 \label{sec:deliverables}
 
-To complete this project succesfully, I would like you to solve and provide proof for the following questions. These questions have to be solved with Apache Spark. The proof for these questions need to be provided in a \emph{reproducable} Jupyter Notebook with a full description what you are doing (using Markdown cells). This will suffice as your report.
+To complete this project succesfully, I would like you to solve and provide proof for the following questions. These questions have to be solved with Apache Spark. The proof for these questions have to be provided in a \emph{reproducable} Jupyter Notebook with a full description what you are doing (using Markdown cells). This will suffice as your report.
 
 \begin{enumerate}
-  \item \emph{Is the expansion of the Universe uniform across all regions of the sky?}
+  \item \emph{Looking at galaxies, is the expansion of the Universe uniform across all regions of the sky? Meaning, is the redshift of the galaxies about equal across the sky?}
   \item \emph{Is the expansion of the Universe accelerating?}
   \item \emph{What is the average velocity of the galaxies which are redshifted?}
   \item \emph{What is the average velocity of the quasars which are redshifted?}
@@ -85,14 +94,29 @@ To complete this project succesfully, I would like you to solve and provide proo
   \item \emph{What is the distribution of the spectral type of all observed stars?}
 \end{enumerate}
 
-To solve these questions, you will be reading and parsing the data products described in Section~\ref{sec:data_products}. However, in order to do this in an efficient manner, you most likely have to come up with an intermediate representation constructed from the original data products to perform efficient IO. Before obtaining such a representation, you also have to figure out a way to efficiently parse the original data products (in FITS). To summarize, you need to provide \emph{code to transform the original data into some other representation} (DataFrame). Then you have to provide a \emph{notebook} which uses this representation to solve the above questions efficiently.\\
+To solve these questions, you will be reading and parsing the data products described in Section~\ref{sec:data_products}. However, in order to do this in an efficient manner, you most likely have to come up with an intermediate representation constructed from the original data products to perform efficient IO, i.e., it does not really make sense that you have to parse the original data structure every time when you wish to extract some valuable information. Before obtaining such a representation, you also have to figure out a way to efficiently parse the original data products (in FITS). To summarize, you need to provide \emph{code to transform the original data into some other representation} in a way that it efficiently can be read into an Spark RDD or a Spark DataFrame.\\
 
 Finally, to improve the SDSS query engine, I would like you to come up with a method which is able to efficiently generate plots such as in Figure~\ref{fig:spectra_galaxy}, and Figure~\ref{fig:spectra_star}, for a specific region of the sky, i.e., given a specific range of \emph{right ascension} and \emph{declination}. This method will be utilized to evaluate the efficiency of your data representation (so optimize your schema for these type of queries).
 
 \section{Bonus}
 \label{sec:bonus}
 
-A bonus point (1/20) is awarded to the group which is able to provide the fastest average random query time over the complete eBOSS dataset (171 GB). The query that will be ran to evaluate the performance of your data architecture, will be concerned with selecting objects in a particular region in the sky for a particular redshift. Furthermore, we also might be interested in only selecting particular objects, i.e., \emph{starts}, \emph{galaxies}, and \emph{quasars}. Your result might have practical implications as well, since the current SDSS query tool is \emph{very} slow.
+A bonus point (1/20) is awarded to the group which is able to provide the fastest average random query time over the complete eBOSS dataset (171 GB). The query that will be ran to evaluate the performance of your data architecture, will be concerned with selecting objects in a particular section in the sky. Meaning given a minimum RADEC (Right Ascenssion and Declination), and a maximum RADEC, return the list of objects which are within this coordinate system. Your result might have practical implications as well, since the current SDSS query tool is \emph{very} slow.
+
+\section{Cluster Access}
+\label{sec:cluster_access}
+
+For this project, you will be able to deploy your code on a multi-node Spark cluster. The connection details, and examples of how to submit a job to the cluster, will be released in the following days in this document. An e-mail will be sent the cluster configuration has been finalized.
+
+\section{Assistance}
+\label{sec:assistance}
+
+After every lecture, the assistent will be present to help you with questions surrounding this project.
+
+\section{Data Access}
+\label{sec:data_access}
+
+To prevent you from downloading all the required SDSS data, a stick will be available at the start and end of every lecture session. This USB stick contains only a specific subset of the complete eBOSS survey dataset. However, it can be used to provide proof for the questions posed above.
 
 % Include the footer of the document.
 \input{template_footer}
