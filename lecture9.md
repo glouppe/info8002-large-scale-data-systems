@@ -33,13 +33,40 @@ What do you want from a DBMS?
 
 ---
 
-# Relational databases
+# Relational data model (1)
 
-- A simple but general-purpose model: data is stored in **relations** (tables).
-- A *declarative query language*: SQL.
+- A simple but general-purpose model: data is stored in **relations** (i.e., a collection of tables).
+    - a *tuple* is a row of a relation.
+    - an *attribute* is a column of a relation.
+    - a *domain* is a set of legal *atomic* values for an attribute.
+        - this can be used to enforce semantic constraints.
+
+.center.width-60[![](figures/lec9/rel-db.gif)]
+
+---
+
+#  Relational data model (2)
+
+- A **relation schema** is a list of attributes.
+    - A schema is the blueprint that describes how the data is structured.
+- A **relation** is a set of tuples for a given relation schema.
+    - Each tuple in a relation is unique.
+    - Uniqueness is often controlled through a (primary) *key* attribute.
+- A *database schema* is a collection of relation schemas.
+- **Relationships** between relations (tables) are defined by matching one or more attributes (usually, the keys).
+    - 1-to-1 relationships
+    - 1-to-many relationships
+    - many-to-many relationships
+
+---
+
+# Query
+
+- Data is retrieved, added or modified through an expressive *declarative query language*, **SQL**.
 ```SQL
 SELECT CustomerName, City FROM Customers;
 ```
+    - Can be used to access data across one or more relations.
     - Programmer specifies *what* answers a query should return, but **not how** the query is executed.
     - DBMS picks the best execution strategy, based on availability of indexes, data/workload, properties, etc.
 - This provides *physical data independence*.
@@ -51,14 +78,15 @@ SELECT CustomerName, City FROM Customers;
 
 # Concurrency
 
-- DBMS are *multi-user*.
-- Example. Both Homer and Marge **concurrently** execute:
+- DBMSs are *multi-user*, which raises **concurrency** issues.
+- Example:
+    - Both Homer and Marge concurrently execute, on the same bank account:
 ```python
 balance = get_balance_from_database()
 if balance > amount:
-        balance = balance - amount
-        dispense_cash()
-        store_into_database(balance)
+            balance = balance - amount
+            dispense_cash()
+            store_into_database(balance)
 ```
     - Homer at ATM1 withdraws $100.
     - Marge at ATM2 withdraws $200.
@@ -83,7 +111,7 @@ if balance > amount:
 # ACID
 
 The **ACID** database properties define the key characteristics (most)
-relational databases use to ensure database modification are saved in a
+relational databases use to ensure modifications are saved in a
 consistent, safe, and robust manner.
 - *Atomic*: In a transaction with two or more pieces of information, either all of the pieces are committed or none are.
 - *Consistent*: A transaction either creates a new valid state of data, or, if any failure occurs, returns all data to its state before the transaction was started.
@@ -112,9 +140,17 @@ class: middle, center
 
 # Distributed databases
 
+- A **distributed database** is a database in which storage devices are not all attached to a common processor.
+- That is, the data is stored *in multiple computers*, located in the same physical location or dispersed over a network.
+    - $\neq$ a *parallel database*, in which processors are tightly coupled and constitute a single system.
+
 ---
 
-# Architectures
+# Storing data
+
+- Relations are stored across several sites.
+- Therefore, accessing data at a remote site incurs message-passing *cost*.
+- To reduce
 
 ---
 
