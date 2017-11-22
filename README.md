@@ -29,3 +29,4 @@ Lectures for INFO8002 - Large-scale Distributed Systems, ULiège, Fall 2017.
 ## Projects
 
 - [Project 1: Distributed hash table](https://glouppe.github.io/info8002-large-scale-database-systems/?p=projects/project_dht.md)
+- [Project 2: Sloan Digital Sky Survey](https://github.com/glouppe/info8002-large-scale-database-systems/raw/master/projects/project_analysis.pdf)
