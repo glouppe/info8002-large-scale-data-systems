@@ -14,7 +14,7 @@ class: middle, center
 
 # Databases
 
-Quick recap from [INFO0009 Database (general organisation)](https://www.programmes.uliege.be/cocoon/cours/INFO0009-1.html)
+(Quick recap from [[INFO0009] Database (general organisation)](https://www.programmes.uliege.be/cocoon/cours/INFO0009-1.html))
 
 ---
 
@@ -35,7 +35,8 @@ What do you want from a DBMS?
 
 # Relational data model (1)
 
-- A simple but general-purpose model: data is stored in **relations** (i.e., a collection of tables).
+- A simple but *general-purpose* model.
+- Data is stored in **relations** (i.e., a collection of tables).
     - a *tuple* is a row of a relation.
     - an *attribute* is a column of a relation.
     - a *domain* is a set of legal *atomic* values for an attribute.
@@ -60,19 +61,19 @@ What do you want from a DBMS?
 
 ---
 
-# Query
+# Querying data
 
 - Data is retrieved, added or modified through an expressive *declarative query language*, **SQL**.
 ```SQL
 SELECT CustomerName, City FROM Customers;
 ```
-    - Can be used to access data across one or more relations.
+    - Can be used to access data across one or more relations, with arbitrarily complex constraints.
     - Programmer specifies *what* answers a query should return, but **not how** the query is executed.
     - DBMS picks the best execution strategy, based on availability of indexes, data/workload, properties, etc.
 - This provides *physical data independence*.
     - Applications should not worry about how data is physically structured and stored.
     - Applications instead work with a **logical** data model and a declarative query language.
-- Single most important reason behind the success of DBMS today.
+- Single **most important reason** behind the success of DBMS today.
 
 ---
 
@@ -85,7 +86,7 @@ SELECT CustomerName, City FROM Customers;
 balance = get_balance_from_database()
 if balance > amount:
             balance = balance - amount
-            dispense_cash()
+            dispense_cash(amount)
             store_into_database(balance)
 ```
     - Homer at ATM1 withdraws $100.
@@ -110,7 +111,7 @@ if balance > amount:
 
 # ACID
 
-The **ACID** database properties define the key characteristics (most)
+**ACID** = key characteristics (most)
 relational databases use to ensure modifications are saved in a
 consistent, safe, and robust manner.
 - *Atomic*: In a transaction with two or more pieces of information, either all of the pieces are committed or none are.
@@ -128,29 +129,31 @@ consistent, safe, and robust manner.
 - High throughput is desired (thousands to millions transactions/hour).
 - High availability ($\geq$ 99.999%).
 
+<br><br><br><br><br><br><br><br><br><br><br><br>
+
 <span class="Q">[Q]</span> How can we address these issues, at large-scale?
 
 ---
 
 class: middle, center
 
-# Distributed databases
+# Distributed relational databases
 
 ---
 
-# Distributed databases
+# Distributed relational databases
 
-- A **distributed database** is a database in which storage devices are not all attached to a common processor.
-- That is, the data is stored *in multiple computers*, located in the same physical location or dispersed over a network.
-    - $\neq$ a *parallel database*, in which processors are tightly coupled and constitute a single system.
+- A **distributed**  database is a  database in which storage devices are not all attached to a common processor.
+- The data is stored *in multiple computers*, located in the same physical location or dispersed over a network.
+- $\neq$ a *parallel database*, in which processors are tightly coupled and constitute a single system.
+- Requirements:
+    - Relational data model
+    - ACID properties
+    - Transparency
 
----
+<br><br><br><br>
 
-# Storing data
-
-- Relations are stored across several sites.
-- Therefore, accessing data at a remote site incurs message-passing *cost*.
-- To reduce
+<span class="Q">[Q]</span> How is this different from a distributed file system?
 
 ---
 
@@ -210,6 +213,10 @@ class: middle, center
 
 ---
 
+# DHT
+
+---
+
 # NoSQL
 
 ---
@@ -264,6 +271,8 @@ transactions
 
 # Column store
 
+dremel
+
 ---
 
 # Case study: Bigtable
@@ -271,6 +280,10 @@ transactions
 ---
 
 # Case study: Cassandra
+
+---
+
+# Case study: Kudu
 
 ---
 

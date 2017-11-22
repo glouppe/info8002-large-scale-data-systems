@@ -29,7 +29,7 @@ class: middle, center
 
 - File systems determine **how** data is stored and retrieved.
 - *Distributed file systems* manage the storage across a network of machines.
-    - Single-system **illusion** for users.
+    - Goal: single-system **illusion** for users.
     - Added complexity due to the network.
 - GFS and HDFS are examples of distributed file systems.
     - They represent *one* way (not the way) to design a distributed file system.
@@ -44,7 +44,7 @@ class: middle, center
 - GFS was developed at Google around 2003, jointly with MapReduce.
 - Provide **efficient** and **reliable** access to data.
 - Use large clusters of *commodity hardware*.
-- Proprietary.
+- Proprietary, but detailed paper.
 
 .center.width-80[![](figures/lec8/gfs-paper.png)]
 
@@ -52,7 +52,8 @@ class: middle, center
 
 # Assumptions
 
-- Hardware **failures are common** (commodity hardware).
+- Hardware **failures are common**.
+    - We want to use *cheap* commodity hardware.
 - Files are *large* (multi-GB files are the norm) and their number is (relatively) limited (millions).
 - Reads:
     - *large streaming reads* ($\geq$ 1MB in size), or
@@ -62,7 +63,7 @@ class: middle, center
     - Concurrent appends by multiple clients.
     - Once written, files are *seldom modified* ($\neq$ append) again.
         - Random modification in files is possible, but not efficient in GFS.
-- High sustained bandwidth, but low latency.
+- High sustained bandwidth, but high latency.
 
 ---
 
@@ -112,7 +113,7 @@ class: middle, center
 - Handle **failures** gracefully and transparently.
 - *Low synchronization* overhead between entities.
 - Exploit *parallelism* of numerous entities.
-- Ensure **high sustained throughput** over low latency for individual reads/writes.
+- Ensure **high sustained throughput** over high latency for individual reads/writes.
 
 ---
 
@@ -131,6 +132,8 @@ class: middle, center
 
 - Remember: one way, not the way.
 - Data does not flow across the GFS master.
+
+- Why spreading: to ensure availability and for load balancing concerns.
 
 ---
 
@@ -197,7 +200,8 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 - Disadvantage:
     - A chunkserver can become a **hotspot** for popular files.
 
-<br><br><br><br><br><br><span class="Q">[Q]</span> How to fix the hotspot problem?
+<br><br><br><br><br><span class="Q">[Q]</span> How to fix the hotspot problem?<br>
+<span class="Q">[Q]</span> What if a file is larger than the chunk size?
 
 ---
 
@@ -266,7 +270,7 @@ Design decisions:
 
 # Leases
 
-- A **mutation** is an operation that changes the content or metadata of a chunk.
+- A **mutation** is an operation that changes the content or metadata of a chunk. E.g.,
     - `write`
     - `append`
 - Each mutation is performed at all the chunk's replicas.
@@ -359,9 +363,9 @@ Design decisions:
 - Changes to metadata are always *atomic*.
     - Guaranteed by having a single master server.
 - Mutations are *ordered* as chosen by a primary node.
-    - All replicas will be consistent if they all successfully  perform mutations in the same order.
+    - All replicas will be **consistent** if they all successfully  perform mutations in the same order.
     - Multiple writes from the same client may be interleaved or overwritten by concurrent operations from other clients.
-        - i.e., a file region is defined only if client see mutations in entirety, it is undefined otherwise.
+        - i.e., a file region is *defined* only if client see mutations in entirety, it is **undefined** otherwise. However, the file region remains consistent.
 - Record append completes *at least once*, at offset of GFS's choosing.
     - There might be duplicate entries.
 - Failures can cause **inconsistency**.
@@ -474,11 +478,24 @@ Scenario: a chunkserver misses a mutation applied to a chunk (e.g., a chunk was 
 
 .center.width-70[![](figures/lec8/perf-read.png)]
 
+???
+
+- Micro-benchmarks to illustrate the bottlenecks inherent in GFS.
+- One master, two master replicas, 16 chunkservers and 16 clients.
+
+- Reads: random 4MB regions from a 320GB file set.
+- Efficiency degrades when the probability of multiple reads from the same chunkserver increases.
+
 ---
 
 # Performance: writes
 
 .center.width-70[![](figures/lec8/perf-write.png)]
+
+???
+
+- The network architecture does not interact very well with the pipelining scheme used for pushing data.
+- Again, efficiency degrades when the probability of writes on the same chunkservers increases.
 
 ---
 
@@ -488,13 +505,15 @@ Scenario: a chunkserver misses a mutation applied to a chunk (e.g., a chunk was 
 
 ???
 
-XXX conclusions?
+- Limit independent of the number of clients. It is limited by the network bandwidth only.
+- Performance degrades due to congestion.
+- A client concurrently writes to M shared files simultaneously: a client can make progress on writing one file while the chunkservers for another file are busy.
 
 ---
 
 # Summary
 
-- Success: used actively by Google to support search service and other applications.
+- **Success**: used actively by Google to support search service and other applications.
     - Availability and recoverability on cheap hardware.
     - High throughput by decoupling control and data.
     - Supports massive data sets and concurrent appends.
