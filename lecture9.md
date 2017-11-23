@@ -69,11 +69,11 @@ SELECT EmployeeName, City FROM Employees;
 ```
     - Can be used to access data across one or more relations, with arbitrarily complex constraints.
     - Programmer specifies *what* answers a query should return, but **not how** the query is executed.
-    - DBMS picks the best execution strategy, based on availability of indexes, data/workload, properties, etc.
+    - DBMS transparently picks the best execution strategy, based on availability of indexes, data/workload, properties, etc.
+        - As based on an often sophisticated query processing engine.
 - This provides *physical data independence*.
     - Applications should not worry about how data is physically structured and stored.
     - Applications instead work with a **logical** data model and a declarative query language.
-    - Queries are often transparently optimized by a dedicated query processing engine.
 - Single **most important reason** behind the success of DBMS today.
 
 ---
@@ -84,11 +84,12 @@ SELECT EmployeeName, City FROM Employees;
 - Example:
     - Both Homer and Marge concurrently execute, on the same bank account:
 ```python
-balance = get_balance_from_database()
-if balance > amount:
-            balance = balance - amount
-            dispense_cash(amount)
-            store_into_database(balance)
+def withdraw(account, amount):
+            balance = account.balance
+            if balance - amount >= 0:
+                balance = balance - amount
+                dispense_cash(amount)
+                account.balance = balance
 ```
     - Homer at ATM1 withdraws $100.
     - Marge at ATM2 withdraws $200.
@@ -115,7 +116,7 @@ if balance > amount:
 **ACID** = key characteristics (most)
 relational databases use to ensure modifications are saved in a
 consistent, safe, and robust manner.
-- *Atomic*: In a transaction with two or more pieces of information, either all of the pieces are committed or none are.
+- *Atomic*: All parts of the transaction or none.
 - *Consistent*: A transaction either creates a new valid state of data, or, if any failure occurs, returns all data to its state before the transaction was started.
 - *Isolation*: A transaction in process and not yet committed must remain isolated from any other transaction.
 - *Durable*: Committed data is saved by the system such that, even in the event of a failure and system restart, the data is available in its correct state.
@@ -156,9 +157,8 @@ class: middle, center
 
 # Data placement
 
-- The *data placement* strategy and its implications form the main part in the design of a DDBMS.
-- Objective: distribute the relations over the sites.
-    - Aim to improve reliability, availability, efficiency (e.g., reduced communication costs or better load balancing) and security.
+- The *data placement* strategy, i.e. the distribution of the relations over the sites, and its implications form the main part in the design of a DDBMS.
+- Aim to improve reliability, availability, efficiency (e.g., reduced communication costs or better load balancing) and security.
 - Key considerations:
     - **Fragmentation**: relations may be divided into a number of sub-relations which are distributed.
     - **Allocation**: each fragment is stored at site with optimal placement.
@@ -223,7 +223,7 @@ A fragmentation strategy should satisfy the following properties:
 
 # Distributed query processing
 
-- For centralized systems, all data is local and queries are mainly optimized to limit disk accesses.
+- For centralized regular DBMSs, all data is local and queries are mainly optimized to limit disk accesses.
 - In DDBMSs, the data is distributed across several sites. This has the following consequences:
     - The query processing engine must *communicate* with all sites holding fragments involved in the query.
         - The cost of data transmission becomes a dominant factor when optimizing the query.
@@ -243,10 +243,10 @@ WHERE S.rating > 3 AND
       S.rating < 7
 ```
 - Horizontal fragmentation: Tuples with ratings $< 5$ at Brussels, $\geq 5$ at Tokyo.
-    - Must compute `SUM(S.age)` and `COUNT(s.age)` at both sites, before being recombined.
-    - If the `WHERE` clause contained just `S.rating > 6`, then the query could processed at one site only.
+    - Must compute sub-queries `SUM(S.age)` and `COUNT(s.age)` at both sites, before  *union* and aggregation.
+    - If the `WHERE` clause contained just `S.rating > 6`, then the query could be processed at one site only.
 - Vertical fragmentation:
-    - Must reconstruct relation by join on `tid`, then evaluate the query.
+    - Must reconstruct relation by *join* on `tid`, then evaluate the query.
 
 ---
 
@@ -259,24 +259,20 @@ WHERE S.rating > 3 AND
         - `depositor` is stored at site 2.
         - `branch` is stored at site 3.
     - A query issued at site 1 must produce a result at site 1.
+- Possible strategies:
+    - Ship copies of all three relations to site 1 and process the query locally.
+    - Ship a copy of `account` to site 2, compute `temp1`=`account`⋈`depositor`.
+      Ship `temp1` from site 2 to site 3, compute `temp2`=`temp1`⋈`branch`.
+      Ship `temp2` to site 1.
 
----
-
-# Possible strategies
-
-- Ship copies of all three relations to site 1 and process the query locally.
-- Ship a copy of `account` to site 2, compute `temp1`=`account`⋈`depositor`.
-  Ship `temp1` from site 2 to site 3, compute `temp2`=`temp1`⋈`branch`.
-  Ship `temp2` to site 1.
-
-<span class="Q">[Q]</span> Can we do better?
+    <span class="Q">[Q]</span> Does the ordering matter? Can we do better?
 
 ---
 
 # Semijoins
 
-- We do not need to exchange the *whole* relations! Semijoins are sufficient.
-    - Project `depositor` onto join columns with `branch` and ship to site 3.
+- We do not need to exchange the *whole* relations! Semijoins are sufficient:
+    - At site 2, project `depositor` onto join columns with `branch` and ship to site 3.
     - At site 3, join the projection with `branch`.
       Project the resulting relation onto the join columns with `account` and ship to site 1.
     - At site 1, join the projection with `account`.
@@ -284,26 +280,100 @@ WHERE S.rating > 3 AND
 
 ---
 
-# Updating distributed data
-
-- *Synchronous replication*:
-- *Asynchronous replication*:
-
----
-
 # Distributed transactions
 
+```python
+def send(A, B, amount):
+    begin_transaction()
+    if A.balance - amount >= 0:
+        A.balance = A.balance - amount
+        B.balance = B.balance + aount
+        commit_transaction()
+    else:
+        abort_transaction()
+```
+
+- All copies of the fragments involved in a transaction must be updated before the modifying transaction commits.
+- How does one guarantee that all of the fragments commit the transactions or none do?
+
+<span class="Q">[Q]</span> What algorithm have we seen that could solve this?
 
 ---
 
-# Two-phase commit
+# Two-phase commit (1)
 
+- Goal: general-purpose distributed agreement on some action, with failures.
+- Running example: transfer money from $A$ to $B$.
+    - Debit at $A$, credit at $B$, tell the client OK.
+    - Require *both* banks to do it, or *neither*.
+    - Require that **a bank never acts alone**.
+- This is a form of **consensus**:
+    - The value to agree upon is whether or not the transaction should be committed.
+    - We require agreement, validity and termination.
+
+???
+
+http://the-paper-trail.org/blog/consensus-protocols-two-phase-commit/
 
 ---
 
-# Case study: Spanner
+# Two-phase commit (2)
 
-https://cloud.google.com/spanner/
+- Site at which transaction originates is the **coordinator**.
+- Other sites at which it executes are the *participants*.
+- Two rounds of communication:
+    - Phase 1 (request phase):
+        - *Prepare* messages are sent from coordinator to all participants asking if ready to commit.
+        - *Yes/No* replies from the participants to the coordinator.
+            - If yes, the participant might have prepared locks on the local resources that need to be modified.
+        - To commit, all subordinates must say yes.
+    - Phase 2 (commit phase):
+        - If yes from all participants, coordinator sends out *commit* messages, otherwise send *abort* instructions.
+        - Participants do so, and send back an acknowledgement.
+- **Efficient** protocol: $3n$ messages are exchanged in total. Seem difficult to do better.
+
+---
+
+# Two-phase commit (3)
+
+What if nodes **fail**?
+
+---
+
+# Asynchronous transactions
+
+- *Synchronous transactions*:
+    - Before the update transaction can commit, it must obtain **locks** on all copies of the modified fragment.
+    - This acquisition may take time.
+    - But data distribution is transparent to user.
+- *Asynchronous transactions*:
+    - Copies of a modified fragment are only periodically updated. Different copies may get **out of sync** in the meantime.
+    - More *efficient* than synchronized distribution transactions.
+    - But users must be aware of data distribution.
+
+---
+
+# Google Cloud Spanner
+
+.center[
+<iframe width="640" height="480" src="https://www.youtube.com/embed/amcf6W2Xv6M?&loop=1&start=0" frameborder="0" volume="0" allowfullscreen></iframe>
+]
+
+---
+
+# What is Spanner?
+
+- Distributed multiversion database
+    - General-purpose transactions (ACID)
+    - SQL query language
+    - Semi-relational data model
+    - Scale to millions of machines
+- Technical details:
+    - Paxos replicated state machines
+    - Horizontal fragmentation
+    - Make use of two-phase commits
+
+.center.width-80[![](figures/lec9/spanner.png)]
 
 ---
 
@@ -398,3 +468,4 @@ dremel
 # References
 
 - Slides inspired from "[CompSci 316: Introduction to Database Systems](https://sites.duke.edu/compsci316_01_s2017/)", by Prof. Sudeepa Roy, Duke University.
+- Corbett, James C., et al. "Spanner: Google’s globally distributed database." ACM Transactions on Computer Systems (TOCS) 31.3 (2013): 8.
