@@ -12,7 +12,7 @@ Lecture 9: Distributed databases and NoSQL
 
 class: middle, center
 
-# Databases
+# Relational databases
 
 (Quick recap from [INFO0009: Databases](https://www.programmes.uliege.be/cocoon/cours/INFO0009-1.html))
 
@@ -353,7 +353,7 @@ What if nodes **fail**?
 
 ---
 
-# Google Cloud Spanner
+# Case study: Cloud Spanner
 
 .center[
 <iframe width="640" height="480" src="https://www.youtube.com/embed/amcf6W2Xv6M?&loop=1&start=0" frameborder="0" volume="0" allowfullscreen></iframe>
@@ -361,16 +361,16 @@ What if nodes **fail**?
 
 ---
 
-# What is Spanner?
+# What is Cloud Spanner?
 
-- Distributed multiversion database
+- Spanner: widely distributed database engine
     - General-purpose transactions (ACID)
     - SQL query language
     - Semi-relational data model
     - Scale to millions of machines
 - Technical details:
     - Paxos replicated state machines
-    - Horizontal fragmentation
+    - Adds very accurate clocks to data centres
     - Make use of two-phase commits
 
 .center.width-80[![](figures/lec9/spanner.png)]
@@ -379,89 +379,183 @@ What if nodes **fail**?
 
 class: middle, center
 
-# NoSQL
-
----
-
-# Structured vs. unstructured data
-
----
-
-# DHT
+# NoSQL databases
 
 ---
 
 # NoSQL
+
+- Many of the new generation databases are referred to as  **NoSQL** data stores.
+    - e.g., MongoDB, CouchDB, Dynamo, Cassandra, Big Table, etc.
+- NoSQL often not a useful term: definition by exclusion.
+    - A NoSQL system will be appropriate because of the features it implements, not because of those it does not.
+- NoSQL data stores are typically designed for *non-relational data*.
+- Requirements are often **relaxed**, which often allows to gain in efficiency and scalability.
+
+---
+
+# Main features
+
+- The ability to horizontally scale simple operations throughput over many servers.
+- The ability to replicate and to distribute (partition) data over many servers.
+- A simple call level interface or protocol.
+    - In contrast to SQL.
+- A weaker concurrency model than ACID transactions of most relational DBMS.
+- Efficient use of distributed indexes and RAM for data storage.
+- The ability to dynamically add new attributes to data records.
+
+---
+
+# Brewer's CAP theorem
+
+- Credited to Eric Brewer: published in 1999, proven in 2002.
+- It is **impossible** for a distributed data store to simultaneously provide more than two out of the following three guarantees:
+    - *Consistency*: Every read receives the most recent write or an error.
+    - *Availability*: Every request receives a (non-error) response (without the guarantee that it contains the most recent write).
+    - *Partition tolerance*: The system continues to operate despite a partition of the network.
+- Note that in the absence of a network partition, both consistency and availability can be satisfied.
+- Relational DBMSs designed with traditional ACID guarantees often choose consistency over availability.
 
 ---
 
 # BASE
 
----
-
-# CAP theorem
-
----
-
-# Choices in NoSQL systems
-
-concurrency control
+- NoSQL systems typically do not provide ACID guarantees.
+- Instead, the characteristics of a NoSQL systems are defined in terms BASE properties, which favors availability over consistency:
+    - *Basically Available*: The system is guaranteed to be available for querying by all users.
+    - *Soft state*: Stores do not have to be write-consistent, nor do replicas have to be mutually consistent all the time.
+    - *Eventually consistent*: Stores exhibit consistency at some later point (e.g., lazily at read time).
+- BASE properties are much loser than ACID properties.
 
 ---
 
-# Choices in NoSQL systems
+# Differences in NoSQL systems
 
-data storage medium
-
----
-
-# Choices in NoSQL systems
-
-replication
+When studying a new NoSQL system, it is often worth considering how it from a relational DBMS in terms of:
+- concurrency control
+- data storage medium
+- replication
+- transactions mechanisms
 
 ---
 
-# Choices in NoSQL systems
+# Concurrency control
 
-transactions
+- *Locks*:
+    - Some systems provide one-user-at-a-time read or update locks.
+- *Multiversion concurrency control*
+    - Guarantee a read-only consistent view
+    - May result in multiple conflicting versions of an entity if concurrent writes.
+- *No control*:
+    - Some systems do not provide atomicity.
+    - Multiple users can edit in parallel a same entity.
+    - No guarantee which version is read.
+- *ACID*:
+    - Pre-analyze transactions to avoid conflicts.
+    - No deadlocks and no wait on locks.
+
+---
+
+# Data storage medium
+
+- Designed for storage in *RAM*:
+    - Fast but not persistent.
+    - Often requires snapshots or replication saved on disk.
+    - Poor performance when RAM overflows.
+- Designed for *disk* storage:
+    - Slow but persistent.
+    - Often requires caching in RAM.
+
+---
+
+# Replication
+
+Whether mirror copies are always in sync.
+- *Synchronous*
+    - Provides consistency, but usually slower.
+- *Asynchronous*
+    - Provides only eventual consistency, but usually faster.
+
+---
+
+# Transaction mechanisms
+
+- *Supported*.
+- *Not supported*.
+- *In between*:
+    - E.g., only for local transactions.
 
 ---
 
 # Comparison
 
+.grid[
+.col-1-2[![](figures/lec9/comparison1.png)]
+.col-1-2[![](figures/lec9/comparison2.png)]
+]
+
 ---
 
 # Data store categories
+
+- Data stores are often grouped according to their data model.
+- **Key-value stores**:
+    - store key-value pairs.
+    - e.g., Voldemort, Riak, Redis, Scalaris, Cabinet, Memcached, etc.
+- **Document stores**:
+    - store documents, which are indexed, with a simple query mechanism.
+    - e.g., Amazon SimpleDB, CouchDB, MongoDB, Terrastore, etc.
+- **Extensible record stores**:
+    - store extensible records that can be partitioned vertically and horizontally across nodes.
+    - e.g., HBase, HyperTable, Cassandra, etc.
+- **Relational databases**:
+    - store tuples, that are indexed and can be queried.
+    - e.g., MySQL cluster, VoltDB, Clustrix, ScaleDB, etc.
 
 ---
 
 # RDBMS benefits
 
+- Relational DBMSs have **taken and retained majority market
+share** over other competitors in the past 30 years.
+- While no "“"one size fits all" in the SQL products themselves,
+there is a common interface with SQL, transactions, and
+relational schema that give advantages **in training,
+continuity, and data interchange**.
+- Successful relational DBMSs have been built to handle other
+specific application loads in the past:
+    - read-only or read-mostly data warehousing, OLTP on multi-core
+multi-disk CPUs, in-memory databases, distributed databases, etc.
+
 ---
 
 # NoSQL benefits
 
----
-
-# Column store
-
-dremel
+- NoSQL usually scale better than RDBMs.
+- A NoSQL system is probably a better solution
+    - when one only requires a lookup of objects based on a single key.
+    - when the application requires a flexible schema.
+- A relational DBMS usually make expensive operations easy to write.
+    - On the other hand, a NoSQL system make them difficult for programmers.
+- New systems are slowly gaining market shares, but still no clear winner.
 
 ---
 
 # Case study: Bigtable
 
+XXX
+
 ---
 
 # Case study: Cassandra
 
----
-
-# Case study: Kudu
+XXX
 
 ---
 
 # Summary
+
+XXX
 
 ---
 
@@ -469,3 +563,4 @@ dremel
 
 - Slides inspired from "[CompSci 316: Introduction to Database Systems](https://sites.duke.edu/compsci316_01_s2017/)", by Prof. Sudeepa Roy, Duke University.
 - Corbett, James C., et al. "Spanner: Google’s globally distributed database." ACM Transactions on Computer Systems (TOCS) 31.3 (2013): 8.
+- Cattell, Rick. "Scalable SQL and NoSQL data stores." Acm Sigmod Record 39.4 (2011): 12-27.
