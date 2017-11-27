@@ -8,6 +8,17 @@ Lecture 9: Distributed databases and NoSQL
 
 # Today
 
+- *Relational databases*:
+    - Quick recap
+- *Distributed relational databases*.
+    - Data placement
+    - Distributed queries
+    - Dsitributed transactions
+- *NoSQL databases*.
+    - CAP theorem
+
+.center.width-60[![](figures/lec9/hadoop-ddbms.png)]
+
 ---
 
 class: middle, center
@@ -49,12 +60,12 @@ What do you want from a DBMS?
 #  Relational data model (2)
 
 - A **relation schema** is a list of attributes.
-    - A schema is the blueprint that describes how the data is structured.
+    - A schema is the blueprint that describes how the data is structured in the relation.
 - A **relation** is a set of tuples for a given relation schema.
-    - Each tuple in a relation is unique.
+    - Each tuple in a relation is unique and satisfies the schema.
     - Uniqueness is often controlled through a (primary) *key* attribute.
 - A *database schema* is a collection of relation schemas.
-- **Relationships** between relations (tables) are defined by matching one or more attributes (usually, the keys).
+- **Relationships** between relations (tables) are defined by matching one or more attributes (usually, the keys) across relations.
     - 1-to-1 relationships
     - 1-to-many relationships
     - many-to-many relationships
@@ -74,7 +85,7 @@ SELECT EmployeeName, City FROM Employees;
 - This provides *physical data independence*.
     - Applications should not worry about how data is physically structured and stored.
     - Applications instead work with a **logical** data model and a declarative query language.
-- Single **most important reason** behind the success of DBMS today.
+- Single **most important reason** behind the success of DBMSs today.
 
 ---
 
@@ -98,6 +109,11 @@ def withdraw(account, amount):
 
 <span class="Q">[Q]</span> Haven't we already studied a similar problem?
 
+???
+
+- Make connections to linerarization.
+- RW registers.
+
 ---
 
 # Fault-tolerance and recovery
@@ -116,12 +132,14 @@ def withdraw(account, amount):
 **ACID** = key characteristics (most)
 relational databases use to ensure modifications are saved in a
 consistent, safe, and robust manner.
-- *Atomic*: All parts of the transaction or none.
+- *Atomic*: All parts of the transaction or none are committed.
 - *Consistent*: A transaction either creates a new valid state of data, or, if any failure occurs, returns all data to its state before the transaction was started.
 - *Isolation*: A transaction in process and not yet committed must remain isolated from any other transaction.
 - *Durable*: Committed data is saved by the system such that, even in the event of a failure and system restart, the data is available in its correct state.
 
 <span class="Q">[Q]</span> Don't some of these properties look familiar?
+
+<span class="Q">[Q]</span> Assume the bank uses an ACID database. What does this mean for Homer and Marge?
 
 ---
 
@@ -158,7 +176,11 @@ class: middle, center
 # Data placement
 
 - The *data placement* strategy, i.e. the distribution of the relations over the sites, and its implications form the main part in the design of a DDBMS.
-- Aim to improve reliability, availability, efficiency (e.g., reduced communication costs or better load balancing) and security.
+- Aim to improve:
+    - reliability
+    - availability
+    - efficiency (e.g., reduced communication costs or better load balancing)
+    - security.
 - Key considerations:
     - **Fragmentation**: relations may be divided into a number of sub-relations which are distributed.
     - **Allocation**: each fragment is stored at site with optimal placement.
@@ -169,7 +191,7 @@ class: middle, center
 # Fragmentation
 
 - *Break* a relation into smaller relations or **fragments**, which are then distributed at different sites.
-- Main types of fragmentation:
+- Main kinds of fragmentation:
     - *Horizontal*: partition a relation along its tuples.
         - e.g., identify fragments to selection queries.
     - *Vertical*: partition a relation along its attributes.
@@ -218,6 +240,8 @@ A fragmentation strategy should satisfy the following properties:
     - *partially replicated*: each fragment at one or more sites.
 - Rule of thumb: if read-only queries / update queries $\geq 1$, then replication is advantageous, otherwise it may cause problems.
 - The optimal partial replication policy can be determined jointly with the allocation problem.
+
+<span class="Q">[Q]</span> Doesn't replication violate disjoitness?
 
 ---
 
@@ -371,6 +395,7 @@ What if nodes **fail**?
 - Technical details:
     - Paxos replicated state machines
     - Adds very accurate clocks to data centres
+        - XXX check slides
     - Make use of two-phase commits
 
 .center.width-80[![](figures/lec9/spanner.png)]
@@ -494,6 +519,8 @@ Whether mirror copies are always in sync.
 .col-1-2[![](figures/lec9/comparison2.png)]
 ]
 
+.center[From 2011. Many of those have already died,<br> many other systems have appeared.]
+
 ---
 
 # Data store categories
@@ -518,7 +545,7 @@ Whether mirror copies are always in sync.
 
 - Relational DBMSs have **taken and retained majority market
 share** over other competitors in the past 30 years.
-- While no "“"one size fits all" in the SQL products themselves,
+- While no "one size fits all" in the SQL products themselves,
 there is a common interface with SQL, transactions, and
 relational schema that give advantages **in training,
 continuity, and data interchange**.
@@ -545,6 +572,8 @@ multi-disk CPUs, in-memory databases, distributed databases, etc.
 
 XXX
 
+HBase
+
 ---
 
 # Case study: Cassandra
@@ -557,10 +586,13 @@ XXX
 
 XXX
 
+- CAP theorem helps classify distributed data stores behaviour choices.
+
 ---
 
 # References
 
 - Slides inspired from "[CompSci 316: Introduction to Database Systems](https://sites.duke.edu/compsci316_01_s2017/)", by Prof. Sudeepa Roy, Duke University.
+- Apers, Peter M. G., Alan R. Hevner, and S. Bing Yao. "Optimization algorithms for distributed queries." IEEE transactions on software engineering 1 (1983): 57-68.
 - Corbett, James C., et al. "Spanner: Google’s globally distributed database." ACM Transactions on Computer Systems (TOCS) 31.3 (2013): 8.
 - Cattell, Rick. "Scalable SQL and NoSQL data stores." Acm Sigmod Record 39.4 (2011): 12-27.
