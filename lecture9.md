@@ -363,6 +363,8 @@ http://the-paper-trail.org/blog/consensus-protocols-two-phase-commit/
 
 .center.width-100[![](figures/lec9/2pc.png)]
 
+<span class="Q">[Q]</span> What if a node fails?
+
 ???
 
 Also: http://avishek.net/blog/?p=908
@@ -395,15 +397,7 @@ What if nodes **fail**?
 
 ---
 
-# Case study: Cloud Spanner
-
-.center[
-<iframe width="640" height="480" src="https://www.youtube.com/embed/amcf6W2Xv6M?&loop=1&start=0" frameborder="0" volume="0" allowfullscreen></iframe>
-]
-
----
-
-# What is Cloud Spanner?
+# Google Cloud Spanner
 
 - Spanner: widely distributed database engine
     - General-purpose transactions (ACID)
@@ -412,10 +406,20 @@ What if nodes **fail**?
     - Scale to millions of machines
 - Technical details:
     - Paxos replicated state machines
-    - Adds very accurate clocks to data centres
+    - Adds a very accurate distributed clock to each process.
+        - i.e., a global wall clock time, with bounded uncertainty.
+        - make it possible to order transactions, and to guarantee consistent non-blocking reads.
     - Make use of two-phase commits
 
 .center.width-80[![](figures/lec9/spanner.png)]
+
+---
+
+# Google Cloud Spanner
+
+.center[
+<iframe width="640" height="480" src="https://www.youtube.com/embed/amcf6W2Xv6M?&loop=1&start=0" frameborder="0" volume="0" allowfullscreen></iframe>
+]
 
 ---
 
@@ -429,22 +433,25 @@ class: middle, center
 
 - Many of the new generation databases are referred to as  **NoSQL** data stores.
     - e.g., MongoDB, CouchDB, Dynamo, Cassandra, Big Table, etc.
-- NoSQL often not a useful term: definition by exclusion.
+- NoSQL is *rarely a useful term* by itself.
+    - Definition by exclusion.
     - A NoSQL system will be appropriate because of the features it implements, not because of those it does not.
 - NoSQL data stores are typically designed for *non-relational data*.
 - Requirements are often **relaxed**, which often allows to gain in efficiency and scalability.
+
+<span class="Q">[Q]</span> What kind of NoSQL database system have we already covered?
 
 ---
 
 # Main features
 
-- The ability to horizontally scale simple operations throughput over many servers.
-- The ability to replicate and to distribute (partition) data over many servers.
-- A simple call level interface or protocol.
+- The ability to *horizontally scale* simple operations throughput over many servers.
+- The ability to *replicate* and to *distribute (partition) data* over many servers.
+- A **simple call level interface** or protocol.
     - In contrast to SQL.
-- A weaker concurrency model than ACID transactions of most relational DBMS.
+- A **weaker concurrency model** than ACID transactions of most relational DBMS.
 - Efficient use of distributed indexes and RAM for data storage.
-- The ability to dynamically add new attributes to data records.
+- The ability to *dynamically add new attributes* to data records.
 
 ---
 
@@ -452,10 +459,10 @@ class: middle, center
 
 - Credited to Eric Brewer: published in 1999, proven in 2002.
 - It is **impossible** for a distributed data store to simultaneously provide more than two out of the following three guarantees:
-    - *Consistency*: Every read receives the most recent write or an error.
+    - *Consistency*: Every read receives the most recent write or returns an error.
     - *Availability*: Every request receives a (non-error) response (without the guarantee that it contains the most recent write).
     - *Partition tolerance*: The system continues to operate despite a partition of the network.
-- Note that in the absence of a network partition, both consistency and availability can be satisfied.
+- Note that in the absence of a network partition, both consistency and availability can be satisfied simultaneously.
 - Relational DBMSs designed with traditional ACID guarantees often choose consistency over availability.
 
 ---
@@ -465,15 +472,16 @@ class: middle, center
 - NoSQL systems typically do not provide ACID guarantees.
 - Instead, the characteristics of a NoSQL systems are defined in terms BASE properties, which favors availability over consistency:
     - *Basically Available*: The system is guaranteed to be available for querying by all users.
-    - *Soft state*: Stores do not have to be write-consistent, nor do replicas have to be mutually consistent all the time.
-    - *Eventually consistent*: Stores exhibit consistency at some later point (e.g., lazily at read time).
+    - *Soft state*: The state of the system may change over time, even without input.
+        - This is because of eventually consistency, see below.
+    - *Eventually consistent*: The system will eventually become consistent with time, given that the system does not receive input during that time.
 - BASE properties are much loser than ACID properties.
 
 ---
 
-# Differences in NoSQL systems
+# Taxonomy of NoSQL systems
 
-When studying a new NoSQL system, it is often worth considering how it from a relational DBMS in terms of:
+When studying a new NoSQL system, it is often worth considering how it differs from a relational DBMS in terms of:
 - concurrency control
 - data storage medium
 - replication
@@ -493,8 +501,8 @@ When studying a new NoSQL system, it is often worth considering how it from a re
     - Multiple users can edit in parallel a same entity.
     - No guarantee which version is read.
 - *ACID*:
-    - Pre-analyze transactions to avoid conflicts.
-    - No deadlocks and no wait on locks.
+    - Modern systems pre-analyze transactions to avoid conflicts.
+        - No deadlocks and no wait on locks.
 
 ---
 
@@ -562,10 +570,10 @@ Whether mirror copies are always in sync.
 
 - Relational DBMSs have **taken and retained majority market
 share** over other competitors in the past 30 years.
-- While no "one size fits all" in the SQL products themselves,
+- While no "one size fits all" in the SQL products,
 there is a common interface with SQL, transactions, and
-relational schema that give advantages **in training,
-continuity, and data interchange**.
+relational schema that give advantages *in training,
+continuity, and data interchange*.
 - Successful relational DBMSs have been built to handle other
 specific application loads in the past:
     - read-only or read-mostly data warehousing, OLTP on multi-core
@@ -576,24 +584,31 @@ multi-disk CPUs, in-memory databases, distributed databases, etc.
 # NoSQL benefits
 
 - NoSQL usually scale better than RDBMs.
-- A NoSQL system is probably a better solution
-    - when one only requires a lookup of objects based on a single key.
-    - when the application requires a flexible schema.
+- A NoSQL system is probably a better solution when:
+    - one only requires a lookup of objects based on a single key.
+    - the application requires a flexible schema.
 - A relational DBMS usually make expensive operations easy to write.
     - On the other hand, a NoSQL system make them difficult for programmers.
 - New systems are slowly gaining market shares, but still no clear winner.
 
----
-
-# Case study: Bigtable
-
-XXX
-
-HBase
+<span class="Q">[Q]</span> What would you pick?
 
 ---
 
-# Case study: Cassandra
+# Case study: HBase
+
+.center.width-50[![](figures/lec9/hbase.png)]
+
+- Apache HBase™ is the Hadoop database, a distributed, scalable, big data store.
+- Why using HBase?
+    - Open source
+    - Horizontal scaling
+    - Consistent
+    - Efficient random access, low latency
+    - Built on top of HDFS
+- Based on Google's BigTable paper.
+
+---
 
 XXX
 
