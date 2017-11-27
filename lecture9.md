@@ -354,13 +354,31 @@ http://the-paper-trail.org/blog/consensus-protocols-two-phase-commit/
     - Phase 2 (commit phase):
         - If yes from all participants, coordinator sends out *commit* messages, otherwise send *abort* instructions.
         - Participants do so, and send back an acknowledgement.
+        - When the coordinator receives all acknowledgements, the transaction has committed.
 - **Efficient** protocol: $3n$ messages are exchanged in total. Seem difficult to do better.
 
 ---
 
 # Two-phase commit (3)
 
+.center.width-100[![](figures/lec9/2pc.png)]
+
+???
+
+Also: http://avishek.net/blog/?p=908
+
+---
+
+# Two-phase commit (4)
+
 What if nodes **fail**?
+- If a participant fails in the request phase, then this can be detected and the transaction may be aborted.
+    - If a participant fails in the commit phase, then the other participants commit anyway!
+- If the coordinator crashes, than all processes are **blocked**.
+    - If the coordinator crashes after some correct process has committed, then the decision can be *recovered* from this correct process.
+    - If the coordinator crashes in the request phase, then the transaction is blocked!
+
+<span class="Q">[Q]</span> How to detect failures?
 
 ---
 
@@ -395,7 +413,6 @@ What if nodes **fail**?
 - Technical details:
     - Paxos replicated state machines
     - Adds very accurate clocks to data centres
-        - XXX check slides
     - Make use of two-phase commits
 
 .center.width-80[![](figures/lec9/spanner.png)]
