@@ -16,7 +16,7 @@ Lectures for INFO8002 - Large-scale Distributed Systems, ULiège, Fall 2017.
 - [Lecture 6: Distributed hash tables](https://glouppe.github.io/info8002-large-scale-database-systems/?p=lecture6.md), [PDF](https://raw.githubusercontent.com/glouppe/info8002-large-scale-database-systems/master/pdf/lec6.pdf)
 - [Lecture 7: Cloud computing](https://glouppe.github.io/info8002-large-scale-database-systems/?p=lecture7.md), [PDF](https://raw.githubusercontent.com/glouppe/info8002-large-scale-database-systems/master/pdf/lec7.pdf)
 - [Lecture 8: Distributed file systems](https://glouppe.github.io/info8002-large-scale-database-systems/?p=lecture8.md), [PDF](https://raw.githubusercontent.com/glouppe/info8002-large-scale-database-systems/master/pdf/lec8.pdf)
-- [Lecture 9: Distributed databases and NoSQL](https://glouppe.github.io/info8002-large-scale-database-systems/?p=lecture9.md)
+- [Lecture 9: Distributed databases and NoSQL](https://glouppe.github.io/info8002-large-scale-database-systems/?p=lecture9.md), [PDF](https://raw.githubusercontent.com/glouppe/info8002-large-scale-database-systems/master/pdf/lec9.pdf)
 - Lecture 10: Block chain
 
 ## Exercise sessions

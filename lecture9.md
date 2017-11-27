@@ -599,26 +599,76 @@ multi-disk CPUs, in-memory databases, distributed databases, etc.
 
 .center.width-50[![](figures/lec9/hbase.png)]
 
-- Apache HBase™ is the Hadoop database, a distributed, scalable, big data store.
+- Apache HBase™ is the Hadoop database, a sparse, distributed, persistent, scalable, multi-dimensional **sorted map**.
 - Why using HBase?
     - Open source
-    - Horizontal scaling
-    - Consistent
-    - Efficient random access, low latency
-    - Built on top of HDFS
+    - Distributed storage across cluster of machines
+    - Random, online read and write data access
+    - Schemaless data model (NoSQL)
+    - Self-managed data partitions
 - Based on Google's BigTable paper.
 
 ---
 
-XXX
+# Logical data model
+
+.center.width-100[![](figures/lec9/logical-data-model.png)]
+
+.footnote[Credits: [Nick Dimiduk, "HBase for architects".](https://www.slideshare.net/xefyr/h-base-for-architectspptx)]
+
+???
+
+A sparse multi dimensional sorted map.
+
+---
+
+# Logical architecture
+
+.center.width-100[![](figures/lec9/logical-architecture.png)]
+
+.footnote[Credits: [Nick Dimiduk, "HBase for architects".](https://www.slideshare.net/xefyr/h-base-for-architectspptx)]
+
+???
+
+Distributed persistent partitions of a BigTable.
+
+---
+
+# Physical architecture
+
+.center.width-100[![](figures/lec9/physical-architecture.png)]
+
+.footnote[Credits: [Nick Dimiduk, "HBase for architects".](https://www.slideshare.net/xefyr/h-base-for-architectspptx)]
+
+---
+
+# When should you use HBase?
+
+- HBase is **good for**:
+    - Large datasets (hundreds of millions of entries)
+    - Sparse datasets
+    - Loosely coupled (denormalized) records
+    - Lots of concurrent clients
+- However, try avoid:
+    - Small datasets
+    - Highly relational records
+    - Schema design requiring transactions
+
+.footnote[Credits: [Nick Dimiduk, "HBase for architects".](https://www.slideshare.net/xefyr/h-base-for-architectspptx)]
 
 ---
 
 # Summary
 
-XXX
-
-- CAP theorem helps classify distributed data stores behaviour choices.
+- Relational databases can be distributed over many sites.
+    - Fragmentation, allocation and replication are key considerations.
+    - Distributed databases has consequences for:
+        - query processing
+        - transactions
+- NoSQL databases trade off consistency for availability.
+- NoSQL databases have benefits over RDBMs, but this should be evaluated on a case by case basis.
+- RDBMs remain a strong and efficient technology.
+- CAP theorem helps classify distributed data stores behavior choices.
 
 ---
 
