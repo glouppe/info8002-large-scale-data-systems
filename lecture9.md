@@ -355,7 +355,7 @@ http://the-paper-trail.org/blog/consensus-protocols-two-phase-commit/
         - If yes from all participants, coordinator sends out *commit* messages, otherwise send *abort* instructions.
         - Participants do so, and send back an acknowledgement.
         - When the coordinator receives all acknowledgements, the transaction has committed.
-- **Efficient** protocol: $3n$ messages are exchanged in total. Seem difficult to do better.
+- **Efficient** protocol: $4n$ messages are exchanged in total. Seem difficult to do better.
 
 ---
 
@@ -432,24 +432,22 @@ class: middle, center
 # NoSQL
 
 - Many of the new generation databases are referred to as  **NoSQL** data stores.
-    - e.g., MongoDB, CouchDB, Dynamo, Cassandra, Big Table, etc.
-- NoSQL is *rarely a useful term* by itself.
-    - Definition by exclusion.
-    - A NoSQL system will be appropriate because of the features it implements, not because of those it does not.
+    - e.g., HBase, Cassandra, [MongoDB](https://www.youtube.com/watch?v=b2F-DItXtZs), Dynamo, etc.
+    - NoSQL is rarely a useful term by itself.
 - NoSQL data stores are typically designed for *non-relational data*.
 - Requirements are often **relaxed**, which often allows to gain in efficiency and scalability.
+.center.width-50[![](figures/lec9/nosql.png)]
 
 <span class="Q">[Q]</span> What kind of NoSQL database system have we already covered?
 
 ---
 
-# Main features
+# NoSQL main features
 
-- The ability to *horizontally scale* simple operations throughput over many servers.
-- The ability to *replicate* and to *distribute (partition) data* over many servers.
-- A **simple call level interface** or protocol.
-    - In contrast to SQL.
-- A **weaker concurrency model** than ACID transactions of most relational DBMS.
+- *Horizontal scaling* of simple operations throughput over many servers.
+- *Replication* and to *data distribution (partitioning)* over many servers.
+- A **simple call level interface** or protocol (in contrast to SQL).
+- A **weaker concurrency model** than ACID transactions of most relational DBMSs.
 - Efficient use of distributed indexes and RAM for data storage.
 - The ability to *dynamically add new attributes* to data records.
 
@@ -457,7 +455,6 @@ class: middle, center
 
 # Brewer's CAP theorem
 
-- Credited to Eric Brewer: published in 1999, proven in 2002.
 - It is **impossible** for a distributed data store to simultaneously provide more than two out of the following three guarantees:
     - *Consistency*: Every read receives the most recent write or returns an error.
     - *Availability*: Every request receives a (non-error) response (without the guarantee that it contains the most recent write).
@@ -479,61 +476,52 @@ class: middle, center
 
 ---
 
-# Taxonomy of NoSQL systems
+# Taxonomy (1)
 
 When studying a new NoSQL system, it is often worth considering how it differs from a relational DBMS in terms of:
-- concurrency control
-- data storage medium
-- replication
-- transactions mechanisms
+
+- **Concurrency control**:
+    - *Locks*:
+        - Some systems provide one-user-at-a-time read or update locks.
+    - *Multiversion concurrency control*
+        - Guarantee a read-only consistent view
+        - May result in multiple conflicting versions of an entity if concurrent writes.
+    - *No control*:
+        - Some systems do not provide atomicity.
+        - Multiple users can edit in parallel a same entity.
+        - No guarantee which version is read.
+    - *ACID*:
+        - Modern systems pre-analyze transactions to avoid conflicts.
+            - No deadlocks and no wait on locks.
 
 ---
 
-# Concurrency control
+# Taxonomy (2)
 
-- *Locks*:
-    - Some systems provide one-user-at-a-time read or update locks.
-- *Multiversion concurrency control*
-    - Guarantee a read-only consistent view
-    - May result in multiple conflicting versions of an entity if concurrent writes.
-- *No control*:
-    - Some systems do not provide atomicity.
-    - Multiple users can edit in parallel a same entity.
-    - No guarantee which version is read.
-- *ACID*:
-    - Modern systems pre-analyze transactions to avoid conflicts.
-        - No deadlocks and no wait on locks.
-
----
-
-# Data storage medium
-
-- Designed for storage in *RAM*:
-    - Fast but not persistent.
-    - Often requires snapshots or replication saved on disk.
-    - Poor performance when RAM overflows.
-- Designed for *disk* storage:
-    - Slow but persistent.
-    - Often requires caching in RAM.
+- **Data storage medium**:
+    - Designed for storage in *RAM*:
+        - Fast but not persistent.
+        - Often requires snapshots or replication saved on disk.
+        - Poor performance when RAM overflows.
+    - Designed for *disk* storage:
+        - Slow but persistent.
+        - Often requires caching in RAM.
+- **Replication**:
+    - Whether mirror copies are always in sync.
+    - *Synchronous*
+        - Provides consistency, but usually slower.
+    - *Asynchronous*
+        - Provides only eventual consistency, but usually faster.
 
 ---
 
-# Replication
+# Taxonomy (3)
 
-Whether mirror copies are always in sync.
-- *Synchronous*
-    - Provides consistency, but usually slower.
-- *Asynchronous*
-    - Provides only eventual consistency, but usually faster.
-
----
-
-# Transaction mechanisms
-
-- *Supported*.
-- *Not supported*.
-- *In between*:
-    - E.g., only for local transactions.
+- **Transaction mechanisms**:
+    - *Supported*.
+    - *Not supported*.
+    - *In between*:
+        - E.g., only for local transactions.
 
 ---
 
@@ -583,7 +571,7 @@ multi-disk CPUs, in-memory databases, distributed databases, etc.
 
 # NoSQL benefits
 
-- NoSQL usually scale better than RDBMs.
+- NoSQL may scale better than RDBMs.
 - A NoSQL system is probably a better solution when:
     - one only requires a lookup of objects based on a single key.
     - the application requires a flexible schema.
@@ -599,7 +587,7 @@ multi-disk CPUs, in-memory databases, distributed databases, etc.
 
 .center.width-50[![](figures/lec9/hbase.png)]
 
-- Apache HBase™ is the Hadoop database, a sparse, distributed, persistent, scalable, multi-dimensional **sorted map**.
+- Apache HBase™ is the Hadoop database, a sparse, consistent, distributed, scalable, multi-dimensional sorted map.
 - Why using HBase?
     - Open source
     - Distributed storage across cluster of machines
@@ -644,12 +632,14 @@ Distributed persistent partitions of a BigTable.
 
 # When should you use HBase?
 
-- HBase is **good for**:
-    - Large datasets (hundreds of millions of entries)
+- HBase is *good for*:
+    - Random access
+    - Large datasets
     - Sparse datasets
     - Loosely coupled (denormalized) records
     - Lots of concurrent clients
-- However, try avoid:
+- However, try **avoid**:
+    - Sequential access
     - Small datasets
     - Highly relational records
     - Schema design requiring transactions
@@ -665,10 +655,10 @@ Distributed persistent partitions of a BigTable.
     - Distributed databases has consequences for:
         - query processing
         - transactions
-- NoSQL databases trade off consistency for availability.
-- NoSQL databases have benefits over RDBMs, but this should be evaluated on a case by case basis.
-- RDBMs remain a strong and efficient technology.
+- NoSQL databases trade off *consistency for availability*.
+- RDBMs remain a **strong and efficient** technology.
 - CAP theorem helps classify distributed data stores behavior choices.
+- NoSQL databases have benefits over RDBMs, but this **should be evaluated on a case by case basis**.
 
 ---
 
