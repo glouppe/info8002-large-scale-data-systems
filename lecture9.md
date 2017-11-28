@@ -8,13 +8,13 @@ Lecture 9: Distributed databases and NoSQL
 
 # Today
 
-- *Relational databases*:
+- *Relational databases*
     - Quick recap
-- *Distributed relational databases*.
+- *Distributed relational databases*
     - Data placement
     - Distributed queries
     - Dsitributed transactions
-- *NoSQL databases*.
+- *NoSQL databases*
     - CAP theorem
 
 .center.width-60[![](figures/lec9/hadoop-ddbms.png)]
@@ -311,7 +311,7 @@ def send(A, B, amount):
     begin_transaction()
     if A.balance - amount >= 0:
         A.balance = A.balance - amount
-        B.balance = B.balance + aount
+        B.balance = B.balance + amount
         commit_transaction()
     else:
         abort_transaction()
@@ -363,6 +363,8 @@ http://the-paper-trail.org/blog/consensus-protocols-two-phase-commit/
 
 .center.width-100[![](figures/lec9/2pc.png)]
 
+<span class="Q">[Q]</span> What if a node aborts?
+
 <span class="Q">[Q]</span> What if a node fails?
 
 ???
@@ -377,8 +379,8 @@ What if nodes **fail**?
 - If a participant fails in the request phase, then this can be detected and the transaction may be aborted.
     - If a participant fails in the commit phase, then the other participants commit anyway!
 - If the coordinator crashes, than all processes are **blocked**.
+    - If the coordinator crashes in the request phase, after participants have sent their decisions, then the transaction is blocked!
     - If the coordinator crashes after some correct process has committed, then the decision can be *recovered* from this correct process.
-    - If the coordinator crashes in the request phase, then the transaction is blocked!
 
 <span class="Q">[Q]</span> How to detect failures?
 
@@ -459,8 +461,9 @@ class: middle, center
     - *Consistency*: Every read receives the most recent write or returns an error.
     - *Availability*: Every request receives a (non-error) response (without the guarantee that it contains the most recent write).
     - *Partition tolerance*: The system continues to operate despite a partition of the network.
-- Note that in the absence of a network partition, both consistency and availability can be satisfied simultaneously.
 - Relational DBMSs designed with traditional ACID guarantees often choose consistency over availability.
+
+.center.width-30[![](figures/lec9/cap.png)]
 
 ---
 
