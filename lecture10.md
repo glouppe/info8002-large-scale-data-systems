@@ -4,25 +4,12 @@ class: middle, center, title-slide
 
 Lecture 10: Blockchain
 
-???
-
-- Insist on Nakamoto-consensus
-
 ---
 
 # Today
 
-.grid[
-.col-3-4[
-- *Blockchain*
-- *Bitcoin*
-- Further applications
-]
-.col-1-4[.center[![](figures/lec10/btc.png)]]
-]
+.center.width-80[![](figures/lec10/chain.svg)]
 
-
-<br><br><br><br><br><br><br><br><hr>
 
 Most of today's lecture slides are taken from Jonathan Jogenfors, "Cryptography Lecture 12: [Bitcoin and friends](https://www.icg.isy.liu.se/courses/tsit03/forelasningar/cryptolecture12.pdf)".
 
@@ -190,9 +177,15 @@ We need *consensus*, in the presence of **malicious** peers!
 
 # The Byzantine Generals Problem
 
----
+.center.width-80[![](figures/lec10/generals.png)]
 
-# Impossibility result
+- Each division of the Byzantine army is directed  by its own general.
+- Generals, some of which are **traitors**, communicate with each other by messengers.
+- Requirements:
+    - All *loyal* generals must decide upon the same plan of action (attack or retreat).
+    - A small number of traitors cannot cause the loyal generals to adopt a bad plan.
+- **Impossibility result**:
+    - No solution exists if less than or equal to 2/3 generals are loyal.    
 
 ---
 
@@ -223,7 +216,7 @@ We need *consensus*, in the presence of **malicious** peers!
 
 # Mining
 
-- Transactions are verified by special peers called **miners**.
+- Blocks of transactions are verified by special peers called **miners**.
 - Assume that Alice's transaction message $m$ is broadcast:
     - "I, Alice, send coin no. 856034 to Bob."
 - Mining algorithm:
@@ -283,25 +276,150 @@ We need *consensus*, in the presence of **malicious** peers!
 
 # Blocks
 
----
+.center.width-80[![](figures/lec10/block.png)]
 
-# Transactions
-
----
-
-# Each block gives security to the previous ones
+- A **block** is a large number of transactions.
+- A block is only *valid* if its hash value is less than $T$.
 
 ---
 
-# This is how Bitcoin works!
+# The blockchain
+
+- The process of adding transactions into the distributed ledger is called *mining*.
+- Transactions are grouped in blocks, that are numbered and form a long chain, called the **blockchain**.
+
+.center.width-60[![](figures/lec10/chain1.png)]
+
+- If two miners find a valid block simultaneously, the resolution strategy is to switch to the branch with the largest cumulated work.
+
+.center.width-60[![](figures/lec10/chain2.png)]
 
 ---
 
-# Applications
+# Security
+
+.center.width-60[![](figures/lec10/security.png)]
+
+- Each block gives **security** to the previous ones in the branch.
+    - The hash of a block is computed partly based on the hash of the previous hash.
+- Bob waits for 6 blocks before accepting Alice's transaction.
+- Forging transactions requires finding collisions for all blocks in the suffix, which requires a large amount of work.
 
 ---
 
-# Summary
+# Consensus by proof-of-work
+
+- Consensus is guaranteed *probabilistically*, provided that the majority of the hashing power is detained by normal nodes.
+- The only way for Alice to cheat the system would be to:
+    - Buy a supercomputer;
+    - Save up money for the electricity bill;
+    - Broadcast an invalid transaction $m$ to Bob;
+    - Let the supercomputer search for a block containing $m$.
+    - The computer must be faster than everybody else's, **combined**.
+- Alice has a hard time cheating Bob:
+    - With 1% of the total hashing power, the chance of mining six blocks in a row is $0.01^6 = 10^{-12}$.
+- Therefore, with high probability, transactions confirmed in the ledger are legit.
+
+---
+
+# New coins
+
+- The number of transactions in a block is *automatically adjusted* to aim for an average block rate of 1 block / 10 minutes.
+- When a new block is discovered, the miner may **award itself a certain number of coins**.
+    - Currently:
+        - The bounty is 12.5BTC.
+        - $T$ is set to hash values beginning with $\geq$ 20  zeros.
+            - `000000000000000000af0d5752187e109c477ea70bb96c5c5aa8f92c6a6c8b02`
+- The block reward decreases every 210 000 blocks.
+- The total number of coins is limited to 21 000 000.
+- The last Bitcoin should be mined in 2140.
+
+<span class="Q">[Q]</span> How long does it take confirm a transaction? (on average)
+
+
+---
+
+class: center, middle
+
+.width-100[![](figures/lec10/supply.png)]
+
+---
+
+# Bitcoin trading
+
+- Today: 1 BTC $\approx$ 16500 USD (Dec 11, 2017)
+- Bitcoin can be bought and sold like any other currency.
+- Bitcoin ATMs even exist in some countries!
+
+.center.width-50[![](figures/lec10/atm.jpg)]
+
+---
+
+# Volatility
+
+.center.width-100[![](figures/lec10/chart.png)]
+
+- Bitcoins remain highly **volatile**.
+- An asset is risky to hold:
+    - On any given day, its value may go up or down substantially.
+
+---
+
+# Bitcoin mining is a big business
+
+.center.width-100[![](figures/lec10/farm.jpg)]
+.caption[A bitcoin mining farm.]
+
+---
+
+# Extreme competition
+
+.center.width-100[![](figures/lec10/hashrate.png)]
+
+---
+
+# Energy sinkhole
+
+.center.width-80[![](figures/lec10/news1.png)]
+.center.width-80[![](figures/lec10/news2.png)]
+
+---
+
+# Bitcoin and trust
+
+- In Bitcoin, users only need to **trust** the algorithm, nothing else.
+- In contrast, with traditional currency trust is in a central bank.
+- You don't even need to trust the initial creator.
+
+---
+
+class: center, middle
+
+<iframe width="640" height="480" src="https://www.youtube.com/embed/SJgWqbZBn6I?&loop=1&start=0" frameborder="0" volume="0" allowfullscreen></iframe>
+
+---
+
+# Other applications
+
+- A blockchain can be viewed as a continuously growing list of records.
+- Blockchains are secure by design, with *high Byzantine fault tolerance*.
+- In addition to storing transactions, blockchains can therefore be used to store sensitive information that should not be altered.
+    - Medical records
+    - Food traceability
+    - Identify management
+
+---
+
+# Summary and challenges
+
+- Bitcoin is a peer-to-peer *fully decentralized currency* based on the blockchain.
+- The core principles of the *blockchain* rely on **consensus** by proof-of-work.
+- As a currency:
+    - Bitcoin is very young,
+    - Transactions are safe, storage is not.
+    - If Alice loses her key, she loses her money.
+    - If Eve finds Alice's key, she can get her money.
+    - Taxation? Volatility? Illicit trade?
 
 ---
 
