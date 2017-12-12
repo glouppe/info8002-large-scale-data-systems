@@ -329,12 +329,6 @@ We need *consensus*, in the presence of **malicious** peers!
 
 ---
 
-class: middle, center
-
-![](figures/lec10/cycle.png)
-
----
-
 # New coins
 
 - The number of transactions in a block is *automatically adjusted* to aim for an average block rate of 1 block / 10 minutes.
@@ -360,7 +354,6 @@ class: center, middle
 
 # Bitcoin trading
 
-- Today: 1 BTC $\approx$ 16500 USD (Dec 11, 2017)
 - Bitcoin can be bought and sold like any other currency.
 - Bitcoin ATMs even exist in some countries!
 
@@ -368,10 +361,31 @@ class: center, middle
 
 ---
 
+# Transactions
+
+.center.width-70[![](figures/lec10/transaction-chain.png)]
+
+- The blockchain does not store currencies.
+- It only stores transactions from one address to the other.
+- The balance of an address is computed by summing over all transactions associated to the address.
+
+???
+
+http://chimera.labs.oreilly.com/books/1234000001802/ch02.html#_creating_the_outputs
+
+---
+
+class: middle, center
+
+![](figures/lec10/cycle.png)
+
+---
+
 # Volatility
 
 .center.width-100[![](figures/lec10/chart.png)]
 
+- Today: 1 BTC $\approx$ 16500 USD (Dec 11, 2017)
 - Bitcoins remain highly **volatile**.
 - A volatile asset is risky to hold:
     - On any given day, its value may go up or down substantially.
