@@ -166,6 +166,10 @@ discussing strengths and weaknesses.
 .center.width-60[![](figures/lec10/sybil.png)]
 .caption[A sybil attack from Alice]
 
+???
+
+DHTs are also vulnerable to sybil attacks.
+
 ---
 
 class: middle, center
@@ -325,6 +329,12 @@ We need *consensus*, in the presence of **malicious** peers!
 
 ---
 
+class: middle, center
+
+![](figures/lec10/cycle.png)
+
+---
+
 # New coins
 
 - The number of transactions in a block is *automatically adjusted* to aim for an average block rate of 1 block / 10 minutes.
@@ -333,12 +343,12 @@ We need *consensus*, in the presence of **malicious** peers!
         - The bounty is 12.5BTC.
         - $T$ is set to hash values beginning with $\geq$ 20  zeros.
             - `000000000000000000af0d5752187e109c477ea70bb96c5c5aa8f92c6a6c8b02`
+- In addition, the miner also keep the transaction fees bitcoin holders pay when using the currency.
 - The block reward decreases every 210 000 blocks.
 - The total number of coins is limited to 21 000 000.
 - The last Bitcoin should be mined in 2140.
 
 <span class="Q">[Q]</span> How long does it take confirm a transaction? (on average)
-
 
 ---
 
