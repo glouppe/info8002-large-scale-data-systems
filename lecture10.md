@@ -4,6 +4,10 @@ class: middle, center, title-slide
 
 Lecture 10: Blockchain
 
+???
+
+R: work on the flow!!!
+
 ---
 
 # Today
