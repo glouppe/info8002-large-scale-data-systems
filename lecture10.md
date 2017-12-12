@@ -6,7 +6,14 @@ Lecture 10: Blockchain
 
 ???
 
-R: work on the flow!!!
+R: work on the flow!
+R: what is money?
+R: explain transactions more precisely
+R: insist on consensus
+R: the flow with the Generals is not good)
+R: what kind of fraud does the system prevent? (forgery by signature, double-spending by pow)
+R: illustrate double spending examples with concurrent branches
+R: do merchants have to wait for 1 hour?
 
 ---
 
