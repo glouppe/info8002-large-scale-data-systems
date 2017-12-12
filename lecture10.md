@@ -124,11 +124,11 @@ discussing strengths and weaknesses.
 
 # No middleman?
 
-- A bank works, but can we remove the central point of trust?
-- We want a decentralized, self-governing network.
+- A bank works, but can we *remove the central point of trust*?
+- We want a decentralized, **self-governing** network.
 - Instead, we establish a list of all transactions ever made.
 - Computing an account balance is done by summing over all previous transactions for that account.
-- This list is called the **blockchain** and is shared by all users.
+- This list is called the **blockchain** and is *shared by all users*.
 
 ---
 
@@ -151,8 +151,8 @@ discussing strengths and weaknesses.
 
 - **Double-spending** is still possible.
 - Alice can perform a double-spend before the acceptance broadcast is hear by enough peers.
-- To solve this problem, we make Bob ask everybody else if a transaction is valid.
-- Double-spending will be noticed before payment is accepted.
+- To solve this problem, we make Bob ask everybody else to *confirm the transaction validity*.
+- Double-spending will be noticed before payment is confirmed.
 
 ---
 
@@ -161,7 +161,6 @@ discussing strengths and weaknesses.
 - How many answers should Bob require? How can answers be trusted?
 - A *majority vote* is **impossible**.
     - What if Alice controls other peers and spams Bob with false confirmations?
-- There is no way to perform traditional authentication.
 - But Bitcoin will not work if transactions cannot be reliably verified...
 
 .center.width-60[![](figures/lec10/sybil.png)]
@@ -177,7 +176,11 @@ We need *consensus*, in the presence of **malicious** peers!
 
 # The Byzantine Generals Problem
 
-.center.width-80[![](figures/lec10/generals.png)]
+.center.width-100[![](figures/lec10/generals.png)]
+
+---
+
+# The Byzantine Generals Problem
 
 - Each division of the Byzantine army is directed  by its own general.
 - Generals, some of which are **traitors**, communicate with each other by messengers.
@@ -185,7 +188,7 @@ We need *consensus*, in the presence of **malicious** peers!
     - All *loyal* generals must decide upon the same plan of action (attack or retreat).
     - A small number of traitors cannot cause the loyal generals to adopt a bad plan.
 - **Impossibility result**:
-    - No solution exists if less than or equal to 2/3 generals are loyal.    
+    - No solution exists if $\leq 2/3$ generals are loyal.    
 
 ---
 
@@ -202,9 +205,9 @@ We need *consensus*, in the presence of **malicious** peers!
 # The PoW challenge
 
 - We want a problem that...
-    - is difficult to solve
-    - has solutions that are easy to verify
-    - has scalable difficulty
+    - is **difficult to solve**
+    - has solutions that are *easy to verify*
+    - has *scalable difficulty*
 - Finding (partial) hash collision  as proof-of-work:
     - A one-way hash function $h(x)$ has the following properties:
         - Easy to compute $h(x)$ from $x$.
@@ -302,14 +305,14 @@ We need *consensus*, in the presence of **malicious** peers!
 
 - Each block gives **security** to the previous ones in the branch.
     - The hash of a block is computed partly based on the hash of the previous hash.
-- Bob waits for 6 blocks before accepting Alice's transaction.
+- Bob *waits for 6 blocks before accepting Alice's transaction*.
 - Forging transactions requires finding collisions for all blocks in the suffix, which requires a large amount of work.
 
 ---
 
 # Consensus by proof-of-work
 
-- Consensus is guaranteed *probabilistically*, provided that the majority of the hashing power is detained by normal nodes.
+- Consensus is guaranteed *probabilistically*, provided that the majority of the hashing power is detained by loyal nodes.
 - The only way for Alice to cheat the system would be to:
     - Buy a supercomputer;
     - Save up money for the electricity bill;
@@ -360,7 +363,7 @@ class: center, middle
 .center.width-100[![](figures/lec10/chart.png)]
 
 - Bitcoins remain highly **volatile**.
-- An asset is risky to hold:
+- A volatile asset is risky to hold:
     - On any given day, its value may go up or down substantially.
 
 ---
@@ -375,6 +378,10 @@ class: center, middle
 # Extreme competition
 
 .center.width-100[![](figures/lec10/hashrate.png)]
+
+???
+
+EH/s = 10^18 hashes/s
 
 ---
 
@@ -404,9 +411,8 @@ class: center, middle
 - A blockchain can be viewed as a continuously growing list of records.
 - Blockchains are secure by design, with *high Byzantine fault tolerance*.
 - In addition to storing transactions, blockchains can therefore be used to store sensitive information that should not be altered.
-    - Medical records
-    - Food traceability
-    - Identify management
+
+.center.width-80[![](figures/lec10/apps.jpg)]
 
 ---
 
