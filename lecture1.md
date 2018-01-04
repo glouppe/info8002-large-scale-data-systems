@@ -233,6 +233,10 @@ This problem is **impossible** to solve!
 
 (Unless we make additional assumptions)
 
+???
+
+R: explain why.
+
 ---
 
 # Teaser: Two Generals' Problem
