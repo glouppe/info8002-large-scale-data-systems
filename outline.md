@@ -1,41 +1,53 @@
 class: middle, center, title-slide
 
-# Large-scale Distributed Systems
+# Large-scale Data Systems
 
-Fall 2017
+Fall 2018
 
----
-
-# Organization
-
-## Logistics
-- Prof. Gilles Louppe ([g.louppe@ulg.ac.be](mailto:g.louppe@ulg.ac.be))
-- Teaching assistant: Joeri Hermans ([joeri.hermans@doct.ulg.ac.be](mailto:joeri.hermans@doct.ulg.ac.be))
-
-.pull-right[![Textbook](./figures/textbook.jpg)]
-## Notes
-- Christian Cachin, Rachid Guerraoui, Luis Rodrigues, "Introduction to Reliable and Secure Distributed Programming", Springer. (*recommended*)
-- Slides available on [GitHub](https://github.com/glouppe/info8002-large-scale-database-systems).
-- Slides are partially adapted from:
-    - [CSE 486/585 Distributed systems](https://www.cse.buffalo.edu/~stevko/courses/cse486/spring16/schedule.html) (University at Buffalo)
-    - [CS425 Distributed systems](https://courses.engr.illinois.edu/cs425/fa2017/lectures.html) (University of Illinois UC)
-    - ID2203 Introduction to Distributed Systems (KTH).
+<br><br>
+Prof. Gilles Louppe<br>
+[g.louppe@uliege.be](g.louppe@uliege.be)
 
 ---
 
-# Lectures
+# Logistics
 
-- Theoretical lectures (10-12)
-- Exercise sessions (5-6)
-- Tutorials (2-3)
+This course is given by:
+- Theory: Prof. Gilles Louppe [[g.louppe@uliege.be](mailto:g.louppe@uliege.be)]
+- Exercises and projects: Joeri Hermans ([joeri.hermans@doct.ulg.ac.be](mailto:joeri.hermans@doct.ulg.ac.be))
+
+Feel free to contact any of us for help!
+
+<br>
+.center[
+.circle[![](figures/outline/gilles.jpg)] &nbsp;
+.circle[![](figures/outline/joeri.jpg)]
+]
 
 ---
 
-# Evaluation
+# Slides
 
-- Oral exam (50%)
-- Programming project 1 (25%)
-- Programming project 2 (25%)
+Slides
+- are available at [https://github.com/glouppe/info8002-large-scale-data-systems](https://github.com/glouppe/info8002-large-scale-data-systems).
+- are available in HTML and in PDFs.
+- will be posted online the day before the lesson.
+- will be slightly different from previous years.
+
+Slides are partially adapted from [CSE 486/585 Distributed systems](https://www.cse.buffalo.edu/~stevko/courses/cse486/spring16/schedule.html) (University at Buffalo) and
+[CS425 Distributed systems](https://courses.engr.illinois.edu/cs425/fa2017/lectures.html) (University of Illinois UC).
+
+---
+
+# Textbook
+
+.center[![](figures/outline/textbook.jpg)]
+
+The core content of this course is based on the following textbook:
+
+> .italic[Christian Cachin, Rachid Guerraoui, Luis Rodrigues, "Introduction to Reliable and Secure Distributed Programming", Springer.]
+
+This textbook is **recommended**, although not required.
 
 ---
 
@@ -58,151 +70,58 @@ which distributed *databases* and *computing* systems are operating.
 
 ---
 
-class: middle, center
+# Lectures
+
+- Theoretical lectures
+- Exercise sessions
+
+---
 
 # Outline
 
----
-
-class: middle, center
-
-# I. Foundations
-
----
-
-# 1. Distributed systems
-
-- Introduction to distributed systems
-- Outline
-- Networking basics
-
----
-
-# 2. Basic abstractions
-
-Content from *chapters 1* and *2*.
-
-- Distributed computation model
-- Abstracting processes
-    - Failures
-- Abstracting communication
-- Abstracting time
-    - Timing assumptions
-    - Failure detection
-    - Leader election
-- Distributed abstractions
-
----
-
-# 3. Reliable broadcast
-
-Content from *chapter 3*.
-
-- Reliable broadcast
-- Gossiping
-
----
-
-# 4. Shared memory
-
-Content from *chapter 4*.
-
-- Shared memory
-
----
-
-# 5. Consensus
-
-Content from *chapter 5*.
-
-- Consensus
-- Impossibility result
-- Paxos
-- Replication (total order broadcast)
-
----
-
-class: middle, center
-
-# II. Distributed systems
-
----
-
-# 6. Distributed hash tables
-
-- Theory
-- Project 1
-
----
-
-# 7. Distributed computing systems
-
-- Map Reduce
-    - Concept
-    - Case study: Hadoop
-- Computational graph systems
-    - Concept
-    - Static vs. dynamic graphs
-    - Optimization
-    - Case studies: Spark, [Tensorflow, PyTorch]
-
----
-
-# 8. Distributed file systems
-
-- Distributed file systems
-    - RPC
-    - Scalability (partitioning)
-    - Case study: HDFS
-- Spark tutorial (Joeri)
-- Project 2
-
----
-
-# 9. Distributed databases
-
-- Structured vs. Unstructured (NoSQL) databases
-- Key-value stores
-- [Graph databases]
-- Case study: Amazon Dynamo, Apache Cassandra
-
----
-
-(break for NIPS)
-
----
-
-# 10. Block chain
-
-- Concept
-- Case study: Bitcoin
-
-???
-
-# 11. Data science on a budget
-
-- A lot can be done using a laptop only
-- Algorithmic solutions to large-scale data science problems
-
----
-
-class: middle, center
-
-# Projects
+- Lecture 1: Distributed systems
+- Lecture 2: Basic abstractions
+- Lecture 3: Reliable broadcast
+- Lecture 4: Shared memory
+- Lecture 5: Consensus
+- Lecture 6: Distributed hash tables
+- Lecture 7: Cloud computing
+- Lecture 8: Distributed file systems
+- Lecture 9: Distributed databases and NoSQL
+- Lecture 10: Blockchain
 
 ---
 
 # Projects
 
-.grid[
-.col-2-3[
-- Implementation of a simple distributed system (25%).
-    - E.g., a distributed hash table, a group communication system, ...
-- Exploratory analysis with a distributed computing framework (25%).
-    - E.g., a case study using Spark.
-]
-.col-1-3[
-![](figures/outline/dht.png)
-![](figures/outline/spark.png)
-]
-]
+## Reading assignment
+
+Read, summarize and criticize a major scientific paper in Large-Scale Data Systems.
+(Paper to be announced later.)
+
+.center.width-70[![](figures/outline/mr-paper.png)]
+
+---
+
+class: middle
+
+## Programming project
+
+xxx
+
+---
+
+# Evaluation
+
+- Oral exam (60%)
+- Reading assignment (10%)
+- Programming project (30%)
+
+Projects are **mandatory** for presenting the exam.
+
+---
+
+class: end-slide, center
+count: false
+
+Let's start!

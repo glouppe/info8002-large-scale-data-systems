@@ -1,17 +1,29 @@
 @import url(https://fonts.googleapis.com/css?family=Lato:400,900);
 
 body {
-    font-family: 'Lato', 'Avenir Next', 'Avenir', 'Trebuchet MS', 'Segoe UI', sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-    color: #455a64;
-    line-height: 1.3;
-    font-size: 0.98em;
+    font-family:  'Lato', 'Avenir Next', 'Avenir', 'Trebuchet MS', 'Segoe UI', sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    color: #354046; /*#455a64;*/
+    line-height: 1.4;
+    font-size: 11pt;
     word-wrap: break-word;
 }
 
 .footnote {
   position: absolute;
-  bottom: 3em;
+  bottom: 2em;
   font-size: 0.5em;
+  opacity: 0.75;
+  margin-left: -5.5em;
+}
+
+
+.footnote a{
+    color: #20707e;
+}
+
+.footnote:before {
+    content: "\2015\2015\2015";
+    display: block;
 }
 
 .red {
@@ -22,41 +34,33 @@ body {
     color: #009933;
 }
 
+.italic {
+    font-style: italic;
+}
+
+.bold {
+    font-weight: bold;
+}
+
 .remark-container {
     background: #ddd;
 }
 
-.center * {
-    text-align: center !important;
-}
-
-.center p {
-    margin: 0 auto !important;
-    margin-before: 0 !important;
-    margin-after: 0 !important;
-}
-
 .remark-slide-content {
-    background-image: linear-gradient(135deg, transparent, rgba(0, 0, 0, 0.02) 50%, rgba(255, 255, 255, 0) 50%, rgba(255, 255, 255, 0.05));
     font-size: 1.4em;
-    border-top: solid 5px #0288d1;
+    border-top: solid 5px #20707e;
 }
 
 .remark-slide-content h1 {
     font-weight: bold;
     font-size: 2.25em;
-    text-align: center;
     margin: 0 0 .5em 0;
-}
-
-.remark-visible {
-    position: relative;
+    color: #17525d;
 }
 
 .remark-slide-content h2 {
-    color: #d11a01;
-    font-size: 1.5em;
-    font-weight: normal;
+    font-size: 1.1em;
+    font-weight: bold;
     margin: 0 0 .5em 0;
 }
 
@@ -68,6 +72,7 @@ body {
 
 .remark-slide-number {
     font-size: 0.5em;
+    bottom: 2em;
 }
 
 .smaller {
@@ -83,46 +88,6 @@ a:hover {
     text-decoration: underline;
 }
 
-.width-100 * {
-    width: 100%;
-}
-
-.width-90 * {
-    width: 90%;
-}
-
-.width-80 * {
-    width: 80%;
-}
-
-.width-70 * {
-    width: 70%;
-}
-
-.width-60 * {
-    width: 60%;
-}
-
-.width-50 * {
-    width: 50%;
-}
-
-.width-40 * {
-    width: 40%;
-}
-
-.width-30 * {
-    width: 30%;
-}
-
-.width-20 * {
-    width: 20%;
-}
-
-.width-10 * {
-    width: 10%;
-}
-
 em {
     color: #0288d1;
     font-style: normal;
@@ -132,6 +97,14 @@ strong {
     color: #d11a01;
     font-style: normal;
     font-weight: normal;
+}
+
+.katex {
+    color: #1a7082;
+}
+
+.remark-code {
+    font-size: 0.8em;
 }
 
 ul > li, ol > li {
@@ -146,15 +119,13 @@ table {
     border-spacing: 0;
     border: 1px solid #e2e2e2;
     font-size: .8em;
-    margin: 0;
+    margin: auto;
     padding: 0;
-    width: 100%;
 }
 
 thead {
     border: 0;
-    font-size: .9em
-    margin: 0;;
+    margin: 0;
 }
 
 th {
@@ -167,7 +138,7 @@ th {
 }
 
 tbody {
-    background: #f0f0f0;
+    background: white;
     font-size: .8em;
     margin: 0;
 }
@@ -196,16 +167,6 @@ td {
     margin-left: 1em;
 }
 
-.gallery {
-    display: block;
-    text-align: center;
-}
-
-.gallery img {
-    width: 200px;
-    height: auto;
-}
-
 .caption {
     display: block;
     text-align: center;
@@ -220,6 +181,46 @@ td {
 .stretch img {
     width: 100%;
     height: auto;
+}
+
+.width-10 * {
+    width: 10%;
+}
+
+.width-20 * {
+    width: 20%;
+}
+
+.width-30 * {
+    width: 30%;
+}
+
+.width-40 * {
+    width: 40%;
+}
+
+.width-50 * {
+    width: 50%;
+}
+
+.width-60 * {
+    width: 60%;
+}
+
+.width-70 * {
+    width: 70%;
+}
+
+.width-80 * {
+    width: 80%;
+}
+
+.width-90 * {
+    width: 90%;
+}
+
+.width-100 * {
+    width: 100%;
 }
 
 
@@ -241,37 +242,14 @@ td {
     vertical-align: middle;
 }
 
-table {
-    width: 100%;
-    margin: 0;
-    padding: 0;
+.end-slide {
+    background-color: #20707e;
+    color: white;
+    vertical-align: middle;
 }
 
-thead {
-    background: #555;
-    font-size: .9em;
-}
-
-th {
-    margin: 0;
-    padding: 7px 0;
-    text-align: center;
-    font-weight: bold;
-}
-
-tbody {
-    font-size: .8em;
-    background: #f0f0f0;
-}
-
-tr:nth-child(odd) {
-    background: #fcfcfc;
-}
-
-td {
-    padding: 5px 8px;
-}
-
-hr {
-    border-top: 1px solid #8c8b8b;
+.black-slide {
+    background-color: black;
+    color: white;
+    border-top: solid 0px;
 }
