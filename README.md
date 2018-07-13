@@ -8,16 +8,15 @@ Lectures for INFO8002 - Large-scale Data Systems, ULiège, Fall 2018.
 ## Slides
 
 - [Outline](https://glouppe.github.io/info8002-large-scale-database-systems/?p=outline.md)
-- Lecture 1: Distributed systems [PDF]
+- Lecture 1: Data deluge [PDF]
 - Lecture 2: Basic abstractions [PDF]
 - Lecture 3: Reliable broadcast [PDF]
 - Lecture 4: Shared memory [PDF]
 - Lecture 5: Consensus [PDF]
-- Lecture 6: Distributed hash tables [PDF]
-- Lecture 7: Cloud computing [PDF]
-- Lecture 8: Distributed file systems [PDF]
-- Lecture 9: Distributed databases and NoSQL [PDF]
-- Lecture 10: Blockchain [PDF]
+- Lecture 6: Blockchain [PDF]
+- Lecture 7: Distributed hash tables [PDF]
+- Lecture 8: Cloud computing [PDF]
+- Lecture 9: Distributed file systems [PDF]
 
 ## Exercise sessions
 

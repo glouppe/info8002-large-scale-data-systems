@@ -8,6 +8,13 @@ Fall 2018
 Prof. Gilles Louppe<br>
 [g.louppe@uliege.be](g.louppe@uliege.be)
 
+???
+
+R: revise to insist on why it is necessary for a data scientist
+R: intro data deluge
+R: big picture
+https://datascience.berkeley.edu/academics/curriculum/fundamentals-of-data-engineering/
+
 ---
 
 # Logistics
@@ -79,16 +86,15 @@ which distributed *databases* and *computing* systems are operating.
 
 # Outline
 
-- Lecture 1: Distributed systems
+- Lecture 1: Data deluge
 - Lecture 2: Basic abstractions
 - Lecture 3: Reliable broadcast
 - Lecture 4: Shared memory
 - Lecture 5: Consensus
-- Lecture 6: Distributed hash tables
+- Lecture 6: Blockchain
 - Lecture 7: Cloud computing
-- Lecture 8: Distributed file systems
-- Lecture 9: Distributed databases and NoSQL
-- Lecture 10: Blockchain
+- Lecture 8: Distributed hash tables
+- Lecture 9: Distributed file systems
 
 ---
 
@@ -101,13 +107,20 @@ Read, summarize and criticize a major scientific paper in Large-Scale Data Syste
 
 .center.width-70[![](figures/outline/mr-paper.png)]
 
+???
+
+https://storage.googleapis.com/pub-tools-public-publication-data/pdf/39966.pdf
+
 ---
 
 class: middle
 
 ## Programming project
 
-xxx
+Implement a secure and distributed service using **Blockchain** technology.
+
+.center.width-70[![](figures/outline/blockchain.png)]
+
 
 ---
 
