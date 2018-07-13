@@ -2,7 +2,7 @@ class: middle, center, title-slide
 
 # Large-scale Data Systems
 
-Lecture 9: Distributed databases and NoSQL
+Lecture 9: Distributed file systems
 
 <br><br>
 Prof. Gilles Louppe<br>
@@ -12,666 +12,566 @@ Prof. Gilles Louppe<br>
 
 # Today
 
-- *Relational databases*
-    - Quick recap
-- *Distributed relational databases*
-    - Data placement
-    - Distributed queries
-    - Dsitributed transactions
-- *NoSQL databases*
-    - CAP theorem
+- *Google File System* (GFS)
+    - Design considerations behind GFS .
+    - Data replication
+    - Reading and writing.
+    - Recovery from failure
+- *Hadoop Distributed File System* (HDFS)
 
-.center.width-60[![](figures/lec9/hadoop-ddbms.png)]
+.center.width-80[![](figures/lec8/hadoop-hdfs.png)]
 
 ---
 
 class: middle, center
 
-# Relational databases
-
-(Quick recap from [INFO0009: Databases](https://www.programmes.uliege.be/cocoon/cours/INFO0009-1.html))
+# Google File System
 
 ---
 
-# Databases
+# File systems
 
-From Oxford dictionary:
-- *Database*: an organized body of related information.
-- *Database system*, *Database management system* (DBMS): a software system that facilitates the creation and maintenance and use of an electronic database
+- File systems determine **how** data is stored and retrieved.
+- *Distributed file systems* manage the storage across a network of machines.
+    - Goal: single-system **illusion** for users.
+    - Added complexity due to the network.
+- GFS and HDFS are examples of distributed file systems.
+    - They represent *one* way (not the way) to design a distributed file system.
 
-What do you want from a DBMS?
-- *Persistence*: Keep data around.
-- *Queries*: answer questions about data.
-- *Updates*: add, modify, delete data.
 
-<span class="Q">[Q]</span> Which database systems do you know?
-
----
-
-# Relational data model (1)
-
-- A simple but *general-purpose* model.
-- Data is stored in **relations** (i.e., a collection of tables).
-    - a *tuple* is a row of a relation.
-    - an *attribute* is a column of a relation.
-    - a *domain* is a set of legal *atomic* values for an attribute.
-        - this can be used to enforce semantic constraints.
-
-.center.width-60[![](figures/lec9/rel-db.gif)]
+<br><br><br><br><br><br><br><br><span class="Q">[Q]</span> Which file systems do you know?
 
 ---
 
-#  Relational data model (2)
+# History
 
-- A **relation schema** is a list of attributes.
-    - A schema is the blueprint that describes how the data is structured in the relation.
-- A **relation** is a set of tuples for a given relation schema.
-    - Each tuple in a relation is unique and satisfies the schema.
-    - Uniqueness is often controlled through a (primary) *key* attribute.
-- A *database schema* is a collection of relation schemas.
-- **Relationships** between relations (tables) are defined by matching one or more attributes (usually, the keys) across relations.
-    - 1-to-1 relationships
-    - 1-to-many relationships
-    - many-to-many relationships
+- GFS was developed at Google around 2003, jointly with MapReduce.
+- Provide **efficient** and **reliable** access to data.
+- Use large clusters of *commodity hardware*.
+- Proprietary, but detailed paper.
+
+.center.width-80[![](figures/lec8/gfs-paper.png)]
 
 ---
 
-# Querying data
+# Assumptions
 
-- Data is retrieved, added or modified through an expressive *declarative query language*, **SQL**.
-```SQL
-SELECT EmployeeName, City FROM Employees;
-```
-    - Can be used to access data across one or more relations, with arbitrarily complex constraints.
-    - Programmer specifies *what* answers a query should return, but **not how** the query is executed.
-    - DBMS transparently picks the best execution strategy, based on availability of indexes, data/workload, properties, etc.
-        - As based on an often sophisticated query processing engine.
-- This provides *physical data independence*.
-    - Applications should not worry about how data is physically structured and stored.
-    - Applications instead work with a **logical** data model and a declarative query language.
-- Single **most important reason** behind the success of DBMSs today.
-
----
-
-# Concurrency
-
-- DBMSs are *multi-user*, which raises **concurrency** issues.
-- Example:
-    - Both Homer and Marge concurrently execute, on the same bank account:
-```python
-def withdraw(account, amount):
-            balance = account.balance
-            if balance - amount >= 0:
-                balance = balance - amount
-                dispense_cash(amount)
-                account.balance = balance
-```
-    - Homer at ATM1 withdraws $100.
-    - Marge at ATM2 withdraws $200.
-    - Initial balance = $400.
-    - What is the final balance?
-
-<span class="Q">[Q]</span> Haven't we already studied a similar problem?
-
-???
-
-- Make connections to linerarization.
-- RW registers.
+- Hardware **failures are common**.
+    - We want to use *cheap* commodity hardware.
+- Files are *large* (multi-GB files are the norm) and their number is (relatively) limited (millions).
+- Reads:
+    - *large streaming reads* ($\geq$ 1MB in size), or
+    - *small random reads*
+- Writes:
+    - Large **sequential writes** that *append* to files.
+    - Concurrent appends by multiple clients.
+    - Once written, files are *seldom modified* ($\neq$ append) again.
+        - Random modification in files is possible, but not efficient in GFS.
+- High sustained bandwidth, but high latency.
 
 ---
 
-# Fault-tolerance and recovery
+# Which of those fit the assumptions?
 
-- Example: balance transfer.
-    - decrement the balance of account $X$ by $100.
-    - increment the balance of account $Y$ by $100.
-- Scenario 1: Power goes out after the first instruction.
-- Scenario 2: DBMS buffers and updates data in memory (for efficiency), but power goes out before they are written back to disk.
-- How can we deal with these **failures**?
-
----
-
-# ACID
-
-**ACID** = key characteristics (most)
-relational databases use to ensure modifications are saved in a
-consistent, safe, and robust manner.
-- *Atomic*: All parts of the transaction or none are committed.
-- *Consistent*: A transaction either creates a new valid state of data, or, if any failure occurs, returns all data to its state before the transaction was started.
-- *Isolation*: A transaction in process and not yet committed must remain isolated from any other transaction.
-- *Durable*: Committed data is saved by the system such that, even in the event of a failure and system restart, the data is available in its correct state.
-
-<span class="Q">[Q]</span> Don't some of these properties look familiar?
-
-<span class="Q">[Q]</span> Assume the bank uses an ACID database. What does this mean for Homer and Marge?
+- Global company dealing with the data of its 100M employees.
+    - Salary, bonuses, age, performance, etc.
+- A search engine's query log.
+- A hospital's medical imaging data generated from an MRI scan.
+- Data sent by the Hubble telescope.
+- A search engine's index (used to serve search results to users).
 
 ---
 
-# Performance
-
-- DBMSs are designed to store **massive** amounts of data (TB, PB).
-- High throughput is desired (thousands to millions transactions/hour).
-- High availability ($\geq$ 99.999%).
-
-<span class="Q">[Q]</span> How can we address these issues, at large-scale?
-
----
-
-class: middle, center
-
-# Distributed relational databases
-
----
-
-# Distributed relational databases
-
-- A **distributed** database (DDBMS) is a database whose relations reside on different sites.
-- Interface requirements:
-    - Relational data model
-    - ACID properties
-    - Single system illusion
-
-.center.width-60[![](figures/lec9/sites.png)]
-
-<span class="Q">[Q]</span> How is this different from/similar to a distributed file system?
-
----
-
-# Data placement
-
-- The *data placement* strategy, i.e. the distribution of the relations over the sites, and its implications form the main part in the design of a DDBMS.
-- Aim to improve:
-    - reliability
-    - availability
-    - efficiency (e.g., reduced communication costs or better load balancing)
-    - security.
-- Key considerations:
-    - **Fragmentation**: relations may be divided into a number of sub-relations which are distributed.
-    - **Allocation**: each fragment is stored at site with optimal placement.
-    - **Replication**: copy of fragment may be maintained at several sites.
-
----
-
-# Fragmentation
-
-- *Break* a relation into smaller relations or **fragments**, which are then distributed at different sites.
-- Main kinds of fragmentation:
-    - *Horizontal*: partition a relation along its tuples.
-        - e.g., identify fragments to selection queries.
-    - *Vertical*: partition a relation along its attributes.
-        - e.g., identify fragments to projection queries.
-    - *Mixed*: partition horizontally and vertically.
-
-.center.width-80[![](figures/lec9/fragmentation.jpg)]
-
----
-
-# Correctness rules of fragmentation
-
-A fragmentation strategy should satisfy the following properties:
-- *Completeness*: If a relation $R$ is decomposed into fragments $R_1, ..., R_n$, each data item that can be found in $R$ must appear in a least one fragment.
-- *Reconstruction*: Must be possible to define a relation operation that will reconstruct $R$ from its fragments.
-    - **Union** to combine horizontal fragments
-    - **Join** to combine vertical fragments
-- *Disjointness*: If data item $d$ appears in fragment $R\_i$, then it should not appear in any other fragment (at the exception for primary keys).
-    - For horizontal fragmentation, data item is a tuple.
-    - For vertical fragmentation, data item is an attribute.
-
----
-
-# Allocation
-
-- Ideally, fragments should be **allocated** such that queries that are frequently performed locally at sites are fast.
-    - e.g., store tuples of Belgian employees at Brussels' site, but tuples of Japanese employees at Tokyo's.
-- *Optimization problem*:
-    - Givens:
-        - fragments $f_1, ..., f_n$
-        - sites $s_1, ..., s_m$
-        - applications $q_1, ..., q_k$
-    - Find the optimal assignment of fragments to sites such that the total cost of all applications is minimized and the performance is maximized.
-        - Application costs: communication, storage, processing.
-        - Performance: response time, throughput.
-    - Constraints: per site constraints (storage and processing)
-    - Problem is in general NP-complete, but good heuristics exist.
-        - Reduce to a knapsack problem.
----
-
-# Replication
-
-- Storing a same fragment at distinct sites increases **availability** and **efficiency**.
-- Replication modes:
-    - *fully replicated*: each fragment at each site.
-    - *partially replicated*: each fragment at one or more sites.
-- Rule of thumb: if read-only queries / update queries $\geq 1$, then replication is advantageous, otherwise it may cause problems.
-- The optimal partial replication policy can be determined jointly with the allocation problem.
-
-<span class="Q">[Q]</span> Doesn't replication violate disjoitness?
-
----
-
-# Distributed query processing
-
-- For centralized regular DBMSs, all data is local and queries are mainly optimized to limit disk accesses.
-- In DDBMSs, the data is distributed across several sites. This has the following consequences:
-    - The query processing engine must *communicate* with all sites holding fragments involved in the query.
-        - The cost of data transmission becomes a dominant factor when optimizing the query.
-    - The engine must **orchestrate** the execution of sub-queries to compute the original query.
-    - Independent sub-queries can be scheduled *concurrently*.
-
----
-
-# Non-joins
-
-.center.width-50[![](figures/lec9/query-table.png)]
-
-```SQL
-SELECT AVG(S.age)
-FROM Sailors AS S
-WHERE S.rating > 3 AND
-      S.rating < 7
-```
-- Horizontal fragmentation: Tuples with ratings $< 5$ at Brussels, $\geq 5$ at Tokyo.
-    - Must compute sub-queries `SUM(S.age)` and `COUNT(s.age)` at both sites, before  *union* and aggregation.
-    - If the `WHERE` clause contained just `S.rating > 6`, then the query could be processed at one site only.
-- Vertical fragmentation:
-    - Must reconstruct relation by *join* on `tid`, then evaluate the query.
-
----
-
-# Joins
-
-- Joins in DDBMSs can be very **expensive** if relations are stored at different sites.
-- Consider three relations `account`, `depositor` and `branch`.
-    - We want to compute their join `account`⋈`depositor`⋈`branch`.
-        - `account` is stored at site 1.
-        - `depositor` is stored at site 2.
-        - `branch` is stored at site 3.
-    - A query issued at site 1 must produce a result at site 1.
-- Possible strategies:
-    - Ship copies of all three relations to site 1 and process the query locally.
-    - Ship a copy of `account` to site 2, compute `temp1`=`account`⋈`depositor`.
-      Ship `temp1` from site 2 to site 3, compute `temp2`=`temp1`⋈`branch`.
-      Ship `temp2` to site 1.
-
-    <span class="Q">[Q]</span> Does the ordering matter? Can we do better?
-
----
-
-# Semijoins
-
-- We do not need to exchange the *whole* relations! Semijoins are sufficient:
-    - At site 2, project `depositor` onto join columns with `branch` and ship to site 3.
-    - At site 3, join the projection with `branch`.
-      Project the resulting relation onto the join columns with `account` and ship to site 1.
-    - At site 1, join the projection with `account`.
-- Tradeoff the cost of computing and shipping projection for cost of shipping full relation.
-
----
-
-# Distributed transactions
-
-```python
-def send(A, B, amount):
-    begin_transaction()
-    if A.balance - amount >= 0:
-        A.balance = A.balance - amount
-        B.balance = B.balance + amount
-        commit_transaction()
-    else:
-        abort_transaction()
-```
-
-- All copies of the fragments involved in a transaction must be updated before the modifying transaction commits.
-- How does one guarantee that all of the fragments commit the transactions or none do?
-
-<span class="Q">[Q]</span> What algorithm have we seen that could solve this?
-
----
-
-# Two-phase commit (1)
-
-- Goal: general-purpose distributed agreement on some action, with failures.
-- Running example: transfer money from $A$ to $B$.
-    - Debit at $A$, credit at $B$, tell the client OK.
-    - Require *both* banks to do it, or *neither*.
-    - Require that **a bank never acts alone**.
-- This is a form of **consensus**:
-    - The value to agree upon is whether or not the transaction should be committed.
-    - We require agreement, validity and termination.
-
-???
-
-http://the-paper-trail.org/blog/consensus-protocols-two-phase-commit/
-
----
-
-# Two-phase commit (2)
-
-- Site at which transaction originates is the **coordinator**.
-- Other sites at which it executes are the *participants*.
-- Two rounds of communication:
-    - Phase 1 (request phase):
-        - *Prepare* messages are sent from coordinator to all participants asking if ready to commit.
-        - *Yes/No* replies from the participants to the coordinator.
-            - If yes, the participant might have prepared locks on the local resources that need to be modified.
-        - To commit, all subordinates must say yes.
-    - Phase 2 (commit phase):
-        - If yes from all participants, coordinator sends out *commit* messages, otherwise send *abort* instructions.
-        - Participants do so, and send back an acknowledgement.
-        - When the coordinator receives all acknowledgements, the transaction has committed.
-- **Efficient** protocol: $4n$ messages are exchanged in total. Seem difficult to do better.
-
----
-
-# Two-phase commit (3)
-
-.center.width-100[![](figures/lec9/2pc.png)]
-
-<span class="Q">[Q]</span> What if a node aborts?
-
-<span class="Q">[Q]</span> What if a node fails?
-
-???
-
-Also: http://avishek.net/blog/?p=908
-
----
-
-# Two-phase commit (4)
-
-What if nodes **fail**?
-- If a participant fails in the request phase, then this can be detected and the transaction may be aborted.
-    - If a participant fails in the commit phase, then the other participants commit anyway!
-- If the coordinator crashes, than all processes are **blocked**.
-    - If the coordinator crashes in the request phase, after participants have sent their decisions, then the transaction is blocked!
-    - If the coordinator crashes after some correct process has committed, then the decision can be *recovered* from this correct process.
-
-<span class="Q">[Q]</span> How to detect failures?
-
----
-
-# Asynchronous transactions
-
-- *Synchronous transactions*:
-    - Before the update transaction can commit, it must obtain **locks** on all copies of the modified fragment.
-    - This acquisition may take time.
-    - But data distribution is transparent to user.
-- *Asynchronous transactions*:
-    - Copies of a modified fragment are only periodically updated. Different copies may get **out of sync** in the meantime.
-    - More *efficient* than synchronized distribution transactions.
-    - But users must be aware of data distribution.
-
----
-
-# Google Cloud Spanner
-
-- Spanner: widely distributed database engine
-    - General-purpose transactions (ACID)
-    - SQL query language
-    - Semi-relational data model
-    - Scale to millions of machines
-- Technical details:
-    - Paxos replicated state machines
-    - Adds a very accurate distributed clock to each process.
-        - i.e., a global wall clock time, with bounded uncertainty.
-        - make it possible to order transactions, and to guarantee consistent non-blocking reads.
-    - Make use of two-phase commits
-
-.center.width-80[![](figures/lec9/spanner.png)]
-
----
-
-# Google Cloud Spanner
-
-.center[
-<iframe width="640" height="480" src="https://www.youtube.com/embed/amcf6W2Xv6M?&loop=1&start=0" frameborder="0" volume="0" allowfullscreen></iframe>
-]
-
----
-
-class: middle, center
-
-# NoSQL databases
-
----
-
-# NoSQL
-
-- Many of the new generation databases are referred to as  **NoSQL** data stores.
-    - e.g., HBase, Cassandra, [MongoDB](https://www.youtube.com/watch?v=b2F-DItXtZs), Dynamo, etc.
-    - NoSQL is rarely a useful term by itself.
-- NoSQL data stores are typically designed for *non-relational data*.
-- Requirements are often **relaxed**, which often allows to gain in efficiency and scalability.
-.center.width-50[![](figures/lec9/nosql.png)]
-
-<span class="Q">[Q]</span> What kind of NoSQL database system have we already covered?
-
----
-
-# NoSQL main features
-
-- *Horizontal scaling* of simple operations throughput over many servers.
-- *Replication* and to *data distribution (partitioning)* over many servers.
-- A **simple call level interface** or protocol (in contrast to SQL).
-- A **weaker concurrency model** than ACID transactions of most relational DBMSs.
-- Efficient use of distributed indexes and RAM for data storage.
-- The ability to *dynamically add new attributes* to data records.
-
----
-
-# Brewer's CAP theorem
-
-- It is **impossible** for a distributed data store to simultaneously provide more than two out of the following three guarantees:
-    - *Consistency*: Every read receives the most recent write or returns an error.
-    - *Availability*: Every request receives a (non-error) response (without the guarantee that it contains the most recent write).
-    - *Partition tolerance*: The system continues to operate despite a partition of the network.
-- Relational DBMSs designed with traditional ACID guarantees often choose consistency over availability.
-
-.center.width-30[![](figures/lec9/cap.png)]
-
----
-
-# BASE
-
-- NoSQL systems typically do not provide ACID guarantees.
-- Instead, the characteristics of a NoSQL systems are defined in terms BASE properties, which favors availability over consistency:
-    - *Basically Available*: The system is guaranteed to be available for querying by all users.
-    - *Soft state*: The state of the system may change over time, even without input.
-        - This is because of eventually consistency, see below.
-    - *Eventually consistent*: The system will eventually become consistent with time, given that the system does not receive input during that time.
-- BASE properties are much loser than ACID properties.
-
----
-
-# Taxonomy (1)
-
-When studying a new NoSQL system, it is often worth considering how it differs from a relational DBMS in terms of:
-
-- **Concurrency control**:
-    - *Locks*:
-        - Some systems provide one-user-at-a-time read or update locks.
-    - *Multiversion concurrency control*
-        - Guarantee a read-only consistent view
-        - May result in multiple conflicting versions of an entity if concurrent writes.
-    - *No control*:
-        - Some systems do not provide atomicity.
-        - Multiple users can edit in parallel a same entity.
-        - No guarantee which version is read.
-    - *ACID*:
-        - Modern systems pre-analyze transactions to avoid conflicts.
-            - No deadlocks and no wait on locks.
-
----
-
-# Taxonomy (2)
-
-- **Data storage medium**:
-    - Designed for storage in *RAM*:
-        - Fast but not persistent.
-        - Often requires snapshots or replication saved on disk.
-        - Poor performance when RAM overflows.
-    - Designed for *disk* storage:
-        - Slow but persistent.
-        - Often requires caching in RAM.
-- **Replication**:
-    - Whether mirror copies are always in sync.
-    - *Synchronous*
-        - Provides consistency, but usually slower.
-    - *Asynchronous*
-        - Provides only eventual consistency, but usually faster.
-
----
-
-# Taxonomy (3)
-
-- **Transaction mechanisms**:
-    - *Supported*.
-    - *Not supported*.
-    - *In between*:
-        - E.g., only for local transactions.
-
----
-
-# Comparison
+# How would you design a DFS?
 
 .grid[
-.col-1-2[![](figures/lec9/comparison1.png)]
-.col-1-2[![](figures/lec9/comparison2.png)]
+.col-1-2[
+- We want *single system illusion* for data storage.
+- Although data is too large be stored in a single system.
+- Hardware **will** fail.
+
+![](figures/lec8/google-first-server_a.jpg)
+.caption[Google first servers]
+]
+.col-1-2[
+![](figures/lec8/google-first-server.jpg)
+]
 ]
 
-.center[From 2011. Many of those have already died,<br> many other systems have appeared.]
+---
+
+# Disclaimer
+
+- GFS (and HDFS) are **not a good fit** for:
+    - Low latency data access (in the ms range).
+        - Solution: distributed databases, such as HBase.
+    - Many small files.
+    - Constantly changing data.
+- Not all details of GFS are public knowledge.
 
 ---
 
-# Data store categories
+# Design aims
 
-- Data stores are often grouped according to their data model.
-- **Key-value stores**:
-    - store key-value pairs.
-    - e.g., Voldemort, Riak, Redis, Scalaris, Cabinet, Memcached, etc.
-- **Document stores**:
-    - store documents, which are indexed, with a simple query mechanism.
-    - e.g., Amazon SimpleDB, CouchDB, MongoDB, Terrastore, etc.
-- **Extensible record stores**:
-    - store extensible records that can be partitioned vertically and horizontally across nodes.
-    - e.g., HBase, HyperTable, Cassandra, etc.
-- **Relational databases**:
-    - store tuples, that are indexed and can be queried.
-    - e.g., MySQL cluster, VoltDB, Clustrix, ScaleDB, etc.
+- Maintain data and system *availability*.
+- Handle **failures** gracefully and transparently.
+- *Low synchronization* overhead between entities.
+- Exploit *parallelism* of numerous entities.
+- Ensure **high sustained throughput** over high latency for individual reads/writes.
 
 ---
 
-# RDBMS benefits
+# Architecture
 
-- Relational DBMSs have **taken and retained majority market
-share** over other competitors in the past 30 years.
-- While no "one size fits all" in the SQL products,
-there is a common interface with SQL, transactions, and
-relational schema that give advantages *in training,
-continuity, and data interchange*.
-- Successful relational DBMSs have been built to handle other
-specific application loads in the past:
-    - read-only or read-mostly data warehousing, OLTP on multi-core
-multi-disk CPUs, in-memory databases, distributed databases, etc.
+.center.width-100[![](figures/lec8/gfs-architecture.png)]
 
----
+- A *single* **master** node.
+- Many *chunkservers* (100s - 1000s) storing the data.
+    - Physically spread in different racks.
+- Many clients.
 
-# NoSQL benefits
-
-- NoSQL may scale better than RDBMs.
-- A NoSQL system is probably a better solution when:
-    - one only requires a lookup of objects based on a single key.
-    - the application requires a flexible schema.
-- A relational DBMS usually make expensive operations easy to write.
-    - On the other hand, a NoSQL system make them difficult for programmers.
-- New systems are slowly gaining market shares, but still no clear winner.
-
-<span class="Q">[Q]</span> What would you pick?
-
----
-
-# Case study: HBase
-
-.center.width-50[![](figures/lec9/hbase.png)]
-
-- Apache HBase™ is the Hadoop database, a sparse, consistent, distributed, scalable, multi-dimensional sorted map.
-- Why using HBase?
-    - Open source
-    - Distributed storage across cluster of machines
-    - Random, online read and write data access
-    - Schemaless data model (NoSQL)
-    - Self-managed data partitions
-- Based on Google's BigTable paper.
-
----
-
-# Logical data model
-
-.center.width-100[![](figures/lec9/logical-data-model.png)]
-
-.footnote[Credits: [Nick Dimiduk, "HBase for architects".](https://www.slideshare.net/xefyr/h-base-for-architectspptx)]
+<span class="Q">[Q]</span> Why spreading across racks?
 
 ???
 
-A sparse multi dimensional sorted map.
+- Remember: one way, not the way.
+- Data does not flow across the GFS master.
+
+- Why spreading: to ensure availability and for load balancing concerns.
 
 ---
 
-# Logical architecture
+# Files
 
-.center.width-100[![](figures/lec9/logical-architecture.png)]
+- A single **file** may contain several *objects*.
+    - E.g., images, web pages, etc.
+- Files are divided into fixed-size **chunks**.
+    - Each chunk is identified by a globally unique 64 bit *chunk handle*.
+- Chunkservers store chunks on local disks as plain Linux files.
+    - Read or write data specified by a pair (chunk handle, byte range).
+    - By default **three replicas** of a chunk stored across chunkservers.
 
-.footnote[Credits: [Nick Dimiduk, "HBase for architects".](https://www.slideshare.net/xefyr/h-base-for-architectspptx)]
+.center.width-50[![](figures/lec8/gfs-chunks.png)]
+
+---
+
+# Master
+
+- The master node stores and maintains *all file system metadata*:
+    - Three main types of metadata:
+        - the file and chunk namespaces,
+        - the mapping from files to chunks,
+        - the locations of each chunk's replicas.
+    - All metadata is kept in master's **memory** (fast random access).
+        - Sets limits on the entire system's capacity.
+- It controls and coordinates *system-wide activities*:
+    - Chunk lease management
+    - Garbage collection of orphaned chunks
+    - Chunk migration between chunkservers
+- **Heartbeat** messages between master and chunkservers.
+    - To detect failures
+    - To send instructions and collect state information
+- An *operation log* persists master's state to permanent storage.
+    - In case master crashes, its state can be recovered (more later).
+
+---
+
+# One node to rule them  all
+
+- Having a **single master** node vastly simplifies the system design.
+- Enable master to make sophisticated chunk placement and replication decisions, using *global knowledge*.
+- Its involvement in reads and writes should be minimized so to avoid that it becomes a bottleneck.
+    - Clients never read and write file data through master.
+    - Instead, clients ask the master which chunkservers it should contact.
+
+<br><br><br><br><br><br><br><br><span class="Q">[Q]</span> As the cluster grows, can the master become a bottleneck?
 
 ???
 
-Distributed persistent partitions of a BigTable.
+Size of storage increased in the range of petabytes. The amount of metadata maintained by master increased and scanning through such large amounts became an issue. The single master started becoming a bottleneck when thousand client requests came simultaneously.
 
 ---
 
-# Physical architecture
+# Chunks
 
-.center.width-100[![](figures/lec9/physical-architecture.png)]
+- Default size = 64MB.
+    - This a **key design parameter** in GFS!
+- Advantages of large (but not too large) chunk size:
+    - **Reduced need** for client/master interaction.
+        - 1 request per chunk suits the target workloads.
+        - Client can cache *all the locations* for a multi-TB working set.
+    - **Reduced size** of metadata on master (kept in memory).
+- Disadvantage:
+    - A chunkserver can become a **hotspot** for popular files.
 
-.footnote[Credits: [Nick Dimiduk, "HBase for architects".](https://www.slideshare.net/xefyr/h-base-for-architectspptx)]
+<br><br><br><br><br><span class="Q">[Q]</span> How to fix the hotspot problem?<br>
+<span class="Q">[Q]</span> What if a file is larger than the chunk size?
 
 ---
 
-# When should you use HBase?
+# <strike>Caching</strike>
 
-- HBase is *good for*:
-    - Random access
-    - Large datasets
-    - Sparse datasets
-    - Loosely coupled (denormalized) records
-    - Lots of concurrent clients
-- However, try **avoid**:
-    - Sequential access
-    - Small datasets
-    - Highly relational records
-    - Schema design requiring transactions
+Design decisions:
+- Clients do **not** cache file data.
+    - They do cache metadata.
+- Chunckservers do **not** cache file data.
+    - Responsibility of the underlying file system (e.g., Linux's buffer cache).
+- Client caches offer *little benefit* because most applications
+    - stream through huge files
+        - disk seek time negligible compared to transfer time.
+    - have working sets too large to be cached.
+- Not having a caching system **simplifies the overall system** by eliminating cache coherence issues.
 
-.footnote[Credits: [Nick Dimiduk, "HBase for architects".](https://www.slideshare.net/xefyr/h-base-for-architectspptx)]
+---
+
+# Interface
+
+- No file system interface at the operating-system level (e.g., under the VFS layer).
+    - User-level API is provided instead.
+    - Does not support all the features of POSIX file system access.
+        - But looks similar (i.e., `open`, `close`, `read`, `write`, ...)
+- Two special operations are supported:
+    - *Snapshot*: efficient way of creating a copy of the current instance of a file or directory tree.
+    - *Append*: append data to a file as an **atomic operation**, without having to lock the file.
+        - Multiple processes can append to the same file concurrently without overwriting one another's data.
+
+---
+
+# Reads (1)
+
+.center.width-100[![](figures/lec8/gfs-read1.png)]
+
+1) The GFS client translates filename and byte offset specified by the application into a *chunk index* within the file. A request is sent to master.
+
+---
+
+# Reads (2)
+
+.center.width-100[![](figures/lec8/gfs-read2.png)]
+
+2) Master replies with chunk handle and locations of the replicas.
+
+---
+
+# Reads (3+4)
+
+.center.width-100[![](figures/lec8/gfs-read3.png)]
+
+3) The client caches this information using the file name and chunk index as the key.
+- Further reads of the same chunk requires no more client-master interaction, until the cached information expires.
+
+4) The client sends a request to one of the replicas, typically the closest.
+
+---
+
+# Reads (5)
+
+.center.width-100[![](figures/lec8/gfs-read4.png)]
+
+5) The contacted chunkserver replies with the data.
+
+---
+
+# Leases
+
+- A **mutation** is an operation that changes the content or metadata of a chunk. E.g.,
+    - `write`
+    - `append`
+- Each mutation is performed at all the chunk's replicas.
+- **Leases** are used to maintain a consistent mutation order across replicas.
+    - Master grants a chunk lease to one of the replicas, called the *primary*.
+    - Leases are renewed using the periodic heartbeat messages between master and chunkservers.
+- The primary picks a **serial order** for all mutations to the chunk.
+    - All replicas follow this order when applying mutations.
+- Leases and serial order at the primary define a *global ordering* of the operations on a chunk.
+
+---
+
+# Writes (1+2)
+
+.center.width-40[![](figures/lec8/gfs-write12.png)]
+
+1) The GFS client asks master for the primary and the secondary replicas for each chunk.
+
+2) Master replies with the locations of the primary and secondary replicas. This information is cached.
+
+---
+
+# Writes (3)
+
+.center.width-40[![](figures/lec8/gfs-write3.png)]
+
+3) The client pushes the data to all replicas.
+- Each chunkserver stores the data in an internal buffer.
+- Each chunkserver sends back an acknowledgement to the client once the data is received.
+- Data flow is decoupled control flow.
+
+---
+
+# Writes (4)
+
+.center.width-40[![](figures/lec8/gfs-write4.png)]
+
+4) Once all replicas have acknowledged, a **write request** is sent to the primary.
+- This request identifies the data pushed earlier.
+- The primary assigns consecutive serial numbers to all the mutations it receives, possibly from multiple clients.
+    - This provides *ordering* and *consistency*.
+- The primary applies the mutations, in the chosen order, to its local state.
+
+---
+
+# Writes (5)
+
+.center.width-40[![](figures/lec8/gfs-write5.png)]
+
+5) The primary forwards the write request to all secondary replicas.
+- Mutations are applied locally in the serial order decided by the primary.
+
+---
+
+# Writes (6+7)
+
+.center.width-40[![](figures/lec8/gfs-write67.png)]
+
+6) The secondaries all reply to the primary upon completion of the operation.
+
+7) The primary replies to the client.
+- Errors may be reported to the client.
+    - Upon errors, the client request is considered to have failed.
+    - The modified region is left in an **inconsistent state**.
+    - The client handles errors by retrying the failed mutation.
+
+---
+
+# Appends
+
+- Google uses large files as **queues** between multiple *producers* and *consumers*.
+- Same control flow as for writes, except that:
+    - Client pushes data to replicas of *last chunk* of file.
+    - Client send an append request to the primary.
+    - The request fits in current last chunk:
+        - Primary appends data to own replica.
+        - Primary tells secondaries to do same at same byte offset in theirs.
+        - Primary replies with success to client, specifying the offset the data was written.
+    - When the data does not fit in last chunk:
+        - Primary fills current chunk with padding.
+        - Primary tells secondaries to do the same.
+        - Primary replies to client to *retry on next chunk*.
+- If a record append fails at any replica, the client has to retry the operation.
+    - Replicas of same chunk may not be bytewise identical!
+
+---
+
+# (Relaxed) Consistency model
+
+- Changes to metadata are always *atomic*.
+    - Guaranteed by having a single master server.
+- Mutations are *ordered* as chosen by a primary node.
+    - All replicas will be **consistent** if they all successfully  perform mutations in the same order.
+    - Multiple writes from the same client may be interleaved or overwritten by concurrent operations from other clients.
+        - i.e., a file region is *defined* only if client see mutations in entirety, it is **undefined** otherwise. However, the file region remains consistent.
+- Record append completes *at least once*, at offset of GFS's choosing.
+    - There might be duplicate entries.
+- Failures can cause **inconsistency**.
+
+.center.width-60[![](figures/lec8/gfs-consistency.png)]
+
+---
+
+# Replica placement
+
+- Policy is to maximize:
+    - data *reliability* and *availability*,
+    - network bandwidth utilization.
+- Chunks are created initially empty.
+    - Preferably create chunks at *under-utilized* chunkservers, spread across different racks.
+    - Limit number of recent creations on each chunk server.
+- Re-replication.
+    - Started once the available replicas fall below a user-defined threshold.
+    - Master instructs chunkserver to copy chunk data directly from existing valid replica.
+    - Number of active clone operations/bandwidth is limited.
+- Re-balancing
+    - Changes in replica distribution for better load balancing.
+    - New chunk servers are gradually filled.
+
+---
+
+# Garbage collection
+
+How can a file be **deleted** from the cluster?
+- Deletion is *logged* by master.
+- The file is *renamed* to a hidden file and the deletion timestamp is kept.
+- Periodic scan of the master's file system namespace.
+    - Hidden files older than 3 days are deleted from master's memory.
+    - I.e., there is no further connection between a file and its chunks.
+- Periodic scan of the master's chunk namespace.
+    - Orphaned chunks (not reachable from any file) are identified and their metadata is deleted.
+- Hearbeat messages are used to synchronize deletion between master and chunkservers.
+
+---
+
+# Stale replica detection
+
+Scenario: a chunkserver misses a mutation applied to a chunk (e.g., a chunk was appended).
+- Master maintains a **chunk version number** to distinguish up-to-date and stale replicas.
+- Before an operation on a chunk, master ensures that the version number advances.
+    - Each time master grants new lease, the version is incremented and informed to all replicas.
+- Stale replicas are removed in the regular garbage collection cycle.
+
+---
+
+# Operation log
+
+- The **operation log** is a persistent historical record of critical changes on metadata.
+- Critical to the *recovery* of the system, upon restart of master.
+    - Master recovers its file system state by replaying the operation log.
+    - Master periodically checkpoints its state to minimize startup time.
+- Changes to metadata are only made visible to the clients **after** they have been written to the operation log.
+- The operation log is *replicated* on multiple remote machines.
+    - Before responding to a client operation, the log record must have been flushed locally and remotely.
+- Serve as a **logical timeline** that defines the order of concurrent operations.
+
+---
+
+# Chunk locations
+
+- Master does not keep a persistent record of chunk replica locations.
+- Instead, it **polls** chunkservers about their chunks at startup.
+- Master keeps up to date through *hearbeat* messages.
+- A chunkserver has the **final word** over what chunks it stores.
+
+<br><br><br><br><br><br><br><br><br><br><br><span class="Q">[Q]</span> What does this design decision simplify?
+
+---
+
+# What if master fails?
+
+- ... and does not recover?
+- This represents a **single point of failure** of system.
+- Solution:
+    - Maintain shadow *read-only* replicas of master.
+    - Use these replicas in case master fails.
+    - Eventually elect a new leader if master never recovers.
+
+---
+
+# What if a chunkserver fails?
+
+- Master notices missing hearbeats.
+- Master decrements count of replicas for all chunks on dead chunkserver.
+- Master re-replicates chunks missing replicas.
+    - Highest priority for chunks missing greatest number of replicas.
+
+---
+
+# Data corruption
+
+- Data corruption or loss can occur at any time.
+- Chunkservers use **checksums** to detect corruption of stored data.
+    - Alternative: compare replicas across chunk servers.
+- A chunk is broken into 64KB blocks, each has a 32bit checksum.
+    - These are kept in memory and stored persistently.
+- Read requests: the chunkserver *verifies the checksum* of the data blocks that overlap with the read range.
+    - Corrupted data are not sent to the clients.
+
+<br><br><br><br><br><br><br><span class="Q">[Q]</span> What if a read request fails because of corrupted data?
+
+---
+
+# Performance: reads
+
+.center.width-70[![](figures/lec8/perf-read.png)]
+
+???
+
+- Micro-benchmarks to illustrate the bottlenecks inherent in GFS.
+- One master, two master replicas, 16 chunkservers and 16 clients.
+
+- Reads: random 4MB regions from a 320GB file set.
+- Efficiency degrades when the probability of multiple reads from the same chunkserver increases.
+
+---
+
+# Performance: writes
+
+.center.width-70[![](figures/lec8/perf-write.png)]
+
+???
+
+- The network architecture does not interact very well with the pipelining scheme used for pushing data.
+- Again, efficiency degrades when the probability of writes on the same chunkservers increases.
+
+---
+
+# Performance: appends
+
+.center.width-70[![](figures/lec8/perf-append.png)]
+
+???
+
+- Limit independent of the number of clients. It is limited by the network bandwidth only.
+- Performance degrades due to congestion.
+- A client concurrently writes to M shared files simultaneously: a client can make progress on writing one file while the chunkservers for another file are busy.
 
 ---
 
 # Summary
 
-- Relational databases can be distributed over many sites.
-    - Fragmentation, allocation and replication are key considerations.
-    - Distributed databases has consequences for:
-        - query processing
-        - transactions
-- NoSQL databases trade off *consistency for availability*.
-- RDBMs remain a **strong and efficient** technology.
-- CAP theorem helps classify distributed data stores behavior choices.
-- NoSQL databases have benefits over RDBMs, but this **should be evaluated on a case by case basis**.
+- **Success**: used actively by Google to support search service and other applications.
+    - Availability and recoverability on cheap hardware.
+    - High throughput by decoupling control and data.
+    - Supports massive data sets and concurrent appends.
+- Semantics not transparent to applications.
+    - Must verify file contents to avoid inconsistent regions, repeated appends (at-least-once semantics).
+- Performance not good for all applications.
+- Assumes read-once, write-once workload (no client caching!)
+- Replaced in 2010 by Colossus
+    - Eliminate master node as single point of failure  
+    - Targets latency problems due to more latency sensitive applications
+    - Reduce block size to be between 1~8 MB
+    - Few public details.
+
+---
+
+class: middle, center
+
+# HDFS
+
+---
+
+# HDFS
+
+- Hadoop Distributed File System (HDFS) is an *open source* distributed file system.
+- HDFS shares the same goals as GFS.
+- HDFS's design is **strongly** inspired from GFS.
+- HDFS uses a distributed cache.
+- No leases (client decides where to write).
+- Used by Facebook, Yahoo, IBM, etc.
+
+---
+
+# HDFS in one figure
+
+.center.width-90[![](figures/lec8/hdfs-vs-gfs.png)]
+
+---
+
+# GFS vs. HDFS
+
+| GFS | HDFS |
+| --- | ---- |
+| Master | NameNode |
+| Chunkserver | DataNode |
+| Operation log | Journal, edit log |
+| Chunk | Block |
+| Random file writes are possible | Only append is possible |
+| Multiple writers, multiple readers model | Single writer, multiple reader model |
+| Default chunk size = 64MB | Default block size = 128MB |
 
 ---
 
 # References
 
-- Slides inspired from "[CompSci 316: Introduction to Database Systems](https://sites.duke.edu/compsci316_01_s2017/)", by Prof. Sudeepa Roy, Duke University.
-- Apers, Peter M. G., Alan R. Hevner, and S. Bing Yao. "Optimization algorithms for distributed queries." IEEE transactions on software engineering 1 (1983): 57-68.
-- Corbett, James C., et al. "Spanner: Google’s globally distributed database." ACM Transactions on Computer Systems (TOCS) 31.3 (2013): 8.
-- Cattell, Rick. "Scalable SQL and NoSQL data stores." Acm Sigmod Record 39.4 (2011): 12-27.
+- Ghemawat, Sanjay, Howard Gobioff, and Shun-Tak Leung. "The Google file system." ACM SIGOPS operating systems review. Vol. 37. No. 5. ACM, 2003.
+- Shvachko, Konstantin, et al. "The hadoop distributed file system." Mass storage systems and technologies (MSST), 2010 IEEE 26th symposium on. IEEE, 2010.
+- Claudia Hauff. "Big Data Processing, 2014/15. Lecture 5: GFS and HDFS".

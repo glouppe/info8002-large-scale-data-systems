@@ -9,7 +9,7 @@ Lectures for INFO8002 - Large-scale Data Systems, ULiège, Fall 2018.
 
 - [Outline](https://glouppe.github.io/info8002-large-scale-database-systems/?p=outline.md)
 - Lecture 1: Data deluge [PDF]
-- Lecture 2: Basic abstractions [PDF]
+- Lecture 2: Basic distributed abstractions [PDF]
 - Lecture 3: Reliable broadcast [PDF]
 - Lecture 4: Shared memory [PDF]
 - Lecture 5: Consensus [PDF]
