@@ -2,7 +2,7 @@ class: middle, center, title-slide
 
 # Large-scale Data Systems
 
-Lecture 2: Basic abstractions
+Lecture 2: Basic distributed abstractions
 
 <br><br>
 Prof. Gilles Louppe<br>
