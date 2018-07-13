@@ -1,8 +1,12 @@
 class: middle, center, title-slide
 
-# Large-scale Distributed Systems
+# Large-scale Data Systems
 
 Lecture 3: Reliable broadcast
+
+<br><br>
+Prof. Gilles Louppe<br>
+[g.louppe@uliege.be](g.louppe@uliege.be)
 
 ---
 

@@ -1,8 +1,12 @@
 class: middle, center, title-slide
 
-# Large-Scale Distributed Systems
+# Large-Scale Data Systems
 
 Lecture 6: Distributed Hash Tables
+
+<br><br>
+Prof. Gilles Louppe<br>
+[g.louppe@uliege.be](g.louppe@uliege.be)
 
 ---
 
