@@ -2,12 +2,12 @@
 
 Lectures for INFO8002 - Large-scale Data Systems, ULiège, Fall 2018.
 
-- Instructor: Gilles Louppe ([g.louppe@uliege.be](mailto:g.louppe@ulg.ac.be))
+- Instructor: Gilles Louppe ([g.louppe@uliege.be](mailto:g.louppe@uliege.be))
 - Teaching assistant: Joeri Hermans ([joeri.hermans@doct.ulg.ac.be](mailto:joeri.hermans@doct.ulg.ac.be))
 
 ## Slides
 
-- [Outline](https://glouppe.github.io/info8002-large-scale-database-systems/?p=outline.md)
+- [Outline](https://glouppe.github.io/info8002-large-scale-data-systems/?p=outline.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/outline.pdf)]
 - Lecture 1: Data deluge [PDF]
 - Lecture 2: Basic distributed abstractions [PDF]
 - Lecture 3: Reliable broadcast [PDF]

@@ -2,7 +2,7 @@ class: middle, center, title-slide
 
 # Large-scale Data Systems
 
-Lecture 1: Distributed systems
+Lecture 1: Data deluge
 
 <br><br>
 Prof. Gilles Louppe<br>
