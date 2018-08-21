@@ -18,7 +18,7 @@ body {
 
 
 .footnote a{
-    color: #20707e;
+    color: #0288d1; /*#20707e;*/
 }
 
 .footnote:before {
@@ -48,14 +48,15 @@ body {
 
 .remark-slide-content {
     font-size: 1.4em;
-    border-top: solid 5px #20707e;
+    border-top: solid 5px #0288d1; /*#20707e;*/
 }
 
 .remark-slide-content h1 {
     font-weight: bold;
     font-size: 2.25em;
     margin: 0 0 .5em 0;
-    color: #17525d;
+    color: #455a64;
+    /*color: #17525d;*/
 }
 
 .remark-slide-content h2 {
@@ -243,7 +244,7 @@ td {
 }
 
 .end-slide {
-    background-color: #20707e;
+    background-color: #0288d1; /*#20707e;*/
     color: white;
     vertical-align: middle;
 }
