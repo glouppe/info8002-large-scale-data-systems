@@ -28,14 +28,15 @@ Feel free to contact any of us for help!
 
 # Slides
 
-Slides:
-- Available at [github.com/glouppe/info8002-large-scale-data-systems](https://github.com/glouppe/info8002-large-scale-data-systems).
+Slides are available at [github.com/glouppe/info8002-large-scale-data-systems](https://github.com/glouppe/info8002-large-scale-data-systems).
 - In HTML and in PDFs.
 - Posted online the day before the lesson.
 - Slightly different from previous years.
 
 Slides are partially adapted from [CSE 486/585 Distributed systems](https://www.cse.buffalo.edu/~stevko/courses/cse486/spring16/schedule.html) (University at Buffalo) and
 [CS425 Distributed systems](https://courses.engr.illinois.edu/cs425/fa2017/lectures.html) (University of Illinois UC).
+
+.center.width-80[![](figures/outline/slides.png)]
 
 ---
 
@@ -65,7 +66,7 @@ which distributed *databases* and *computing* systems are operating.
 
 ## Critical thinking
 
-- Assess the benefits and disadvantages of distributed systems.
+- Assess the benefits and disadvantages of data systems.
 - No hype!
 
 ---
