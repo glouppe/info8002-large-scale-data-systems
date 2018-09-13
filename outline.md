@@ -80,7 +80,7 @@ which distributed *databases* and *computing* systems are operating.
 
 # Outline
 
-- Lecture 1: Data deluge
+- Lecture 1: Introduction
 - Lecture 2: Basic distributed abstractions
 - Lecture 3: Reliable broadcast
 - Lecture 4: Shared memory
@@ -89,10 +89,6 @@ which distributed *databases* and *computing* systems are operating.
 - Lecture 7: Cloud computing
 - Lecture 8: Distributed hash tables
 - Lecture 9: Distributed file systems
-
-???
-
-Invited lecture on blockchain stuff.
 
 ---
 

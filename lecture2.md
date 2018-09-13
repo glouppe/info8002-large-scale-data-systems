@@ -11,6 +11,7 @@ Prof. Gilles Louppe<br>
 ???
 
 R: take time to explain the reactive programming model
+R: take quote from original lecture 1 (on level of indirection)
 
 ---
 
