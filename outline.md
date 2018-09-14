@@ -90,6 +90,10 @@ which distributed *databases* and *computing* systems are operating.
 - Lecture 8: Distributed hash tables
 - Lecture 9: Distributed file systems
 
+???
+
+Maybe Lecture 10: Column stores?
+
 ---
 
 # Projects

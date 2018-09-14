@@ -432,7 +432,7 @@ class: middle
 ## Communications
 
 - How do you talk to another machine?
-    - Networking basics
+    - Reliable networking.
 - How do you talk to multiple machines at once, with ordering guarantees?
     - Multicast, Gossiping.
 
@@ -442,7 +442,7 @@ class: middle
     - Failure detection.
 - How you do program your system to operate continually even under failure?
     - Gossiping, replication.
-- What if some machines malfunction?
+- What if some machines do not cooperate?
     - Byzantine fault tolerance.
 
 ---
@@ -457,7 +457,7 @@ class: middle
 ## Consensus
 
 - How do multiple machines reach an agreement?
-    - Time and synchronization, global states, leader election, Paxos, Blockchain.
+    - Time and synchronization, global states, leader election, Paxos, proof of work, blockchain.
 - **Bad news**: it is impossible!
     - The impossibility of consensus for asynchronous systems.
 
@@ -474,7 +474,7 @@ From these building blocks, understand how to build and architecture data system
     - Distributed file systems
     - Key-value stores
 - How do you record and share sensitive data?
-    - Block chain
+    - Proof of work, blockchain
 
 ---
 
@@ -484,7 +484,7 @@ class: middle
 
 - What are the distributed computing systems for data science?
     - Map Reduce (Hadoop)
-    - Computational graph systems (Spark)
+    - Computational graph systems (Spark, Dask)
 - Is distributed computing always necessary?
 
 ---
@@ -498,6 +498,6 @@ The end.
 
 # References
 
-- Silver, Nate. The signal and the noise: the art and science of prediction. Penguin UK, 2012.
-- Kersten, Martin L., et al. "The researcher’s guide to the data deluge: Querying a scientific database in just a few seconds." PVLDB Challenges and Visions 3.3 (2011).
 - Hey, Tony, Stewart Tansley, and Kristin M. Tolle. The fourth paradigm: data-intensive scientific discovery. Vol. 1. Redmond, WA: Microsoft research, 2009.
+- Kersten, Martin L., et al. "The researcher’s guide to the data deluge: Querying a scientific database in just a few seconds." PVLDB Challenges and Visions 3.3 (2011).
+- Silver, Nate. The signal and the noise: the art and science of prediction. Penguin UK, 2012.
