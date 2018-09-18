@@ -12,6 +12,12 @@ Prof. Gilles Louppe<br>
 
 class: middle
 
+.center.width-100[![](figures/lec1/info-aim.png)]
+
+---
+
+class: middle
+
 # The data science era
 
 ---
@@ -21,6 +27,11 @@ class: middle, center
 Big data? Data science?
 
 .width-70[![](figures/lec1/big-data-everywhere.jpg)]
+
+???
+
+- Who is in the master in data science?
+- Can you define big data or data science?
 
 ---
 
@@ -52,12 +63,21 @@ class: center, middle
 
 .width-80[![](figures/lec1/ds.jpg)]
 
+???
+
+- Subject expertise includes business expertise.
+- Hacking + Domain expertise = danger zone. The absence of rigorous methods can beget incorrect analysis.
+
 ---
 
 class: center, middle
 
 .width-80[![](figures/lec1/nate1.png)]
 .caption[Nate Silver]
+
+???
+
+Nate Silver successfully called the outcomes in 49 of the 50 states in the 2008 US Presidential election.
 
 ---
 
@@ -71,6 +91,10 @@ class: center, middle
 class: middle, center
 
 ![](figures/lec1/data-analysis-knowledge.png)
+
+???
+
+Also, from knowledge back to data.
 
 ---
 
@@ -98,6 +122,15 @@ Let me repeat that: we create as much information in two days now as we did from
 class: middle, center, black-slide
 
 .width-80[![](figures/lec1/growth.png)]
+
+???
+
+- 1 zettabyte = 1 trillion gigabytes
+- 1 followed by 21 zeroes
+
+"75 billion fully-loaded 16 GB Apple iPads, which would fill the entire area of Wembley Stadium to the brim 41 times, the Mont Blanc Tunnel 84 times, CERN's Large Hadron Collider tunnel 151 times, Beijing National Stadium 15.5 times or the Taipei 101 Tower 23 times."
+
+"A full-length episode of FOX TV's hit series 24 running continuously for 125 million years."
 
 ---
 
@@ -323,6 +356,10 @@ Let's try to solve the problem for generals $g_1$ and $g_2$.
 - Problem: how to ensure $g_1$ received the acknowledgment?
 - Solution: let $g_1$ acknowledge receipt of acknowledgment.
 - ...
+
+???
+
+The generals must reach a consensus.
 
 ---
 

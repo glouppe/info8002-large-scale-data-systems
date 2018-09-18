@@ -13,7 +13,7 @@ Prof. Gilles Louppe<br>
 # Logistics
 
 This course is given by:
-- Theory: Prof. Gilles Louppe [[g.louppe@uliege.be](mailto:g.louppe@uliege.be)]
+- Theory: Prof. Gilles Louppe ([g.louppe@uliege.be](mailto:g.louppe@uliege.be))
 - Exercises and projects: Joeri Hermans ([joeri.hermans@doct.ulg.ac.be](mailto:joeri.hermans@doct.ulg.ac.be))
 
 Feel free to contact any of us for help!
@@ -44,7 +44,7 @@ Slides are partially adapted from [CSE 486/585 Distributed systems](https://www.
 
 .center[![](figures/outline/textbook.jpg)]
 
-The core content of this course is based on the following textbook:
+The core content of this course (lectures 2 to 5) is based on the following textbook:
 
 > .italic[Christian Cachin, Rachid Guerraoui, Luis Rodrigues, "Introduction to Reliable and Secure Distributed Programming", Springer.]
 
