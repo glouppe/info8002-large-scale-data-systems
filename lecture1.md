@@ -39,6 +39,10 @@ class: middle, center
 
 hype **vs.** business **vs.** science
 
+???
+
+Distinguishing the hype from the science is one of the goal of this class, but also of the master.
+
 ---
 
 class: middle
@@ -67,6 +71,7 @@ class: center, middle
 
 - Subject expertise includes business expertise.
 - Hacking + Domain expertise = danger zone. The absence of rigorous methods can beget incorrect analysis.
+- There are few unicorns. Hence training in data science.
 
 ---
 
@@ -103,6 +108,10 @@ class: middle, center
 .width-50[![](figures/lec1/galileo.gif)]
 
 .caption[Haven't we be doing data analysis forever?]
+
+???
+
+Yes! So, what's new?
 
 ---
 
@@ -173,6 +182,10 @@ and **cloud computing technologies**.”
 ]
 ]
 
+???
+
+We came to the realization that...
+
 ---
 
 class: middle
@@ -184,6 +197,10 @@ class: middle
 class: middle, center, black-slide
 
 .width-80[![](figures/lec1/iceberg.png)]
+
+???
+
+In this course, we will focus on the technology of data systems that enable data science.
 
 ---
 
@@ -368,10 +385,6 @@ class: middle, center
 This problem is **impossible** to solve!
 
 (Unless we make additional assumptions)
-
-???
-
-R: explain why.
 
 ---
 

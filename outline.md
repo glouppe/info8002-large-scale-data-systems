@@ -129,6 +129,10 @@ Implement a secure and distributed service using **Blockchain** technology.
 
 Projects are **mandatory** for presenting the exam.
 
+???
+
+Say some brief comment on the organization of the oral.
+
 ---
 
 class: end-slide, center
