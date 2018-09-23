@@ -12,12 +12,6 @@ Prof. Gilles Louppe<br>
 
 class: middle
 
-.center.width-100[![](figures/lec1/info-aim.png)]
-
----
-
-class: middle
-
 # The data science era
 
 ---

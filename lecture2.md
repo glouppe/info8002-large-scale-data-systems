@@ -11,7 +11,6 @@ Prof. Gilles Louppe<br>
 ???
 
 R: take time to explain the reactive programming model
-R: take quote from original lecture 1 (on level of indirection)
 
 ---
 
@@ -19,26 +18,47 @@ R: take quote from original lecture 1 (on level of indirection)
 
 - Define **basic abstractions** that capture the
   fundamental characteristics of distributed systems.
-    - We will later define more elaborate abstractions on top of those.
+    - Later, we will build upon those basic abstractions to define more elaborate ones.
 - Three main abstractions:
     - *Process* abstractions
     - *Link* abstractions
     - *Timing* abstractions
-- A *distributed system model* = a combination of the three categories of abstractions.
+- A **distributed system model** = a combination of the three categories of abstractions.
 
 ---
 
-# Need for distributed abstractions
+class: middle, center, black-slide
+
+.width-80[![](figures/lec2/iceberg.png)]
+
+---
+
+# Why distributed abstractions?
+
+*Reliable* distributed applications need underlying services **stronger** than transport protocols (e.g., TCP or UDP).
+
+<br>
+
+.circle.center[![David Wheeler](figures/lec2/wheeler.jpg)]
+.caption["All problems in computer science can be solved<br> by another level of indirection" - David Wheeler.]
+
+---
+
+class: middle
+
+## Need for distributed abstractions
 
 - Core of any distributed system is a *set of distributed algorithms*.
-    - Implemented as a middleware between network (OS) and the application.
-- **Reliable** applications need underlying services **stronger** than transport protocols (e.g., TCP or UDP).
+- Implemented as a middleware between network (OS) and the application.
 
+<br>
 .center[![](figures/lec2/middleware.png)]
 
 ---
 
-# Network protocols are not enough
+class: middle
+
+## Network protocols are not enough
 
 .pull-right[![Distributed abstractions](figures/lec2/abstractions.png)]
 
@@ -52,15 +72,19 @@ R: take quote from original lecture 1 (on level of indirection)
 
 ---
 
-class: middle, center
+class: middle
 
 # Distributed computation
 
 ---
 
-# Distributed computation
+# Distributed algorithms
 
-.center[![](figures/lec2/dp-abstraction.png)]
+<br>
+
+.center.width-70[![](figures/lec2/dp-abstraction.png)]
+
+<br>
 
 - A *distributed algorithm* is a distributed collection $\Pi = \\{ p, q, r, ... \\}$ of $N$ processes implemented by *identical* automata.
 - The automaton at a process regulates the way the process executes its computation steps.
@@ -68,7 +92,7 @@ class: middle, center
     - Need for **coordination**.
 ---
 
-# Programming with events
+# Event-driven programming
 
 - Every process consists of **modules** or **components**.
     - Modules may exist in multiple instances.
@@ -77,12 +101,15 @@ class: middle, center
     - Each component is constructed as a state-machine whose transitions are triggered by the reception of events.
     - Events carry information (sender, message, etc)
 - Reactive programming model:
+<br><br>
 .center[![](figures/lec2/handler-notations.png)]
 - Effectively, a distributed algorithm is described by a set of event handlers.
 
 ---
 
-# Layered modular architecture
+class: middle
+
+## Layered modular architecture
 
 .center[![](figures/lec2/layering.png)]
 
@@ -94,7 +121,9 @@ class: middle, center
 
 ---
 
-# Execution
+class: middle
+
+## Execution
 
 .center[![](figures/lec2/step.png)]
 
@@ -105,6 +134,43 @@ class: middle, center
     - *sending* a message to some process.
 - Local messages between components are treated as local computation.
 - We assume *deterministic* process steps (with respect to the message received and the local state prior to executing a step).
+
+---
+
+# Example: Job handler
+
+<br><br>
+.center.width-90[![](figures/lec2/jh1.png)]
+
+---
+
+class: middle
+
+.center.width-90[![](figures/lec2/jh2.png)]
+
+---
+
+class: middle
+
+.center.width-90[![](figures/lec2/jh3.png)]
+
+---
+
+class: middle
+
+.center.width-80[![](figures/lec2/jh4.png)]
+
+---
+
+class: middle
+
+.center.width-90[![](figures/lec2/jh5.png)]
+
+---
+
+class: middle
+
+.center.width-90[![](figures/lec2/jh6.png)]
 
 ---
 
@@ -124,24 +190,24 @@ class: middle, center
 
 ---
 
-# Correctness examples
+class: middle
 
 .grid[
-.col-2-3[
-## Traffic lights at an intersection
+.kol-2-3[
+## Example 1: Traffic lights at an intersection
 - Safety: only one direction should have a green light.
 - Liveness: every direction should eventually get a green light.
 ]
-.col-1-3[
-![](figures/lec2/lights.jpg)
+.kol-1-3[
+.center.width-90[![](figures/lec2/lights.jpg)]
 ]
 ]
 
 ---
 
-# Correctness examples
+class: middle
 
-## TCP
+## Example 2: TCP
 - Safety: messages are not duplicated and received in the order they were sent.
 - Liveness: messages are not lost.
     - i.e., messages are eventually delivered.
@@ -161,7 +227,7 @@ class: middle, center
 
 ---
 
-class: middle, center
+class: middle
 
 # Process abstractions
 
@@ -230,9 +296,12 @@ class: middle, center
 
 ---
 
-# Fault-tolerance hierarchy
+class: middle
 
-.center[![](figures/lec2/failures.png)]
+.center.width-70[![](figures/lec2/failures.png)]
+.caption[Fault-tolerance hierarchy]
+
+<br><br><br>
 
 <span class="Q">[Q]</span> Explain how failure modes are special cases of one another.
 
@@ -250,7 +319,7 @@ class: middle, center
 
 ---
 
-class: middle, center
+class: middle
 
 # Communication abstractions
 
@@ -338,9 +407,9 @@ class: middle, center
 
 ---
 
-class: middle, center
+class: middle
 
-# Timing assumptions
+# Timing abstractions
 
 ---
 
@@ -367,7 +436,9 @@ class: middle, center
 
 ---
 
-# Causal order
+class: middle
+
+## Causal order
 
 The **happened-before** relation $e_1 \to e_2$ denotes that $e_1$ may have caused $e_2$.
 It is true in the following cases:
@@ -377,13 +448,15 @@ It is true in the following cases:
 
 ---
 
-# Causal order
+class: middle
 
 .center.width-100[![](figures/lec2/causality.png)]
 
 ---
 
-# Similarity of executions
+class: middle
+
+## Similarity of executions
 
 - The **view** of $p$ in $E$, denoted $E|p$ is the subsequence of process steps in $E$ restricted to those of $p$
 - Two executions $E$ and $F$ are *similar w.r.t. to $p$* if $E|p = F|p$.
@@ -395,7 +468,9 @@ If two executions $E$ and $F$ have the same collection of events and their **cau
 
 ---
 
-# Logical clocks
+class: middle
+
+## Logical clocks
 
 In an asynchronous distributed system, the passage of time can be measured with **logical clocks**:
 - Each process has a local logical clock $l_p$, initially set a $0$.
@@ -407,13 +482,15 @@ In an asynchronous distributed system, the passage of time can be measured with 
 
 ---
 
-# Logical clocks
+class: middle
 
 .center.width-100[![Example of logical clock](figures/lec2/logical-clock.png)]
 
 ---
 
-# Clock consistency condition
+class: middle
+
+## Clock consistency condition
 
 Logical clocks capture **cause-effect relations**:
 $$e_1 \to e_2 \Rightarrow t(e_1) < t(e_2)$$
@@ -426,7 +503,9 @@ $$e_1 \to e_2 \Rightarrow t(e_1) < t(e_2)$$
 
 ---
 
-# Vector clocks
+class: middle
+
+## Vector clocks
 
 **Vector clocks** fix this issue by making it possible to tell when two events cannot be causally related, i.e. when they are concurrent.
 - Each process $p$ maintains a vector $V_p$ of $N$ clocks, initially set at $V_p[i] = 0 \, \forall i$.
@@ -439,13 +518,15 @@ $$e_1 \to e_2 \Rightarrow t(e_1) < t(e_2)$$
 
 ---
 
-# Vector clocks
+class: middle
 
 .center.width-100[![Example of logical clock](figures/lec2/vector-clock.png)]
 
 ---
 
-# Comparing vector clocks
+class: middle
+
+## Comparing vector clocks
 
 - $V_p = V_q$
     - iff $\forall i \, V_p[i] = V_q[i]$.
@@ -499,12 +580,6 @@ A system that is synchronous most of the time, but become asynchronous when mess
 
 ---
 
-class: middle, center
-
-# Timing abstractions
-
----
-
 # Failure detection
 
 - It is **tedious** to model (partial) synchrony.
@@ -516,7 +591,9 @@ class: middle, center
 
 ---
 
-# Implementation of failure detectors
+class: middle
+
+## Implementation of failure detectors
 
 A typical implementation is the following:
 - Periodically exchange *hearbeat* messages;
@@ -526,13 +603,11 @@ A typical implementation is the following:
 
 ---
 
-class: smaller
-
-# Perfect detector: interface
+# Perfect detector
 
 Assuming a crash-stop process abstraction, the **perfect detector** encapsulates the timing assumptions of a *synchronous system*.
 
-.center[![](figures/lec2/pfd-interface.png)]
+.center.width-90[![](figures/lec2/pfd-interface.png)]
 
 <span class="Q">[Q]</span> Which property is safety/liveness/neither?
 
@@ -543,17 +618,15 @@ Assuming a crash-stop process abstraction, the **perfect detector** encapsulates
 
 ---
 
-class: smaller
-
-# Perfect detector: implementation
+class: middle
 
 .center[![](figures/lec2/pfd-impl.png)]
 
 ---
 
-class: smaller
+class: middle
 
-# Correctness
+## Correctness
 
 We assume a synchronous system:
 - The transmission delay is bounded by some known constant.
@@ -564,7 +637,10 @@ We assume a synchronous system:
     - the correct destination processes have enough time to process the heartbeat and to send a reply,
     - the replies have enough time to reach the original sender and to be processed.
 
-Correctness:
+---
+
+class: middle
+
 - *PFD1. Strong completeness*
     - A crashed process $p$ stops replying to heartbeat messages, and no process will deliver its messages.
       Every correct process will thus eventually detect the crash of $p$.
@@ -578,25 +654,21 @@ Correctness:
 
 ---
 
-class: smaller
-
-# Eventually perfect detector: interface
+# Eventually perfect detector
 
 The **eventually perfect detector** encapsulates the timing assumptions of a *partially synchronous system*.
 
-.center[![](figures/lec2/epfd-interface.png)]
+.center.width-90[![](figures/lec2/epfd-interface.png)]
 
 ---
 
-class: smaller
-
-# Eventually perfect detector: impl.
+class: middle
 
 .grid[
-.col-1-2[
+.kol-1-2.width-100[
 ![](figures/lec2/epfd-impl.png)
 ]
-.col-1-2[
+.kol-1-2.width-100[
 ![](figures/lec2/epfd-impl-2.png)
 ]
 ]
@@ -616,13 +688,13 @@ class: smaller
 
 ---
 
-# Leader election: interface
+class: middle
 
 .center[![](figures/lec2/le-interface.png)]
 
 ---
 
-# Leader election: implementation
+class: middle
 
 .center[![](figures/lec2/le-impl.png)]
 
@@ -632,13 +704,11 @@ class: smaller
 
 ---
 
-class: middle, center
+class: middle
 
 # Distributed system models
 
 ---
-
-class: smaller
 
 # Distributed system models
 
@@ -653,6 +723,11 @@ and (iii) a failure detector abstraction.
 - *Fail-silent* (asynchronous)
     - Crash-stop process abstraction
     - Perfect links
+
+---
+
+class: middle
+
 - *Fail-noisy* (partially synchronous)
     - Crash-stop process abstraction
     - Perfect links
@@ -662,6 +737,13 @@ and (iii) a failure detector abstraction.
     - Stubborn links
 
 The fail-stop distributed system model substantially simplifies the design of distributed algorithms.
+
+---
+
+class: end-slide, center
+count: false
+
+The end.
 
 ---
 
