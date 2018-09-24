@@ -20,6 +20,12 @@ Prof. Gilles Louppe<br>
 
 ---
 
+class: middle, center, black-slide
+
+.width-80[![](figures/lec3/iceberg.png)]
+
+---
+
 # Unreliable broadcast
 
 .center.width-100[![](figures/lec3/unreliable-broadcast.png)]
@@ -41,7 +47,7 @@ Correct nodes do not have the same view of the system:
 
 ---
 
-class: center, middle
+class: middle
 
 # Reliable broadcast abstractions
 
@@ -60,13 +66,15 @@ class: center, middle
 
 ---
 
-# Best-effort broadcast
+# Best-effort broadcast ($beb$)
 
 .center[![](figures/lec3/beb-interface.png)]
 
 ---
 
-# BEB example (1)
+class: middle
+
+## $beb$ example (1)
 
 .center.width-100[![](figures/lec3/beb-example1.png)]
 
@@ -78,7 +86,9 @@ Not allowed, because of validity.
 
 ---
 
-# BEB example (2)
+class: middle
+
+## $beb$ example (2)
 
 .center.width-100[![](figures/lec3/beb-example2.png)]
 
@@ -90,7 +100,7 @@ Allowed.
 
 ---
 
-# Reliable broadcast
+# Reliable broadcast ($rb$)
 
 - Best-effort broadcast gives no guarantees if *sender crashes*.
 - **Reliable broadcast**:
@@ -99,13 +109,15 @@ Allowed.
 
 ---
 
-# Reliable broadcast
+class: middle
 
-.center[![](figures/lec3/rb-interface.png)]
+.center.width-90[![](figures/lec3/rb-interface.png)]
 
 ---
 
-# RB example (1)
+class: middle
+
+## $rb$ example (1)
 
 .center.width-100[![](figures/lec3/rb-example1.png)]
 
@@ -117,7 +129,9 @@ Allowed, none of the messages are delivered.
 
 ---
 
-# RB example (2)
+class: middle
+
+## $rb$ example (2)
 
 .center.width-100[![](figures/lec3/rb-example2.png)]
 
@@ -129,7 +143,9 @@ Allowed, $p4$ crashes.
 
 ---
 
-# RB example (3)
+class: middle
+
+## $rb$ example (3)
 
 .center.width-100[![](figures/lec3/rb-example3.png)]
 
@@ -141,7 +157,9 @@ Not allowed, $p2$ and $p3$ should also deliver since $p1$ delivers.
 
 ---
 
-# RB example (4)
+class: middle
+
+## $rb$ example (4)
 
 .center.width-100[![](figures/lec3/rb-example4.png)]
 
@@ -153,7 +171,7 @@ Allowed.
 
 ---
 
-# Uniform reliable broadcast
+# Uniform reliable broadcast ($urb$)
 
 - Assume sender broadcasts a message
     - Sender fails
@@ -168,13 +186,13 @@ R: improve the motivation.
 
 ---
 
-# Uniform reliable broadcast
+class: middle
 
-.center[![](figures/lec3/urb-interface.png)]
+.center.width-90[![](figures/lec3/urb-interface.png)]
 
 ---
 
-class: center, middle
+class: middle
 
 # Implementations
 
@@ -208,13 +226,15 @@ Correctness:
 
 ---
 
-# Lazy reliable broadcast
+class: middle
 
 .center[![](figures/lec3/lrb-impl.png)]
 
 ---
 
-# LRB example (1)
+class: middle
+
+## Lazy reliable broadcast example (1)
 
 .center.width-100[![](figures/lec3/lrb-case2.png)]
 
@@ -226,7 +246,9 @@ Case 2
 
 ---
 
-# LRB example (2)
+class: middle
+
+## Lazy reliable broadcast example (2)
 
 .center.width-100[![](figures/lec3/lrb-case1.png)]
 
@@ -238,9 +260,10 @@ Case 1
 
 ---
 
-# Correctness of LRB
+class: middle
 
-Correctness:
+## Correctness of lazy reliable broadcast
+
 - *RB1-RB3*
     - Satisfied with best-effort broadcast.
 - *RB4. Agreement*: If a message $m$ is delivered by some correct process, then $m$ is eventually delivered by every correct process.
@@ -262,7 +285,7 @@ Correctness:
 
 ---
 
-# Eager reliable broadcast
+class: middle
 
 .center[![](figures/lec3/erb-impl.png)]
 
@@ -272,7 +295,7 @@ Correctness:
 
 # Uniformity
 
-Neither Lazy RB nor Eager RB ensure *uniform* agreement.
+Neither Lazy reliable broadcast nor Eager reliable broadcast ensure *uniform* agreement.
 - E.g., sender $p$ immediately RB delivers and crashes. Only $p$ delivered the message.
 
 ## Strategy for uniform agreement
@@ -285,20 +308,23 @@ Neither Lazy RB nor Eager RB ensure *uniform* agreement.
 
 # All-ack uniform reliable broadcast
 
-.center.width-50[![](figures/lec3/aaurb-impl.png)]
+.width-60[![](figures/lec3/aaurb-impl.png)]
 
 ---
 
-# All-ack URB example
+class: middle
+
+## Example
 
 .center.width-100[![](figures/lec3/urb-example.png)]
 
 ---
 
-# Correctness of All-ack URB
+class: middle
 
-## Lemma
-If a correct node $p$ BEB delivers $m$, then $p$ eventually URB delivers $m$.
+## Correctness of All-ack URB
+
+**Lemma.** If a correct node $p$ BEB delivers $m$, then $p$ eventually URB delivers $m$.
 
 Proof:
 - A correct node $p$ BEB broadcasts $m$ as soon as it gets $m$.
@@ -309,7 +335,7 @@ Proof:
 
 ---
 
-# Correctness of All-ack URB
+class: middle
 
 - *URB1. Validity*: If a correct process $p$ broadcasts $m$, then $p$ delivers $m$
     - If sender is correct, it will BEB delivers $m$ by validity (BEB1)
@@ -325,7 +351,7 @@ Proof:
 
 ---
 
-# URB for fail-silent
+# $urb$ for fail-silent
 
 - All-ack URB requires a perfect failure detector (fail-stop).
 - Can we implement URB in *fail-silent*,  without a perfect failure detector?
@@ -337,13 +363,13 @@ Proof:
 
 ---
 
-class: center, middle
+class: middle
 
 # Causal reliable broadcast
 
 ---
 
-# Motivation
+class: middle
 
 .center[![](figures/lec3/tweet-difficult.png)]
 
@@ -372,7 +398,7 @@ A message $m_1$ may have caused another message $m_2$, denoted $m_1 \to m_2$ if 
 
 ---
 
-# Causal broadcast
+# Causal broadcast ($crb$)
 
 .center[![](figures/lec3/crb-interface.png)]
 
@@ -386,7 +412,9 @@ point out issue of growing history size
 
 ---
 
-# No-waiting CB example
+class: middle
+
+## No-waiting CB example
 
 .center[![](figures/lec3/nwcrb-example.png)]
 
@@ -405,13 +433,17 @@ causally preceding messages `mpast`.
 
 ---
 
-# Waiting CB example
+class: middle
+
+## Waiting CB example
 
 .center[![](figures/lec3/wcrb-example.png)]
 
 ---
 
-# Possible execution?
+class: middle
+
+## Possible execution?
 
 .center.width-100[![](figures/lec3/possible-execution.png)]
 
@@ -419,11 +451,11 @@ causally preceding messages `mpast`.
 
 ---
 
-class: center, middle
+class: middle
 
 # Probabilistic broadcast
 
-a.k.a. epidemic broadcast or gossip
+(a.k.a. epidemic broadcast or gossiping.)
 
 ---
 
@@ -460,9 +492,10 @@ class: middle, center
 
 ---
 
-# Probabilistic broadcast
+# Probabilistic broadcast ($pb$)
 
-.center[![](figures/lec3/pb-interface.png)]
+.center.width-90[![](figures/lec3/pb-interface.png)]
+
 ---
 
 # Eager probabilistic broadcast
@@ -487,7 +520,7 @@ R: assume we are a virus using a distributed system with human hosts as nodes.
 
 ---
 
-# The mathematics of epidemics
+class: middle
 
 The dynamics of the SIS model is given as follows:
 $$S(t+1) = S(t) - \frac{\alpha \Delta t}{N} S(t) I(t) + \gamma \Delta t I(t)$$
@@ -501,13 +534,13 @@ where
 
 class: center, middle
 
-.width-80[![](figures/lec3/dynamics.png)]
+.width-70[![](figures/lec3/dynamics.png)]
 
 $N=1000000$, $\alpha=5$, $\gamma=0.5$, $\Delta t = 0.1$
 
 ---
 
-# The mathematics of epidemics
+class: middle
 
 In eager reliable broadcast,
 - $\alpha = k$
@@ -533,9 +566,7 @@ $$p(\text{delivery}) = 1 - (1 - \frac{k}{N})^{\sum_{t_i=0}^t i(t_i)}$$
 
 ---
 
-class: center
-
-# Probabilistic validity
+class: center, middle
 
 $p(\text{delivery}|k, t)$
 
@@ -545,7 +576,7 @@ $N=1000000$, $\gamma=1.0$
 
 ---
 
-# Probabilistic validity
+class: middle
 
 From this plot, we observe that:
 - Within only a few rounds (*low latency*), a large fraction of nodes receive the message (*reliability*)
@@ -564,23 +595,19 @@ From this plot, we observe that:
 
 ---
 
-class: smaller
-
-# Lazy Probabilistic broadcast
+class: middle
 
 ## Phase 1: data dissemination
 
-.center.width-70[![](figures/lec3/lpb-impl1.png)]
+.center.width-80[![](figures/lec3/lpb-impl1.png)]
 
 ---
 
-class: smaller
-
-# Lazy Probabilistic broadcast
+class: middle
 
 ## Phase 2: recovery
 
-.center.width-70[![](figures/lec3/lpb-impl2.png)]
+.center.width-80[![](figures/lec3/lpb-impl2.png)]
 
 ---
 
@@ -589,6 +616,13 @@ class: smaller
 - Reliable multicast enable group communication, while ensuring **validity** and (uniform) **agreement**.
 - Causal broadcast extends reliable broadcast with *causal ordering* guarantees.
 - **Probabilistic broadcast** enable low-latency, reliable and lightweight group communication.
+
+---
+
+class: end-slide, center
+count: false
+
+The end.
 
 ---
 

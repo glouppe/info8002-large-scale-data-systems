@@ -17,9 +17,7 @@ R: take time to explain the reactive programming model
 # Today
 
 - Define **basic abstractions** that capture the
-  fundamental characteristics of distributed systems.
-    - Later, we will build upon those basic abstractions to define more elaborate ones.
-- Three main abstractions:
+  fundamental characteristics of distributed systems:
     - *Process* abstractions
     - *Link* abstractions
     - *Timing* abstractions
@@ -46,7 +44,7 @@ class: middle, center, black-slide
 
 class: middle
 
-## Need for distributed abstractions
+## Distributed abstractions
 
 - Core of any distributed system is a *set of distributed algorithms*.
 - Implemented as a middleware between network (OS) and the application.
@@ -158,13 +156,13 @@ class: middle
 
 class: middle
 
-.center.width-80[![](figures/lec2/jh4.png)]
+.center.width-90[![](figures/lec2/jh5.png)]
 
 ---
 
 class: middle
 
-.center.width-90[![](figures/lec2/jh5.png)]
+.center.width-70[![](figures/lec2/jh4.png)]
 
 ---
 
@@ -222,7 +220,13 @@ class: middle
     - **failure** behavior of processes and channels
     - **timing** behavior of processes and channels
 
-.center[![](figures/lec2/chandra_failure_detectors.png)]
+---
+
+class: middle
+
+.center.width-100[![](figures/lec2/chandra_failure_detectors.png)]
+
+<br>
 .caption[Together, these assumptions define sets of solvable problems.]
 
 ---
@@ -245,7 +249,9 @@ class: middle
 
 ---
 
-# Crash-stop failures
+class: middle
+
+## Crash-stop failures
 
 - A process **stops taking steps**.
     - Not sending messages.
@@ -256,7 +262,9 @@ class: middle
 
 ---
 
-# Omission failures
+class: middle
+
+## Omission failures
 
 - Process **omits** sending or receiving messages.
     - *Send omission*: A process omits to send a message it has to send according to its algorithm.
@@ -266,7 +274,9 @@ class: middle
 
 ---
 
-# Crash-recovery failures
+class: middle
+
+## Crash-recovery failures
 
 - A process *might crash*.
     - It stops taking steps, not receiving and sending messages.
@@ -285,7 +295,9 @@ class: middle
 
 ---
 
-# Byzantine failures
+class: middle
+
+## Byzantine failures
 
 - A process may **behave arbitrarily**.
     - Sending messages not specified by its algorithm.
@@ -301,11 +313,9 @@ class: middle
 .center.width-70[![](figures/lec2/failures.png)]
 .caption[Fault-tolerance hierarchy]
 
-<br><br><br>
-
-<span class="Q">[Q]</span> Explain how failure modes are special cases of one another.
-
 ???
+
+Explain how failure modes are special cases of one another.
 
 - Crash-stop special case of omission:
     - Omission restricted to omitting everything after a certain event.
@@ -357,7 +367,9 @@ class: middle
 
 ---
 
-# Stubborn links: interface
+class: middle
+
+## Stubborn links ($sl$)
 
 .center[![](figures/lec2/sl-interface.png)]
 
@@ -370,7 +382,9 @@ class: middle
 
 ---
 
-# Perfect links: interface
+class: middle
+
+## Perfect links ($pl$)
 
 .center[![](figures/lec2/pl-interface.png)]
 
@@ -384,7 +398,8 @@ class: middle
 
 ---
 
-# Perfect links: implementation
+
+class: middle
 
 .center[![](figures/lec2/pl-impl.png)]
 
@@ -396,7 +411,10 @@ class: middle
 
 ---
 
-# Correctness of PL
+
+class: middle
+
+## Correctness of $pl$
 
 - *PL1. Reliable delivery*
     - Guaranteed by the Stubborn link abstraction. (The Stubborn link will deliver the message an infinite number of times.)
@@ -603,7 +621,7 @@ A typical implementation is the following:
 
 ---
 
-# Perfect detector
+# Perfect detector (${\mathcal P}$)
 
 Assuming a crash-stop process abstraction, the **perfect detector** encapsulates the timing assumptions of a *synchronous system*.
 
@@ -654,7 +672,7 @@ class: middle
 
 ---
 
-# Eventually perfect detector
+# Eventually perfect detector ($\diamond {\mathcal P}$)
 
 The **eventually perfect detector** encapsulates the timing assumptions of a *partially synchronous system*.
 
@@ -677,7 +695,7 @@ class: middle
 
 ---
 
-# Leader election
+# Leader election ($le$)
 
 - Failure detection captures failure behavior.
     - Detects **failed** processes.
