@@ -8,10 +8,6 @@ Lecture 2: Basic distributed abstractions
 Prof. Gilles Louppe<br>
 [g.louppe@uliege.be](g.louppe@uliege.be)
 
-???
-
-R: take time to explain the reactive programming model
-
 ---
 
 # Today
@@ -483,6 +479,12 @@ class: middle
 ## Computation theorem
 
 If two executions $E$ and $F$ have the same collection of events and their **causal order** is preserved, then $E$ and $F$ are similar executions.
+
+???
+
+Consequence: if causal order can be guaranteed then we dont need to make strong timing assumptions!
+
+Can we check in a simple way if two events are causally related?
 
 ---
 

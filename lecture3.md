@@ -178,11 +178,8 @@ Allowed.
     - No correct node delivers the message
     - Failed nodes deliver the message
 - Is this OK?
-- **Uniform** reliable broadcast ensures that if a message is delivered (by a correct *or faulty* process), then all correct processes deliver.
-
-???
-
-R: improve the motivation.
+    - A process that delivers a message and later crashes may bring the application into a inconsistent state.
+- **Uniform** reliable broadcast ensures that if a message is delivered, by a correct *or a faulty* process, then all correct processes deliver.
 
 ---
 
@@ -296,7 +293,8 @@ class: middle
 # Uniformity
 
 Neither Lazy reliable broadcast nor Eager reliable broadcast ensure *uniform* agreement.
-- E.g., sender $p$ immediately RB delivers and crashes. Only $p$ delivered the message.
+
+E.g., sender $p$ immediately RB delivers and crashes. Only $p$ delivered the message.
 
 ## Strategy for uniform agreement
 - Before delivering a message, we need to ensure all correct nodes have received it.
@@ -479,7 +477,7 @@ class: middle
 
 - Nodes infect each other through messages sent in **rounds**.
     - The *fanout* $k$ determines the number of messages sent by each node.
-    - Recipients are drawn *at random* (e.g., uniformally).
+    - Recipients are drawn *at random* (e.g., uniformly).
     - The *number of rounds* is limited to $R$.
 - Total number of messages is usually less than $O(N^2)$.
 - No node is overloaded.
@@ -506,7 +504,10 @@ class: middle, center
 
 # The mathematics of epidemics
 
-- Assume an initial population of $N$ individuals.
+Assume a virus using a distributed system to propagate, with human hosts as nodes.
+
+## Setup
+- Initial population of $N$ individuals.
 - At any time $t$,
     - $S(t) =$ the number of *susceptible* individuals,
     - $I(t) =$ the number of *infected* individuals.
@@ -514,15 +515,11 @@ class: middle, center
 - $S(0) = N-1$
 - $S(t)+I(t)=N$ for all $t$.
 
-???
-
-R: assume we are a virus using a distributed system with human hosts as nodes.
-
 ---
 
 class: middle
 
-The dynamics of the SIS model is given as follows:
+The expected dynamics of the SIS model is given as follows:
 $$S(t+1) = S(t) - \frac{\alpha \Delta t}{N} S(t) I(t) + \gamma \Delta t I(t)$$
 $$I(t+1) = I(t) + \frac{\alpha \Delta t}{N} S(t) I(t) - \gamma \Delta t I(t)$$
 where
