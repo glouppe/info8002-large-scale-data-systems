@@ -12,10 +12,20 @@ Prof. Gilles Louppe<br>
 
 # Today
 
-- How do you *share resources*?
+.center.width-70[![](figures/lec4/files-anywhere.jpg)]
+.caption[Towards a distributed file system.]
+<br>
+
+- How do you *share resources* between processes?
 - Can we build the *illusion of single storage*?
     - While replicating data for **fault-tolerance** and **scalability**?
     - While maintaining **consistency**?
+
+---
+
+class: middle, center, black-slide
+
+.width-80[![](figures/lec4/iceberg.png)]
 
 ---
 
@@ -23,8 +33,7 @@ Prof. Gilles Louppe<br>
 
 .center.width-60[![](figures/lec4/real-sm.gif)]
 
-- In a multiprocessor machine, processors typically communicate through **shared memory** provided at the hardware level.
-    - e.g., shared blocks of RAM that can be accessed by distinct CPUs.
+In a multiprocessor machine, processors typically communicate through **shared memory** provided at the hardware level (e.g., shared blocks of RAM that can be accessed by distinct CPUs).
 - Shared memory can be viewed as an *array of registers* to which processors can *read* or *write*.
 - Shared memory systems are *easy to program* since all processors share a single view of the data.
 
@@ -59,6 +68,12 @@ Why?
 
 ---
 
+class: middle
+
+# Regular registers
+
+---
+
 # Read/Write registers
 
 - A **register**  represents each memory location.
@@ -75,7 +90,9 @@ Why?
 
 ---
 
-# Definitions
+class: middle
+
+## Definitions
 
 - In an execution, an operation is
     - *completed* if both invocation and response occurred.
@@ -87,13 +104,7 @@ Why?
 
 ---
 
-class: middle, center
-
-# Regular registers
-
----
-
-# Regular registers
+# Regular registers ($onrr$)
 
 .center[![](figures/lec4/regular-register.png)]
 
@@ -103,7 +114,9 @@ Draw the schema of the component with requests and indications?
 
 ---
 
-# Regular register example (1)
+class: middle
+
+## Regular register example (1)
 
 .width-100[![](figures/lec4/regular-example1.png)]
 
@@ -115,7 +128,9 @@ Non-regular.
 
 ---
 
-# Regular register example (2)
+class: middle
+
+## Regular register example (2)
 
 .width-100[![](figures/lec4/regular-example2.png)]
 
@@ -127,7 +142,9 @@ Regular.
 
 ---
 
-# Regular register example (3)
+class: middle
+
+## Regular register example (3)
 
 .width-100[![](figures/lec4/regular-example3.png)]
 
@@ -170,7 +187,9 @@ This could not happen if we had a true single storage illusion!
 
 ---
 
-# Decentralized algorithm (bogus) example
+class: middle
+
+## Decentralized algorithm (bogus) example
 
 .width-100[![](figures/lec4/bogus-example.png)]
 
@@ -192,13 +211,15 @@ This could not happen if we had a true single storage illusion!
 
 ---
 
-# Read-one Write-all algorithm
+class: middle
 
 .center.width-70[![](figures/lec4/r1wN-impl.png)]
 
 ---
 
-#  Read-one Write-all example
+class: middle
+
+##  Read-one Write-all example
 
 .width-100[![](figures/lec4/r1wN-example.png)]
 
@@ -208,15 +229,16 @@ This could not happen if we had a true single storage illusion!
 
 # Quorum principle
 
-- Can we implement a regular register in *fail-silent*? (without a failure detector)
-- **Quorum principle**:
-    - Assume a majority of correct nodes.
-    - Divide the system into two overlapping *majority quorums*.
-        - i.e., each quorum  counts at least $\lfloor \frac{N}{2} \rfloor + 1$ nodes.
-    - Always write to and read from a majority of nodes.
-    - At least one node must know the most recent value.
+Can we implement a regular register in *fail-silent*? (without a failure detector)
 
-.center.width-50[![](figures/lec4/quorum.png)]
+- Assume a majority of correct nodes.
+- Divide the system into two overlapping *majority quorums*.
+    - i.e., each quorum  counts at least $\lfloor \frac{N}{2} \rfloor + 1$ nodes.
+- Always write to and read from a majority of nodes.
+- At least one node must know the most recent value.
+
+<br>
+.center.width-60[![](figures/lec4/quorum.png)]
 
 ---
 
@@ -226,16 +248,18 @@ This could not happen if we had a true single storage illusion!
 
 ---
 
+class: middle
+
 .center.width-70[![](figures/lec4/majority-voting-impl2.png)]
 
 <span class="Q">[Q]</span> Why resetting `acks` and `readlist` right after having received back just more than $N/2$ messages?
 
 ---
 
-class: middle, center
+class: middle
 
 # Atomic registers
-towards single storage illusion
+Towards single storage illusion.
 
 ---
 
@@ -251,7 +275,9 @@ An execution $E$ is **sequentially consistent** if an execution $F$ exists such 
 
 ---
 
-# Example (1)
+class: middle
+
+## Example (1)
 
 .width-100[![](figures/lec4/atomic-example1.png)]
 
@@ -259,7 +285,9 @@ Sequential consistency **disallows** such execution.
 
 ---
 
-# Example (2)
+class: middle
+
+## Example (2)
 
 .width-100[![](figures/lec4/atomic-example2.png)]
 
@@ -289,7 +317,9 @@ R: show an example with linearization points first
 
 ---
 
-# Example (1)
+class: middle
+
+## Example (1)
 
 .width-100[![](figures/lec4/atomic-example1.png)]
 
@@ -297,7 +327,9 @@ Linearizability **disallows** such execution.
 
 ---
 
-# Example (2)
+class: middle
+
+## Example (2)
 
 .width-100[![](figures/lec4/atomic-example2.png)]
 
@@ -313,7 +345,9 @@ Linearizability **disallows** such execution.
 
 ---
 
-# Atomic register example (1)
+class: middle
+
+## Atomic register example (1)
 
 .width-100[![](figures/lec4/linearization-example1.png)]
 
@@ -321,7 +355,9 @@ Linearizability **disallows** such execution.
 
 ---
 
-# Atomic register example (2)
+class: middle
+
+## Atomic register example (2)
 
 .width-100[![](figures/lec4/linearization-example2.png)]
 
@@ -329,7 +365,9 @@ Linearizability **disallows** such execution.
 
 ---
 
-# Atomic register example (3)
+class: middle
+
+## Atomic register example (3)
 
 .width-100[![](figures/lec4/linearization-example3.png)]
 
@@ -337,15 +375,15 @@ Linearizability **disallows** such execution.
 
 ---
 
-# Regular but not atomic
+class: middle
+
+## Regular but not atomic
 
 .width-100[![](figures/lec4/regular-not-atomic.png)]
 
 <span class="Q">[Q]</span> Atomic? **No**. Regular? *Yes*, using majority voting.
 
 ---
-
-class: smaller
 
 # Implementation of $(1,N)$ atomic registers
 
@@ -362,6 +400,8 @@ class: smaller
 .center[![](figures/lec4/riwa-impl1.png)]
 
 ---
+
+class: middle
 
 .center[![](figures/lec4/riwa-impl2.png)]
 
@@ -396,7 +436,7 @@ R: what about the two other properties?
 
 ---
 
-# $(N, N)$ atomic registers
+class: middle
 
 - How do we handle **multiple writers**?
 - Read-Impose Write-all does not support multiple writers:
@@ -440,3 +480,10 @@ R: what about the two other properties?
 - Atomic registers:
     - Single writers
     - Multiple writers
+
+---
+
+class: end-slide, center
+count: false
+
+The end.

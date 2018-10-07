@@ -12,7 +12,7 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2018.
 - Lecture 1 (September 18): [Introduction](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture1.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec1.pdf)]
 - Lecture 2 (September 25): [Basic distributed abstractions](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture2.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec2.pdf)]
 - Lecture 3 (October 2): [Reliable broadcast](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture3.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec3.pdf)]
-- Lecture 4 (October 9): Shared memory [PDF]
+- Lecture 4 (October 9): [Shared memory](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture4.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec4.pdf)]
 - Lecture 5 (October 23): Consensus [PDF]
 - Lecture 6 (October 30): Blockchain [PDF]
 - Lecture 7 (November 6): Distributed hash tables [PDF]
