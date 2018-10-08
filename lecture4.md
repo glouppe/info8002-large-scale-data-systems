@@ -43,7 +43,7 @@ In a multiprocessor machine, processors typically communicate through **shared m
 
 We want to **simulate** a *shared memory abstraction* in a distributed system, on top of message passing communication.
 
-Why?
+## Why?
 - Enable shared memory algorithms without being aware that processes are actually communicating by exchanging messages.
     - This is often much easier to program.
 - Equivalent to **consistent data replication** across nodes.
@@ -99,8 +99,8 @@ class: middle
     - *failed* if invoked but not no response was received.
 - Operation $o_1$ *precedes* $o_2$ if response of $o_1$ precedes the invocation of $o_2$.
 - Operations  $o_1$ and  $o_2$ are *concurrent* if neither precedes the other.
-- $(1,N)$ register: 1 designated writer, multiple readers.
-- $(M,N)$ register: multiple writers, multiple readers.
+- $(1,N)$ register: 1 designated writer, $N$ readers.
+- $(M,N)$ register: $M$ writers, $N$ readers.
 
 ---
 
@@ -161,7 +161,7 @@ This could not happen if we had a true single storage illusion!
 # Centralized algorithm
 
 - Designates one process as the **leader**.
-    - E.g., using the leader election abstraction.
+    - E.g., using the leader election abstraction (see Lecture 2).
 - To $\text{read}()$:
     - Ask the leader for latest value.
 - To $\text{write}(v)$:
@@ -213,7 +213,7 @@ class: middle
 
 class: middle
 
-.center.width-70[![](figures/lec4/r1wN-impl.png)]
+.width-70[![](figures/lec4/r1wN-impl.png)]
 
 ---
 
@@ -231,6 +231,10 @@ class: middle
 
 Can we implement a regular register in *fail-silent*? (without a failure detector)
 
+--
+
+count: false
+
 - Assume a majority of correct nodes.
 - Divide the system into two overlapping *majority quorums*.
     - i.e., each quorum  counts at least $\lfloor \frac{N}{2} \rfloor + 1$ nodes.
@@ -244,13 +248,13 @@ Can we implement a regular register in *fail-silent*? (without a failure detecto
 
 # Majority voting algorithm
 
-.center.width-70[![](figures/lec4/majority-voting-impl1.png)]
+.width-70[![](figures/lec4/majority-voting-impl1.png)]
 
 ---
 
 class: middle
 
-.center.width-70[![](figures/lec4/majority-voting-impl2.png)]
+.width-70[![](figures/lec4/majority-voting-impl2.png)]
 
 <span class="Q">[Q]</span> Why resetting `acks` and `readlist` right after having received back just more than $N/2$ messages?
 
@@ -299,7 +303,13 @@ F: read at p2, write at p1, read at p3
 
 ---
 
-# $(1, N)$ atomic registers
+# Linearization
+
+.width-100[![](figures/lec4/linearization-example0.png)]
+
+---
+
+class: middle
 
 - *Linearizability*:
     - Read operations appear as if **immediately** happened at all nodes at time between invocation and response.
@@ -310,10 +320,6 @@ F: read at p2, write at p1, read at p3
     - The hypothetical serial execution is called a *linearization* of the actual execution.
 - *Termination*:
     - If node is correct, each read and write operation eventually completes.
-
-???
-
-R: show an example with linearization points first
 
 ---
 
@@ -397,13 +403,13 @@ class: middle
 
 # Read-Impose Write-all algorithm
 
-.center[![](figures/lec4/riwa-impl1.png)]
+![](figures/lec4/riwa-impl1.png)
 
 ---
 
 class: middle
 
-.center[![](figures/lec4/riwa-impl2.png)]
+![](figures/lec4/riwa-impl2.png)
 
 <span class="Q">[Q]</span> How to adapt to fail-silent? **Read-Impose Write-Majority**
 
