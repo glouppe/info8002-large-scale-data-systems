@@ -29,7 +29,7 @@ class: middle, center, black-slide
 
 ---
 
-# Real shared memory
+# Shared memory
 
 .center.width-60[![](figures/lec4/real-sm.gif)]
 
@@ -39,20 +39,22 @@ In a multiprocessor machine, processors typically communicate through **shared m
 
 ---
 
-# Shared memory emulation
+class: middle
+
+## Shared memory emulation
 
 We want to **simulate** a *shared memory abstraction* in a distributed system, on top of message passing communication.
-
-## Why?
 - Enable shared memory algorithms without being aware that processes are actually communicating by exchanging messages.
     - This is often much easier to program.
 - Equivalent to **consistent data replication** across nodes.
 
 ---
 
-# Data replication
+class: middle
 
-- Why **replicating data** across nodes? Shared data allows to:
+## Data replication
+
+- Shared data allows to:
     - Reduce network traffic
     - Promote increased parallelism
     - Be robust against failures
@@ -61,7 +63,6 @@ We want to **simulate** a *shared memory abstraction* in a distributed system, o
     - distributed databases
     - distributed file systems
     - distributed cache
-    - ...
 - Challenges:
     - Consistency in presence of *failures*.
     - Consistency in presence of *concurrency*.
@@ -96,11 +97,11 @@ class: middle
 
 - In an execution, an operation is
     - *completed* if both invocation and response occurred.
-    - *failed* if invoked but not no response was received.
+    - **failed** if invoked but not no response was received.
 - Operation $o_1$ *precedes* $o_2$ if response of $o_1$ precedes the invocation of $o_2$.
-- Operations  $o_1$ and  $o_2$ are *concurrent* if neither precedes the other.
-- $(1,N)$ register: 1 designated writer, $N$ readers.
-- $(M,N)$ register: $M$ writers, $N$ readers.
+- Operations  $o_1$ and  $o_2$ are **concurrent** if neither precedes the other.
+- $(1,N)$-register: 1 designated writer, $N$ readers.
+- $(M,N)$-register: $M$ writers, $N$ readers.
 
 ---
 
@@ -305,7 +306,17 @@ F: read at p2, write at p1, read at p3
 
 # Linearization
 
+<br><br><br>
+
 .width-100[![](figures/lec4/linearization-example0.png)]
+
+---
+
+class: middle
+
+.width-100[![](figures/lec4/atomic-example2.png)]
+
+This execution is sequentially consistent but is not linearizable!
 
 ---
 
