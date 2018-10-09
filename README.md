@@ -21,7 +21,7 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2018.
 
 ## Exercise sessions
 
-TBD.
+- Excercise session 1 (October 9): [PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/ex1.pdf)
 
 
 ## Projects
