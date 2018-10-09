@@ -245,6 +245,10 @@ count: false
 <br>
 .center.width-60[![](figures/lec4/quorum.png)]
 
+???
+
+A quorum is the minimum number of votes that a distributed transaction has to obtain in order to be allowed to perform an operation in a distributed system.
+
 ---
 
 # Majority voting algorithm
