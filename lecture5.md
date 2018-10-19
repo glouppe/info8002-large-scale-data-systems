@@ -21,7 +21,19 @@ Prof. Gilles Louppe<br>
 
 ---
 
+class: middle, center, black-slide
+
+.width-80[![](figures/lec5/iceberg.png)]
+
+---
+
+class: middle
+
 # Consensus
+
+---
+
+class: middle
 
 **Consensus** is the problem of making processes all *agree* on one of the values they propose.
 
@@ -30,20 +42,22 @@ Prof. Gilles Louppe<br>
 
 ---
 
-# Motivation
+class: middle
+
+## Motivation
 
 - Solving consensus is **key** to solving many problems in distributed computing:
     - synchronizing replicated state machines;
     - electing a leader;
     - managing group membership;
     - deciding to commit or abort distributed transactions.
-- Any algorithm that helps multiple processes *maintain common state* or to *decide on a future action*, in a model where processes may fail, *involves solving a consensus problem*.
+- Any algorithm that helps multiple processes *maintain common state* or to *decide on a future action*, in a model where processes may fail, involves **solving a consensus problem**.
 
 ---
 
 # Consensus
 
-.center.width-100[![](figures/lec5/consensus-interface.png)]
+.width-90[![](figures/lec5/consensus-interface.png)]
 
 <span class="Q">[Q]</span> Which is safety, which is liveness?
 
@@ -56,7 +70,9 @@ Prof. Gilles Louppe<br>
 
 ---
 
-# Sample execution
+class: middle
+
+## Sample execution
 
 .center.width-100[![](figures/lec5/consensus-exec.png)]
 
@@ -70,11 +86,13 @@ Yes
 
 # Uniform consensus
 
-.center[![](figures/lec5/uniform-consensus-interface.png)]
+.width-90[![](figures/lec5/uniform-consensus-interface.png)]
 
 ---
 
-# Sample execution
+class: middle
+
+## Sample execution
 
 .center.width-100[![](figures/lec5/consensus-exec.png)]
 
@@ -92,29 +110,35 @@ class: center, middle
 
 ---
 
-# Impossibility of consensus
+class: middle
 
 So, are we done? **No!**
 - The FLP impossibility result holds for *asynchronous systems* only.
-- Consensus can be implemented in **synchronous** and **partially synchronous** systems.
-    - We will prove it!
+- Consensus can be implemented in **synchronous** and **partially synchronous** systems. (We will prove it!)
 - The result only states that termination cannot be guaranteed. Can we have other guarantees while maintaining a high probability of termination?
 
 ---
 
-class: center, middle
+class: middle
 
 # Consensus in fail-stop
 
 ---
 
-class: smaller
-
 # Hierarchical consensus
+
+## Asumptions
 
 - Assume a **perfect failure detector** (synchronous system).
 - Assume processes $1, ..., N$ form an ordered **hierarchy** as given by a $\text{rank}(p)$ function.
     - $\text{rank}(p)$ is a *unique* number between $1$ and $N$ (e.g., the pid).
+
+---
+
+class: middle
+
+## Algorithm
+
 - Hierarchical consensus ensures that the correct process with *the lowest rank imposes its value* on all the other processes.
     - If $p$ is correct and rank $1$, it imposes its values on all other processes by broadcasting its proposal.
     - If $p$ crashes immediately and $q$ is correct and rank 2, then it ensures that $q$'s proposal is decided.
@@ -126,9 +150,9 @@ class: smaller
 
 ---
 
-# Hierarchical consensus
+class: middle
 
-.center.width-60[![](figures/lec5/hierarchical-consensus.png)]
+.width-70[![](figures/lec5/hierarchical-consensus.png)]
 
 ???
 
@@ -136,13 +160,17 @@ class: smaller
 
 ---
 
-# Execution without failure
+class: middle
+
+## Execution without failure
 
 .center.width-100[![](figures/lec5/hierarchical-consensus-exec1.png)]
 
 ---
 
-# Execution with failure (1)
+class: middle
+
+## Execution with failure (1)
 
 .center.width-100[![](figures/lec5/hierarchical-consensus-exec2.png)]
 
@@ -157,13 +185,17 @@ class: smaller
 
 ---
 
-# Execution with failure (2)
+class: middle
+
+## Execution with failure (2)
 
 .center.width-100[![](figures/lec5/hierarchical-consensus-exec3.png)]
 
 ---
 
-# Correctness
+class: middle
+
+## Correctness
 
 - *Termination*: Every correct process eventually decides some value.
     - Every correct node makes it to the round it is leader in.
@@ -186,7 +218,7 @@ class: smaller
 
 # Hierarchical uniform consensus
 
-- Same as *Hierarchical consensus*
+- Same as *Hierarchical consensus*.
 - A round consists of *two communication steps*:
     - The leader BEB broadcasts its proposal
     - The leader collects acknowledgements
@@ -196,19 +228,21 @@ class: smaller
 
 ---
 
-# Hierarchical uniform consensus
+class: middle
 
-.center.width-60[![](figures/lec5/uniform-hierarchical-consensus1.png)]
+.width-70[![](figures/lec5/uniform-hierarchical-consensus1.png)]
 
 ---
 
-.center.width-60[![](figures/lec5/uniform-hierarchical-consensus2.png)]
+class: middle
+
+.width-70[![](figures/lec5/uniform-hierarchical-consensus2.png)]
 
 <span class="Q">[Q]</span> Why is reliable non-uniform broadcast sufficient to have uniform consensus?
 
 ---
 
-class: middle, center
+class: middle
 
 # Consensus in fail-noisy
 
@@ -216,18 +250,19 @@ class: middle, center
 
 # Consensus in partially synchronous systems
 
-- Hierarchical consensus requires a *perfect failure detector*. Can we switch to an *eventually perfect failure detector* (i.e., to **fail-noisy**)?
+- Does hierarchical consensus would work with an *eventually perfect failure detector*?
 - A *false suspicion* (i.e., a violation of strong accuracy) might lead to the **violation of agreement**.
-    - If a process is suspected while it is actually correct, then two processes might decide differently.
 - *Not suspecting* a crashed process (i.e., a violation of strong completeness) might lead to the **violation of termination**.
 
 .center.width-100[![](figures/lec5/hierarchical-consensus-false.png)]
 
 ---
 
-# Towards consensus...
+class: middle
 
-We will build a consensus component in *fail-noisy* by combining three abstractions:
+## Towards consensus...
+
+We will build a consensus component in **fail-noisy** by combining three abstractions:
 
 - an eventual leader detector
 - an epoch-change abstraction
@@ -235,11 +270,11 @@ We will build a consensus component in *fail-noisy* by combining three abstracti
 
 ---
 
-# Eventual leader detector
+# Eventual leader detector ($\Omega$)
 
 .center[![](figures/lec5/ele.png)]
 
-<span class="Q">[Q]</span> This abstraction can be implemented from an *eventually perfect failure detector*. How?
+<span class="Q">[Q]</span> This abstraction can be implemented from an eventually perfect failure detector. How?
 
 ???
 
@@ -247,27 +282,25 @@ Elect as leader the correct process with the minimal rank. Eventually the set of
 
 ---
 
-# Epoch-Change
-
-- Let define an **Epoch-Change** abstraction, whose purpose it is to signal a change of epoch corresponding to the election of a leader.
-    - An indication event `StartEpoch` contains:
-        - an epoch timestamp $ts$
-        - a leader process $l$.
-- We require *monotonicity* of the timestamps for the epochs started at the same correct process.
-- We require the *same leader* for every correct process at a given timestamp.
-- **Eventually**, the component ceases to start new epochs. The last epoch started at every correct process must the same and the leader must be correct.
-
----
-
-# Epoch-Change
+# Epoch-Change ($ec$)
 
 .center[![](figures/lec5/ec-interface.png)]
+
+???
+
+- Let define an **Epoch-Change** abstraction, whose purpose it is to signal a change of epoch corresponding to the election of a leader.
+- An indication event `StartEpoch` contains:
+    - an epoch timestamp $ts$
+    - a leader process $l$.
+- We require *monotonicity* of the timestamps for the epochs started at the same correct process.
+- We require the *same leader* for every correct process at a given timestamp.
+- **Eventually**, the component ceases to start new epochs. The last epoch started at every correct process must be the same and the leader must be correct.
 
 ---
 
 # Leader-based Epoch-Change
 
-- Every process $p$ maintains *two timestamps*:
+- Every process $p$ maintains two timestamps:
     - a timestamp $lastts$ of the last epoch that it locally started;
     - a timestamp $ts$ of the last epoch it attempted to start as a leader.
 - When the leader detector makes $p$ trust itself, $p$ adds $N$ to $ts$ and broadcasts a `NewEpoch` message with $ts$.
@@ -277,21 +310,25 @@ Elect as leader the correct process with the minimal rank. Eventually the set of
 
 ---
 
-# Leader-based Epoch-Change
+class: middle
 
-.center.width-50[![](figures/lec5/ec-impl.png)]
+.width-60[![](figures/lec5/ec-impl.png)]
 
 <span class="Q">[Q]</span> How many failures can be tolerated? $N-1$
 
 ---
 
-# Sample execution (1)
+class: middle
+
+## Sample execution (1)
 
 .center.width-100[![](figures/lec5/ec-exec1.png)]
 
 ---
 
-# Sample execution (2)
+class: middle
+
+## Sample execution (2)
 
 .center.width-100[![](figures/lec5/ec-exec2.png)]
 
@@ -304,14 +341,13 @@ Elect as leader the correct process with the minimal rank. Eventually the set of
 
 ---
 
-# Epoch consensus
+# Epoch consensus ($ep$)
 
-- Let define an **epoch consensus** abstraction, whose purpose is similar to *consensus*, but with the following simplifications:
+- Let us  define an **epoch consensus** abstraction, whose purpose is similar to *consensus*, but with the following simplifications:
     - Epoch consensus represents an *attempt* to reach consensus.
         - The procedure can be aborted when it does not decide or when the next epoch should already be started by the higher-level algorithm.
     - Every epoch consensus instance is identified by an *epoch timestamp* $ts$ and a *designated leader* $l$.
-    - **Only the leader** proposes a value.
-        - Epoch consensus is required to decide *only when the leader is correct*.
+    - **Only the leader** proposes a value. Epoch consensus is required to decide *only when the leader is correct*.
 - An instance **must terminate** when the application locally triggers an `Abort` event.
 - The state of the component is initialized
     - with a higher timestamp than that of all instances it initialized previously;
@@ -319,11 +355,13 @@ Elect as leader the correct process with the minimal rank. Eventually the set of
 
 ---
 
-# Epoch consensus
+class: middle
 
 .center[![](figures/lec5/econs-interface1.png)]
 
 ---
+
+class: middle
 
 .center[![](figures/lec5/econs-interface2.png)]
 
@@ -331,7 +369,7 @@ Elect as leader the correct process with the minimal rank. Eventually the set of
 
 # Read/Write Epoch consensus
 
-- Let **initialize** the *Read/Write Epoch consensus* algorithm with the state of the most recently aborted epoch consensus instance.
+- Let us **initialize** the *Read/Write Epoch consensus* algorithm with the state of the most recently aborted epoch consensus instance.
     - The state contains a proposal $val$ and its associated timestamp $valts$.
     - Passing the state to the next epoch consensus serves the *validity* and *lock-in* properties.
 - The algorithm involves *two rounds of messages* from the leader to all processes.
@@ -344,29 +382,37 @@ Elect as leader the correct process with the minimal rank. Eventually the set of
 
 ---
 
-# Read/Write Epoch consensus
+class: middle
 
-.center[![](figures/lec5/rwec-impl1.png)]
-
----
-
-.center[![](figures/lec5/rwec-impl2.png)]
+![](figures/lec5/rwec-impl1.png)
 
 ---
 
-# Sample execution (1)
+class: middle
+
+![](figures/lec5/rwec-impl2.png)
+
+---
+
+class: middle
+
+## Sample execution (1)
 
 .center.width-100[![](figures/lec5/econs-exec1.png)]
 
 ---
 
-# Sample execution (2)
+class: middle
+
+## Sample execution (2)
 
 .center.width-100[![](figures/lec5/econs-exec2.png)]
 
 ---
 
-# Sample execution (3)
+class: middle
+
+## Sample execution (3)
 
 .center.width-100[![](figures/lec5/econs-exec3.png)]
 
@@ -374,21 +420,25 @@ Elect as leader the correct process with the minimal rank. Eventually the set of
 
 ---
 
-# Sample execution (4a)
+class: middle
+
+## Sample execution (4a)
 
 .center.width-100[![](figures/lec5/econs-exec4a.png)]
 
 ---
 
-# Sample execution (4b)
+class: middle
+
+## Sample execution (4b)
 
 .center.width-100[![](figures/lec5/econs-exec4b.png)]
 
 ---
 
-class: smaller
+class: middle
 
-# Correctness
+## Correctness
 
 Assume a **majority of correct processes**, i.e. $N > 2f$, where $f$ is the number of crash faults.
 
@@ -404,9 +454,7 @@ Assume a **majority of correct processes**, i.e. $N > 2f$, where $f$ is the numb
 
 ---
 
-class: smaller
-
-# Correctness
+class: middle
 
 - *Validity*: If a correct process ep-decides $v$, then $v$ was ep-proposed by the leader $l'$ of some epoch consensus with timestamp $ts' \leq ts$ and leader $l'$.
     - If some process ep-decides $v$, it is because this value was delivered from a `Decided` message.
@@ -423,39 +471,48 @@ class: smaller
 
 ---
 
-class: smaller
-
 # Leader-Driven consensus
 
 - Let us now combine the epoch-change and the epoch consensus abstractions to
 form the **leader-driven consensus** algorithm.
-    - We will write the *glue* to repeatedly run epoch consensus until epoch changes stabilize and all decisions are taken.
+- We will write the *glue* to repeatedly run epoch consensus until epoch changes stabilize and all decisions are taken.
 - The algorithm provides *uniform consensus* in *fail-noisy*.
-- It runs through a **sequence of epochs**, triggered by `StartEpoch` events from
-the epoch-change primitive.
-    - The current epoch timestamp is $ets$ and the associated leader is $l$.
-    - The `StartEpoch` events determine the timestamp $newts$ and the leader $newl$ of the next epoch consensus instance to start.
-    - To switch from one epoch consensus to the next, the algorithm aborts the running epoch consensus instance, obtains its state and initializes the next epoch consensus instance with it.
-    - As soon as a process has obtained a proposal value $v$ for consensus and is the leader of the current epoch, it ep-proposes this value for epoch consensus.
-    - When the current epoch ep-decides a value, the process also decides this value for consensus.
-    - The process continue to participate in the consensus to help other processes decide.
-- Leader-Driven consensus is a modular formulation  of the **Paxos** consensus algorithm.
 
 ---
 
-# Leader-Driven consensus
+class: middle
 
-.center[![](figures/lec5/ld-consensus-impl1.png)]
+Leader-driven consensus runs through a **sequence of epochs**, triggered by `StartEpoch` events from
+the epoch-change primitive:
+
+- The current epoch timestamp is $ets$ and the associated leader is $l$.
+- The `StartEpoch` events determine the timestamp $newts$ and the leader $newl$ of the next epoch consensus instance to start.
+- To switch from one epoch consensus to the next, the algorithm aborts the running epoch consensus instance, obtains its state and initializes the next epoch consensus instance with it.
+- As soon as a process has obtained a proposal value $v$ for consensus and is the leader of the current epoch, it ep-proposes this value for epoch consensus.
+- When the current epoch ep-decides a value, the process also decides this value for consensus.
+- The process continue to participate in the consensus to help other processes decide.
+
+Leader-driven consensus is a modular formulation  of the **Paxos** consensus algorithm.
 
 ---
 
-.center[![](figures/lec5/ld-consensus-impl2.png)]
+class: middle
+
+![](figures/lec5/ld-consensus-impl1.png)
 
 ---
 
-# Sample execution
+class: middle
 
-.center.width-80[![](figures/lec5/ld-consensus-exec.png)]
+![](figures/lec5/ld-consensus-impl2.png)
+
+---
+
+class: middle
+
+## Sample execution
+
+.center.width-100[![](figures/lec5/ld-consensus-exec.png)]
 
 ???
 
@@ -489,9 +546,9 @@ that the algorithm provides uniform consensus.
 
 ---
 
-class: smaller
+class: middle
 
-# Correctness
+## Correctness
 
 - *Validity*: If a process decides $v$, then $v$ was proposed by some process.
     - A process uc-decides $v$ only when it has ep-decided $v$ in the current epoch consensus.
@@ -500,6 +557,11 @@ class: smaller
     - According to the validity property of epoch consensus, this means $v$ was ep-proposed by the leader of some epoch whose timestamp is a most $ts^\*$.
     - Since a process only ep-proposes $val$ when $val$ has been uc-proposed for consensus, the *validity* property follows for processes that uc-decide in epoch $ts^\*$.
     - The argument extends to $ts > ts^\*$ because the lock-in property of epoch consensus forces processes to ep-decide $v$ only, which in turn make them uc-decide.
+
+---
+
+class: middle
+
 - *Uniform agreement*: No two processes decide differently.
     - Every decision attributed to an ep-decision of some epoch consensus instance.
     - If two correct processes decide when they are in the same epoch, then the uniform agreement of epoch consensus ensures the decisions are the same.
@@ -507,9 +569,7 @@ class: smaller
 
 ---
 
-class: smaller
-
-# Correctness
+class: middle
 
 - *Integrity*: No process decides twice.
     - The `decided` flag in the algorithm prevents multiple decisions.
@@ -520,13 +580,13 @@ class: smaller
 
 ---
 
-class: middle, center
+class: middle
 
 # Total order broadcast
 
 ---
 
-# Total order broadcast
+# Total order broadcast ($tob$)
 
 - The **total-order (reliable) broadcast** (also known as *atomic broadcast*) abstraction
  ensures that all processes deliver the same messages in a *common global order*.
@@ -535,9 +595,9 @@ that implement one logical service.
 
 ---
 
-# Total order broadcast
+class: middle, center
 
-.center.width-80[![](figures/lec5/tob-interface.png)]
+.width-100[![](figures/lec5/tob-interface.png)]
 
 ---
 
@@ -550,9 +610,9 @@ that implement one logical service.
 
 ---
 
-# Consensus-based TOB
+class: middle
 
-.center.width-80[![](figures/lec5/tob-impl.png)]
+.width-80[![](figures/lec5/tob-impl.png)]
 
 ???
 
@@ -561,9 +621,11 @@ R: note that consensus is necessarily started at all correct process, since it i
 
 ---
 
-# Sample execution
+class: middle
 
-.center.width-80[![](figures/lec5/tob-exec.png)]
+## Sample execution
+
+.center.width-90[![](figures/lec5/tob-exec.png)]
 
 ---
 
@@ -583,13 +645,13 @@ class: middle, center
 
 ---
 
-# Replicated state machines
+class: middle
 
 .center[![](figures/lec5/rsm-interface.png)]
 
 ---
 
-# TOB-based Replicated state machines
+# TOB-based Replicated state machines ($rsm$)
 
 .center[![](figures/lec5/rsm-impl.png)]
 
@@ -605,6 +667,13 @@ to always terminate in an asynchronous system.
 - The consensus primitive **greatly simplifies** the implementation of any fault-tolerant consistent distributed system.
     - Total-order broadcast
     - Replicated state machines
+
+---
+
+class: end-slide, center
+count: false
+
+The end.
 
 ---
 
