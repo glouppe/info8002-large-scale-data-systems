@@ -27,7 +27,31 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2018.
 
 ## Projects
 
+### Programming project
+
 TBD.
+
+### Reading assignment
+
+Your task is to read and summarize a major scientific paper in the field of distributed systems.
+
+> Paper: "Spanner: Google’s Globally-Distributed Database"<br>
+> James C. Corbett et al, 2012. [[PDF](https://storage.googleapis.com/pub-tools-public-publication-data/pdf/39966.pdf)]
+
+Additional information: [Google Cloud Spanner](https://cloud.google.com/spanner)
+
+You should produce a report that summarizes the problem that is tackled by the paper and explains why it is challenging or important. The report should outline the main contributions and results with respect to the problem that is addressed. It should also include a critical discussion of the advantages and shortcomings of the paper. Whenever possible, try to relate the content of the paper to the concepts introduced in the course.
+
+Constraints:
+- English
+- Up to 4 pages
+- Formatted using the LaTeX template [`template-report-reading-assignment.tex`](https://glouppe.github.io/info8006-introduction-to-ai/template-report-reading-assignment.tex)
+
+Your report should be submitted  by **December 14, 2018 at 23:59** on the [submission platform](https://submit.montefiore.ulg.ac.be/). This is a **hard** deadline.
+
+#### Overleaf
+
+For those not familiar with LaTeX, you can easily write your report using Overleaf. For example by making a copy of [the following project](https://www.overleaf.com/read/gvzynxgcpbwf).
 
 ## Archives
 

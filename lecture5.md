@@ -8,6 +8,11 @@ Lecture 5: Consensus
 Prof. Gilles Louppe<br>
 [g.louppe@uliege.be](g.louppe@uliege.be)
 
+???
+
+highlight the word paxos more -> screenshot of the paper
+add reference to paxos paper
+
 ---
 
 # Today
