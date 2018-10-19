@@ -4,6 +4,7 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2018.
 
 - Instructor: Gilles Louppe ([g.louppe@uliege.be](mailto:g.louppe@uliege.be))
 - Teaching assistant: Joeri Hermans ([joeri.hermans@doct.ulg.ac.be](mailto:joeri.hermans@doct.ulg.ac.be))
+- When: Fall 2018, Tuesday 2:00PM.
 - Classroom: B28/R7
 
 ## Slides
@@ -21,7 +22,7 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2018.
 
 ## Exercise sessions
 
-- Excercise session 1 (October 9): [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/ex1.pdf)]
+- Excercise session 1 (October 9) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/ex1.pdf)]
 
 
 ## Projects
