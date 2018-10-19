@@ -33,14 +33,16 @@ TBD.
 
 ### Reading assignment
 
-Your task is to read and summarize a major scientific paper in the field of distributed systems.
+Your task is to read and summarize a major scientific paper that concerns a large-scale data system.
 
 > Paper: "Spanner: Google’s Globally-Distributed Database"<br>
 > James C. Corbett et al, 2012. [[PDF](https://storage.googleapis.com/pub-tools-public-publication-data/pdf/39966.pdf)]
 
-Additional information: [Google Cloud Spanner](https://cloud.google.com/spanner)
+Additional resources: [Google Cloud Spanner](https://cloud.google.com/spanner), [Spanner, TrueTime and the CAP theorem](https://storage.googleapis.com/pub-tools-public-publication-data/pdf/45855.pdf).
 
-You should produce a report that summarizes the problem that is tackled by the paper and explains why it is challenging or important. The report should outline the main contributions and results with respect to the problem that is addressed. It should also include a critical discussion of the advantages and shortcomings of the paper. Whenever possible, try to relate the content of the paper to the concepts introduced in the course.
+You should produce a report that summarizes the problem that is tackled by the paper and explains why it is challenging or important. The report should outline the main contributions and results with respect to the problem that is addressed.
+It should also include a critical discussion of the advantages and shortcomings of the solution. In particular, you should discuss how Spanner fit in the context of the [CAP theorem](https://en.wikipedia.org/wiki/CAP_theorem).
+Whenever possible, try to relate the content of the paper to the concepts introduced in the course.
 
 Constraints:
 - English
