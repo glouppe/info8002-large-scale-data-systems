@@ -19,6 +19,7 @@ R: what kind of fraud does the system prevent? (forgery by signature, double-spe
 R: illustrate double spending examples with concurrent branches
 R: do merchants have to wait for 1 hour?
 R: add https://anders.com/blockchain/blockchain.html
+R: relate to gossip https://medium.com/algorand/algorands-instant-consensus-protocol-e66ac5807e37
 
 ---
 

@@ -149,7 +149,8 @@ class: middle
     - If $p$ crashes immediately and $q$ is correct and rank 2, then it ensures that $q$'s proposal is decided.
     - The core of the algorithm addresses the case where $p$ is faulty but crashes after sending some of its proposal messages and $q$ is correct.
 - Hierarchical consensus works *in rounds*, with a rotating *leader*.
-    - At round $i$, process $p$ with rank $i$ is the leader. It decides its proposal and broadcasts it to all processes.
+    - At round $i$, process $p$ with rank $i$ is the leader.
+    - It decides its proposal and broadcasts it to all processes.
     - All other processes that reach round $i$ wait before taking any actions, until they deliver this message or until they detect the crash of $p$.
         - upon which processes move to the next round.
 
@@ -223,8 +224,8 @@ class: middle
 
 # Hierarchical uniform consensus
 
-- Same as *Hierarchical consensus*.
-- A round consists of *two communication steps*:
+- Same as *hierarchical consensus*.
+- A round consists of **two communication steps**:
     - The leader BEB broadcasts its proposal
     - The leader collects acknowledgements
 - Upon reception of all acknowledgements, **RB** broadcast the decision and decide at delivery.
@@ -253,11 +254,11 @@ class: middle
 
 ---
 
-# Consensus in partially synchronous systems
+class: middle
 
-- Does hierarchical consensus would work with an *eventually perfect failure detector*?
-- A *false suspicion* (i.e., a violation of strong accuracy) might lead to the **violation of agreement**.
-- *Not suspecting* a crashed process (i.e., a violation of strong completeness) might lead to the **violation of termination**.
+Would hierarchical consensus work with an *eventually perfect failure detector*?
+- A false suspicion (i.e., a violation of strong accuracy) might lead to the **violation of agreement**.
+- Not suspecting a crashed process (i.e., a violation of strong completeness) might lead to the **violation of termination**.
 
 .center.width-100[![](figures/lec5/hierarchical-consensus-false.png)]
 
@@ -318,6 +319,8 @@ Elect as leader the correct process with the minimal rank. Eventually the set of
 class: middle
 
 .width-60[![](figures/lec5/ec-impl.png)]
+
+???
 
 <span class="Q">[Q]</span> How many failures can be tolerated? $N-1$
 
@@ -497,8 +500,6 @@ the epoch-change primitive:
 - When the current epoch ep-decides a value, the process also decides this value for consensus.
 - The process continue to participate in the consensus to help other processes decide.
 
-Leader-driven consensus is a modular formulation  of the **Paxos** consensus algorithm.
-
 ---
 
 class: middle
@@ -585,6 +586,31 @@ class: middle
 
 ---
 
+.grid[
+.kol-3-4[
+# Paxos
+
+Leader-driven consensus is a modular formulation  of the **Paxos** consensus algorithm by Leslie Lamport.
+]
+.kol-1-4[.circle.width-100[![](figures/lec5/lamport.jpg)]]
+]
+
+.center.width-80[![](figures/lec5/paxos1.png)]
+
+---
+
+class: middle
+
+.center.width-80[![](figures/lec5/paxos2.png)]
+
+---
+
+class: center, black-slide, middle
+
+<iframe width="640" height="400" src="https://www.youtube.com/embed/s8JqcZtvnsM?cc_load_policy=1&hl=en&version=3" frameborder="0" allowfullscreen></iframe>
+
+---
+
 class: middle
 
 # Total order broadcast
@@ -634,10 +660,10 @@ class: middle
 
 ---
 
-# Replicated state machines
+# Replicated state machines ($rsm$)
 
 - A **state machine** consists of variables and commands that transform its state and produce some output.
-    - Commands are *deterministic* programs, such that the outputs are solely determined by the initial state and the sequence of commands.
+- Commands are *deterministic* programs, such that the outputs are solely determined by the initial state and the sequence of commands.
 - A state machine can be made *fault-tolerant* by replicating it on different processes.
 - This can now be easily implemented simply by disseminating all commands to execute using a uniform total-order broadcast primitive.
 - This gives a **generic recipe** to make any deterministic program distributed, consistent and fault-tolerant!
@@ -646,7 +672,7 @@ class: middle
 
 class: middle, center
 
-![](figures/lec5/rsm.png)
+![](figures/lec5/rsm.jpg)
 
 ---
 
@@ -656,9 +682,9 @@ class: middle
 
 ---
 
-# TOB-based Replicated state machines ($rsm$)
+# TOB-based Replicated state machines
 
-.center[![](figures/lec5/rsm-impl.png)]
+![](figures/lec5/rsm-impl.png)
 
 ---
 
@@ -685,3 +711,5 @@ The end.
 # References
 
 - Fischer, Michael J., Nancy A. Lynch, and Michael S. Paterson. "Impossibility of distributed consensus with one faulty process." Journal of the ACM (JACM) 32.2 (1985): 374-382.
+- Lamport, Leslie. "The part-time parliament." ACM Transactions on Computer Systems (TOCS) 16.2 (1998): 133-169.
+- Lamport, Leslie. "Paxos made simple." ACM Sigact News 32.4 (2001): 18-25.
