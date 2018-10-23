@@ -8,11 +8,6 @@ Lecture 5: Consensus
 Prof. Gilles Louppe<br>
 [g.louppe@uliege.be](g.louppe@uliege.be)
 
-???
-
-highlight the word paxos more -> screenshot of the paper
-add reference to paxos paper
-
 ---
 
 # Today
@@ -29,6 +24,10 @@ add reference to paxos paper
 class: middle, center, black-slide
 
 .width-80[![](figures/lec5/iceberg.png)]
+
+???
+
+Mention leader election, which we say as part of the basic abstractions.
 
 ---
 
@@ -144,7 +143,7 @@ class: middle
 
 ## Algorithm
 
-- Hierarchical consensus ensures that the correct process with *the lowest rank imposes its value* on all the other processes.
+- Hierarchical consensus ensures that the correct process with **the lowest rank imposes its value** on all the other processes.
     - If $p$ is correct and rank $1$, it imposes its values on all other processes by broadcasting its proposal.
     - If $p$ crashes immediately and $q$ is correct and rank 2, then it ensures that $q$'s proposal is decided.
     - The core of the algorithm addresses the case where $p$ is faulty but crashes after sending some of its proposal messages and $q$ is correct.
@@ -272,7 +271,7 @@ We will build a consensus component in **fail-noisy** by combining three abstrac
 
 - an eventual leader detector
 - an epoch-change abstraction
-- an epoch consensus
+- an epoch consensus abstraction
 
 ---
 
@@ -290,17 +289,16 @@ Elect as leader the correct process with the minimal rank. Eventually the set of
 
 # Epoch-Change ($ec$)
 
-.center[![](figures/lec5/ec-interface.png)]
-
-???
-
-- Let define an **Epoch-Change** abstraction, whose purpose it is to signal a change of epoch corresponding to the election of a leader.
+- Let us define an **Epoch-Change** abstraction, whose purpose it is to signal a change of epoch corresponding to the election of a leader.
 - An indication event `StartEpoch` contains:
     - an epoch timestamp $ts$
     - a leader process $l$.
-- We require *monotonicity* of the timestamps for the epochs started at the same correct process.
-- We require the *same leader* for every correct process at a given timestamp.
-- **Eventually**, the component ceases to start new epochs. The last epoch started at every correct process must be the same and the leader must be correct.
+
+---
+
+class: middle
+
+.center[![](figures/lec5/ec-interface.png)]
 
 ---
 
