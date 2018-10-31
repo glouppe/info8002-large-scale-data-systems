@@ -1,6 +1,6 @@
 import argparse
 
-from keystore import KeyStore
+from keychain import Storage
 
 
 
@@ -22,7 +22,7 @@ def main(arguments):
 
 
 def allocate_application(arguments):
-    application = KeyChain(
+    application = Storage(
         bootstrap=arguments.bootstrap,
         miner=arguments.miner,
         difficulty=arguments.difficulty
