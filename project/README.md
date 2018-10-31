@@ -5,7 +5,6 @@
 - [Introduction](#introduction)
 - [Instructions](#instructions)
   - [Group formation](#group-formation)
-  - [Tips](#general-tips-and-guidelines)
 - [Evaluation](#evaluation)
 
 ---
@@ -20,7 +19,7 @@ The main objective of this project is to implement your own decentralized Blockc
 
 ### Group formation
 
-### General tips and guidelines
+Please register your group at the [Montefiore submission system](https://submit.montefiore.ulg.ac.be/), also if you are working alone.
 
 ---
 
