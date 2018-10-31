@@ -34,15 +34,17 @@ We expect the following deliverables;
   * a Python implementation,
   * Blockchain and Block architecture with accompanying consensus rules,
   * a bootstrapping procedure for new nodes joining the network,
+    - New nodes have to "download" the Blockchain from peers.
   * proof of work (PoW) with a parameterizable difficulty level,
   * abstraction layer for the top-level application:
     - `put(key, value)`
-    Stores the `value` with the associated `key` in the Blockchain. Please make note of the fact that the `put` operation doesn't necessarily deliveres after it has been completed. It may therefore be a good idea to add a `callback` procedure (or a different mechanism) as an additional parameter that is called whenever the key has been added to the chain, or if a failure occurred (i.e., duplicate key in the same block). This serves the purpose of the `deliver` operation from the lectures.
+    Stores the `value` with the associated `key` in the Blockchain. Please make note of the fact that the `put` operation doesn't necessarily deliveres after it has been completed. It may therefore be a good idea to add a `callback` procedure (or a different mechanism) that is called whenever the key has been added to the chain, or if a failure occurred (i.e., duplicate key in the same block). This serves the purpose of the `deliver` operation from the lectures.
     - `get(key)`
     Searches the Blockchain for the latest value with the specified key.
     - `get_all(key)`
     Retrieves all values from the Blockchain with the specified key.
-  * code the reproduce the experiments and the associated plots.
+  * code the reproduce the experiments and the associated plots,
+  * broadcast implementation to dissipate information through your Blockchain network (choose wisely),
 - A **report** in PDF format that must include:
   * a detailed description of the individual components in your solution,
   * a discussion of the consequences and scalability of your broadcast implementation,
