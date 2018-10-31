@@ -12,7 +12,7 @@ exclusions=["doc", "experiments", "application"]
 packages = find_packages(exclude=exclusions)
 
 # Get the version string of cag.
-with open(os.path.join("cag", "__init__.py"), "rt") as fh:
+with open(os.path.join("keychain", "__init__.py"), "rt") as fh:
     _version = re.search(
         '__version__\s*=\s*"(?P<version>.*)"\n',
         fh.read()
@@ -20,10 +20,12 @@ with open(os.path.join("cag", "__init__.py"), "rt") as fh:
 
 # Module requirements.
 _install_requires = [
-    "numpy",
+    "argparse",
     "flask",
+    "hashlib",
+    "numpy",
     "requists",
-    "hashlib"
+    "time"
 ]
 
 _parameters = {
