@@ -200,6 +200,10 @@ td {
     width: 40%;
 }
 
+.width-45 * {
+    width: 45%;
+}
+
 .width-50 * {
     width: 50%;
 }
@@ -251,6 +255,12 @@ td {
 
 .black-slide {
     background-color: black;
+    color: white;
+    border-top: solid 0px;
+}
+
+.red-slide {
+    background-color: red;
     color: white;
     border-top: solid 0px;
 }
