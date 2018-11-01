@@ -20,7 +20,7 @@ Prof. Gilles Louppe<br>
 
 ]
 .col-1-3[
-![Napster logo](figures/lec6/napster.jpg)
+![Napster logo](figures/lec8/napster.jpg)
 ]
 ]
 
@@ -35,7 +35,7 @@ Prof. Gilles Louppe<br>
   - Node informed the directory server which files it serves.
 
 .width-100[
-![Napster architecture](figures/lec6/napster_architecture.svg)
+![Napster architecture](figures/lec8/napster_architecture.svg)
 ]
 
 ---
@@ -45,7 +45,7 @@ Prof. Gilles Louppe<br>
 - Flat file system:
 
 .width-100[
-![Napster directory](figures/lec6/napster_directory.svg)
+![Napster directory](figures/lec8/napster_directory.svg)
 ]
 
 ---
@@ -55,7 +55,7 @@ Prof. Gilles Louppe<br>
 - Joe queries the centralized directory server for a result set which satisfies the pattern $A$.
 
 .center.width-90[
-![Napster query](figures/lec6/napster_query_1.svg)
+![Napster query](figures/lec8/napster_query_1.svg)
 ]
 
 ---
@@ -66,7 +66,7 @@ Prof. Gilles Louppe<br>
 - The result-set is sent to the requesting host, with the location of every entry in the result set.
 
 .center.width-90[
-![Napster query](figures/lec6/napster_query_2.svg)
+![Napster query](figures/lec8/napster_query_2.svg)
 ]
 
 ---
@@ -79,7 +79,7 @@ Prof. Gilles Louppe<br>
 - No other instances besides the 2 nodes are involved with the transfer.
 
 .center.width-90[
-![Napster query](figures/lec6/napster_query.svg)
+![Napster query](figures/lec8/napster_query.svg)
 ]
 
 ---
@@ -127,7 +127,7 @@ Prof. Gilles Louppe<br>
   - Or, list of possibly working peers was shipped with the software.
 
 .width-100[
-![Gnutella network](figures/lec6/gnutella_bootstrap.svg)
+![Gnutella network](figures/lec8/gnutella_bootstrap.svg)
 ]
 
 ---
@@ -158,7 +158,7 @@ Push     | A mechanism that allows a firewalled peer to contribute file-based da
     - Payload length = `0x00000000`
 
 .width-100[
-![Gnutella Network Clean](figures/lec6/gnutella_network_clean.svg)
+![Gnutella Network Clean](figures/lec8/gnutella_network_clean.svg)
 ]
 
 ---
@@ -171,7 +171,7 @@ Push     | A mechanism that allows a firewalled peer to contribute file-based da
   - Hops: `0x00`
 
 .width-100[
-![Gnutella Ping 1](figures/lec6/gnutella_ping_1.svg)
+![Gnutella Ping 1](figures/lec8/gnutella_ping_1.svg)
 ]
 
 ---
@@ -182,7 +182,7 @@ Push     | A mechanism that allows a firewalled peer to contribute file-based da
 - Every receiving node validates Descriptor ID ("Have I seen this ID recently? If yes, drop message."), decrements TTL, increments Hops, and retransmits `Ping` to *other, non-origin* peers.
 
 .width-100[
-![Gnutella Ping 1](figures/lec6/gnutella_ping_2.svg)
+![Gnutella Ping 1](figures/lec8/gnutella_ping_2.svg)
 ]
 
 ---
@@ -192,7 +192,7 @@ Push     | A mechanism that allows a firewalled peer to contribute file-based da
 - At this point `Ping` descriptor from $x$ expires (TTL = 0). Servants $b$ and $c$ will drop the messages and send the final `Pong` descriptors to the *origin peers*.
 
 .width-100[
-![Gnutella Ping 1](figures/lec6/gnutella_ping_3.svg)
+![Gnutella Ping 1](figures/lec8/gnutella_ping_3.svg)
 ]
 
 ---
@@ -200,7 +200,7 @@ Push     | A mechanism that allows a firewalled peer to contribute file-based da
 ## Example: Ping / Pong (5)
 
 .width-100[
-![Gnutella Ping 1](figures/lec6/gnutella_ping_4.svg)
+![Gnutella Ping 1](figures/lec8/gnutella_ping_4.svg)
 ]
 
 ---
@@ -208,7 +208,7 @@ Push     | A mechanism that allows a firewalled peer to contribute file-based da
 ## Example: Ping / Pong (6)
 
 .width-100[
-![Gnutella Ping 1](figures/lec6/gnutella_ping_5.svg)
+![Gnutella Ping 1](figures/lec8/gnutella_ping_5.svg)
 ]
 
 ---
@@ -219,7 +219,7 @@ Push     | A mechanism that allows a firewalled peer to contribute file-based da
 - Visible peers $V(x) = \\{b, c, d, f, g, h\\}$.
 
 .width-100[
-![Gnutella Ping 1](figures/lec6/gnutella_ping_6.svg)
+![Gnutella Ping 1](figures/lec8/gnutella_ping_6.svg)
 ]
 
 ---
@@ -242,7 +242,7 @@ Push     | A mechanism that allows a firewalled peer to contribute file-based da
 - In this example: $V(x)\_{t+1} = V(x)\_t - \\{b, d\\} \rightarrow$ data of $b$ and $d$ is lost!
 
 .width-100[
-![Gnutella Failure](figures/lec6/gnutella_failure.svg)
+![Gnutella Failure](figures/lec8/gnutella_failure.svg)
 ]
 
 ---
@@ -361,7 +361,7 @@ A hash table would be able to address some of these concerns.
   - Zone range
 
 .width-100[
-![CAN Zones](figures/lec6/can_zones.png)
+![CAN Zones](figures/lec8/can_zones.png)
 ]
 
 ---
@@ -461,7 +461,7 @@ class: middle, center
 
 # Mid-lecture Recap!
 
-![There will be no order, only chaos](figures/lec6/no-order.jpg)
+![There will be no order, only chaos](figures/lec8/no-order.jpg)
 
 ---
 
@@ -507,7 +507,7 @@ class: middle, center
 
 .center[
 .width-70[
-![Virtual Overlay Network](figures/lec6/overlay-network.png)
+![Virtual Overlay Network](figures/lec8/overlay-network.png)
 ]
 ]
 
@@ -570,7 +570,7 @@ To maintain the consistent (hashing) mapping, let us consider a node $n$ which
 
 class: center, middle
 
-![Chord DHT Consistent Hashing](figures/lec6/dht-chord.png)
+![Chord DHT Consistent Hashing](figures/lec8/dht-chord.png)
 
 ---
 
@@ -592,7 +592,7 @@ class: center, middle
 
 class: center, middle
 
-![Chord Finger Table](figures/lec6/chord-finger-table.jpg)
+![Chord Finger Table](figures/lec8/chord-finger-table.jpg)
 
 ---
 
@@ -604,7 +604,7 @@ class: center, middle
 
 .center[
 .width-80[
-![Chord Finger Table Initial Situation](figures/lec6/chord-clean.svg)
+![Chord Finger Table Initial Situation](figures/lec8/chord-clean.svg)
 ]
 ]
 
@@ -617,7 +617,7 @@ class: center, middle
 
 .center[
 .width-100[
-![Chord Finger Table Initial Situation](figures/lec6/chord-finger-1.svg)
+![Chord Finger Table Initial Situation](figures/lec8/chord-finger-1.svg)
 ]
 ]
 
@@ -630,7 +630,7 @@ class: center, middle
 
 .center[
 .width-100[
-![Chord Finger Table Initial Situation](figures/lec6/chord-finger-2.svg)
+![Chord Finger Table Initial Situation](figures/lec8/chord-finger-2.svg)
 ]
 ]
 
@@ -643,7 +643,7 @@ class: center, middle
 
 .center[
 .width-100[
-![Chord Finger Table Initial Situation](figures/lec6/chord-finger-3.svg)
+![Chord Finger Table Initial Situation](figures/lec8/chord-finger-3.svg)
 ]
 ]
 
@@ -656,7 +656,7 @@ class: center, middle
 
 .center[
 .width-100[
-![Chord Finger Table Initial Situation](figures/lec6/chord-finger-4.svg)
+![Chord Finger Table Initial Situation](figures/lec8/chord-finger-4.svg)
 ]
 ]
 
@@ -819,7 +819,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Subtrees](figures/lec6/kademlia-subtrees.png)
+![Kademlia Subtrees](figures/lec8/kademlia-subtrees.png)
 ]
 ]
 
@@ -850,7 +850,7 @@ $\rightarrow$ Ensures redundancy
 
 .center[
 .width-80[
-![k-bucket](figures/lec6/k-bucket.png)
+![k-bucket](figures/lec8/k-bucket.png)
 ]
 ]
 
@@ -953,7 +953,7 @@ $\rightarrow$ Thus, a $k$-buckets covers some range of the 160 bit identifier sp
 
 .center[
 .width-80[
-![k-bucket](figures/lec6/k-bucket.png)
+![k-bucket](figures/lec8/k-bucket.png)
 ]
 ]
 
@@ -967,7 +967,7 @@ $\rightarrow$ Thus, a $k$-buckets covers some range of the 160 bit identifier sp
 
 .center[
 .width-80[
-![Kademlia Routing 1](figures/lec6/kademlia-routing-1.svg)
+![Kademlia Routing 1](figures/lec8/kademlia-routing-1.svg)
 ]
 ]
 
@@ -979,7 +979,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 2](figures/lec6/kademlia-routing-2.svg)
+![Kademlia Routing 2](figures/lec8/kademlia-routing-2.svg)
 ]
 ]
 
@@ -989,7 +989,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 3](figures/lec6/kademlia-routing-3.svg)
+![Kademlia Routing 3](figures/lec8/kademlia-routing-3.svg)
 ]
 ]
 
@@ -999,7 +999,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 4](figures/lec6/kademlia-routing-4.svg)
+![Kademlia Routing 4](figures/lec8/kademlia-routing-4.svg)
 ]
 ]
 
@@ -1009,7 +1009,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 5](figures/lec6/kademlia-routing-5.svg)
+![Kademlia Routing 5](figures/lec8/kademlia-routing-5.svg)
 ]
 ]
 
@@ -1019,7 +1019,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 6](figures/lec6/kademlia-routing-6.svg)
+![Kademlia Routing 6](figures/lec8/kademlia-routing-6.svg)
 ]
 ]
 
@@ -1029,7 +1029,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 7](figures/lec6/kademlia-routing-7.svg)
+![Kademlia Routing 7](figures/lec8/kademlia-routing-7.svg)
 ]
 ]
 
@@ -1041,7 +1041,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 8](figures/lec6/kademlia-routing-8.svg)
+![Kademlia Routing 8](figures/lec8/kademlia-routing-8.svg)
 ]
 ]
 
@@ -1051,7 +1051,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 9](figures/lec6/kademlia-routing-9.svg)
+![Kademlia Routing 9](figures/lec8/kademlia-routing-9.svg)
 ]
 ]
 
@@ -1061,7 +1061,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 10](figures/lec6/kademlia-routing-10.svg)
+![Kademlia Routing 10](figures/lec8/kademlia-routing-10.svg)
 ]
 ]
 
@@ -1071,7 +1071,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 11](figures/lec6/kademlia-routing-11.svg)
+![Kademlia Routing 11](figures/lec8/kademlia-routing-11.svg)
 ]
 ]
 
@@ -1081,7 +1081,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 12](figures/lec6/kademlia-routing-12.svg)
+![Kademlia Routing 12](figures/lec8/kademlia-routing-12.svg)
 ]
 ]
 
@@ -1091,7 +1091,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 13](figures/lec6/kademlia-routing-13.svg)
+![Kademlia Routing 13](figures/lec8/kademlia-routing-13.svg)
 ]
 ]
 
@@ -1101,7 +1101,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 14](figures/lec6/kademlia-routing-14.svg)
+![Kademlia Routing 14](figures/lec8/kademlia-routing-14.svg)
 ]
 ]
 
@@ -1111,7 +1111,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 15](figures/lec6/kademlia-routing-15.svg)
+![Kademlia Routing 15](figures/lec8/kademlia-routing-15.svg)
 ]
 ]
 
@@ -1121,7 +1121,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 16](figures/lec6/kademlia-routing-16.svg)
+![Kademlia Routing 16](figures/lec8/kademlia-routing-16.svg)
 ]
 ]
 
@@ -1131,7 +1131,7 @@ class: middle, center
 
 .center[
 .width-100[
-![Kademlia Routing 17](figures/lec6/kademlia-routing-17.svg)
+![Kademlia Routing 17](figures/lec8/kademlia-routing-17.svg)
 ]
 ]
 

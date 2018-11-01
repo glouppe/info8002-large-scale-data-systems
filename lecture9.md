@@ -19,7 +19,7 @@ Prof. Gilles Louppe<br>
     - Recovery from failure
 - *Hadoop Distributed File System* (HDFS)
 
-.center.width-80[![](figures/lec8/hadoop-hdfs.png)]
+.center.width-80[![](figures/lec9/hadoop-hdfs.png)]
 
 ---
 
@@ -50,7 +50,7 @@ class: middle, center
 - Use large clusters of *commodity hardware*.
 - Proprietary, but detailed paper.
 
-.center.width-80[![](figures/lec8/gfs-paper.png)]
+.center.width-80[![](figures/lec9/gfs-paper.png)]
 
 ---
 
@@ -90,11 +90,11 @@ class: middle, center
 - Although data is too large be stored in a single system.
 - Hardware **will** fail.
 
-![](figures/lec8/google-first-server_a.jpg)
+![](figures/lec9/google-first-server_a.jpg)
 .caption[Google first servers]
 ]
 .col-1-2[
-![](figures/lec8/google-first-server.jpg)
+![](figures/lec9/google-first-server.jpg)
 ]
 ]
 
@@ -123,7 +123,7 @@ class: middle, center
 
 # Architecture
 
-.center.width-100[![](figures/lec8/gfs-architecture.png)]
+.center.width-100[![](figures/lec9/gfs-architecture.png)]
 
 - A *single* **master** node.
 - Many *chunkservers* (100s - 1000s) storing the data.
@@ -151,7 +151,7 @@ class: middle, center
     - Read or write data specified by a pair (chunk handle, byte range).
     - By default **three replicas** of a chunk stored across chunkservers.
 
-.center.width-50[![](figures/lec8/gfs-chunks.png)]
+.center.width-50[![](figures/lec9/gfs-chunks.png)]
 
 ---
 
@@ -239,7 +239,7 @@ Design decisions:
 
 # Reads (1)
 
-.center.width-100[![](figures/lec8/gfs-read1.png)]
+.center.width-100[![](figures/lec9/gfs-read1.png)]
 
 1) The GFS client translates filename and byte offset specified by the application into a *chunk index* within the file. A request is sent to master.
 
@@ -247,7 +247,7 @@ Design decisions:
 
 # Reads (2)
 
-.center.width-100[![](figures/lec8/gfs-read2.png)]
+.center.width-100[![](figures/lec9/gfs-read2.png)]
 
 2) Master replies with chunk handle and locations of the replicas.
 
@@ -255,7 +255,7 @@ Design decisions:
 
 # Reads (3+4)
 
-.center.width-100[![](figures/lec8/gfs-read3.png)]
+.center.width-100[![](figures/lec9/gfs-read3.png)]
 
 3) The client caches this information using the file name and chunk index as the key.
 - Further reads of the same chunk requires no more client-master interaction, until the cached information expires.
@@ -266,7 +266,7 @@ Design decisions:
 
 # Reads (5)
 
-.center.width-100[![](figures/lec8/gfs-read4.png)]
+.center.width-100[![](figures/lec9/gfs-read4.png)]
 
 5) The contacted chunkserver replies with the data.
 
@@ -289,7 +289,7 @@ Design decisions:
 
 # Writes (1+2)
 
-.center.width-40[![](figures/lec8/gfs-write12.png)]
+.center.width-40[![](figures/lec9/gfs-write12.png)]
 
 1) The GFS client asks master for the primary and the secondary replicas for each chunk.
 
@@ -299,7 +299,7 @@ Design decisions:
 
 # Writes (3)
 
-.center.width-40[![](figures/lec8/gfs-write3.png)]
+.center.width-40[![](figures/lec9/gfs-write3.png)]
 
 3) The client pushes the data to all replicas.
 - Each chunkserver stores the data in an internal buffer.
@@ -310,7 +310,7 @@ Design decisions:
 
 # Writes (4)
 
-.center.width-40[![](figures/lec8/gfs-write4.png)]
+.center.width-40[![](figures/lec9/gfs-write4.png)]
 
 4) Once all replicas have acknowledged, a **write request** is sent to the primary.
 - This request identifies the data pushed earlier.
@@ -322,7 +322,7 @@ Design decisions:
 
 # Writes (5)
 
-.center.width-40[![](figures/lec8/gfs-write5.png)]
+.center.width-40[![](figures/lec9/gfs-write5.png)]
 
 5) The primary forwards the write request to all secondary replicas.
 - Mutations are applied locally in the serial order decided by the primary.
@@ -331,7 +331,7 @@ Design decisions:
 
 # Writes (6+7)
 
-.center.width-40[![](figures/lec8/gfs-write67.png)]
+.center.width-40[![](figures/lec9/gfs-write67.png)]
 
 6) The secondaries all reply to the primary upon completion of the operation.
 
@@ -374,7 +374,7 @@ Design decisions:
     - There might be duplicate entries.
 - Failures can cause **inconsistency**.
 
-.center.width-60[![](figures/lec8/gfs-consistency.png)]
+.center.width-60[![](figures/lec9/gfs-consistency.png)]
 
 ---
 
@@ -480,7 +480,7 @@ Scenario: a chunkserver misses a mutation applied to a chunk (e.g., a chunk was 
 
 # Performance: reads
 
-.center.width-70[![](figures/lec8/perf-read.png)]
+.center.width-70[![](figures/lec9/perf-read.png)]
 
 ???
 
@@ -494,7 +494,7 @@ Scenario: a chunkserver misses a mutation applied to a chunk (e.g., a chunk was 
 
 # Performance: writes
 
-.center.width-70[![](figures/lec8/perf-write.png)]
+.center.width-70[![](figures/lec9/perf-write.png)]
 
 ???
 
@@ -505,7 +505,7 @@ Scenario: a chunkserver misses a mutation applied to a chunk (e.g., a chunk was 
 
 # Performance: appends
 
-.center.width-70[![](figures/lec8/perf-append.png)]
+.center.width-70[![](figures/lec9/perf-append.png)]
 
 ???
 
@@ -552,7 +552,7 @@ class: middle, center
 
 # HDFS in one figure
 
-.center.width-90[![](figures/lec8/hdfs-vs-gfs.png)]
+.center.width-90[![](figures/lec9/hdfs-vs-gfs.png)]
 
 ---
 
