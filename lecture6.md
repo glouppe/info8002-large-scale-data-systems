@@ -8,13 +8,6 @@ Lecture 6: Blockchain
 Prof. Gilles Louppe<br>
 [g.louppe@uliege.be](g.louppe@uliege.be)
 
-???
-
-R: recheck last year lecture
-R: http://www.cs.jhu.edu/~abhishek/classes/CS601-641-441-Spring2018/Lecture4.pdf
-http://assets.press.princeton.edu/chapters/s10908.pdf
-http://assets.press.princeton.edu/chapters/s2-10908.pdf
-
 ---
 
 # Today
@@ -198,7 +191,7 @@ class: middle
 
 ## Proof of membership
 
-Proving that a data block is included in the tree only requires shwoing the blocks in the path from that data block to the root. Hence $O(\log N)$.
+Proving that a data block is included in the tree only requires showing the blocks in the path from that data block to the root. Hence $O(\log N)$.
 
 ---
 
@@ -299,7 +292,7 @@ class: middle
 - She could create another signed statement that pays the same coin to Chuck.
 - Both Bob and Chuck would have valid-looking claims to be the owner of this coin.
 
-Goofycoin does not solve the double-spending attack problem. For this reason, it is **not secure**.
+Goofycoin does not solve the *double-spending attack* problem. For this reason, it is **not secure**.
 
 
 ---
@@ -327,7 +320,17 @@ To implement the append-only ledger, Scrooge makes use of a **blockchain**, whic
 
 class: middle
 
-A transaction only counts if it is in the block chain signed by Scrooge.
+.center.width-100[![](figures/lec6/btc-chain.png)]
+
+In Bitcoin, the blockchain contains two different hash structures.
+- The first is a *hash chain of blocks* that links the different blocks to one another.
+- The second is internal to each block and is a *Merkle tree of transactions* within the blocks.
+
+---
+
+class: middle
+
+A transaction only counts if it is in the block chain **signed by Scrooge**.
 - Anybody can verify a transaction was endorsed by Scrooge by checking Scrooge's signature on the block that records the transaction.
 - Scrooge makes sure that he does not endorse a transaction that attempts to double spend an already spent coin.
 - If Scrooge tries to add or remove a transaction, or to change an existing transaction, it will affect all following blocks published by Scrooge.
@@ -375,9 +378,9 @@ class: middle
 Coins cannot be transferred, subdivided or combined.
 
 But we can obtain the same effect by using transactions. E.g., to subdivide:
-- create a new transaction
-- consume your coins
-- pay out two new coins (of half the value of the original coin) to yourself
+- create a new transaction;
+- consume your coins;
+- pay out two new coins (of half the value of the original coin) to yourself.
 
 ---
 
@@ -481,7 +484,9 @@ class: middle
 
 Why not simply use a **Byzantine fault-tolerant** variant of *Paxos*?
 - It would never produce inconsistent results.
-- However, there are certain (rare) conditions in which the protocol may fail to make any progress.
+- However
+    - there are certain (rare) conditions in which the protocol may fail to make any progress,
+    - no solution exists if less than $2/3$ of the nodes are honest.
 
 ---
 
@@ -499,7 +504,7 @@ Assume the ability to select a random node in manner that is not vulnerable to S
 
 ## Consensus algorithm
 
-1. New transactions are broadcast to all nodes.
+1. New transactions are *broadcast* to all nodes.
 2. Each node collects new transactions into a block.
 3. In each round, a **random node** gets to broadcast its block.
 4. Other nodes accept the block only if all transactions in it are valid (unspent, valid signatures).
@@ -537,7 +542,7 @@ The double-spend attack success will depend on which block will ultimately end u
 
 ## Policy upon forks
 
-- Honest nodes follow the policy that extends the longest valid branch.
+- Honest nodes follow the policy that **extends the longest valid branch**.
 - In step 4 of implicit consensus, if an honest node discovers that the new block belongs to a longer branch than what it thought was part of the longest branch, then the node locally *reorganizes* its chain.
 
 ???
@@ -565,6 +570,8 @@ class: middle
 - Protection against invalid transactions is cryptographic, but enforced by consensus.
 - Protection against double-spending is purely by consensus.
 - We are never 100% certain that a transaction is part of the consensus branch. **The guarantee is probabilistic**.
+    - Even with 1% of the total hashing power, Alice would have a hard time cheating on Bob.
+    - The probability of mining six blocks in a row is $0.01^6 = 10^{-12}$.
 
 ---
 
@@ -614,20 +621,19 @@ How does one select a node at random without being vulnerable to Sybil attacks?
 - Approximate the selection of a random node by instead selecting nodes in proportion to a resource that (we hope) nobody can monopolize.
     - in proportion to computer power: **proof of work** (PoW)
     - in proportion to currency ownership: *proof of stake* (PoS)
-
-What does it mean to select nodes in proportion to their computing power?
-- Allow nodes to compete with one another by using their computing power.
-- This results in nodes being picked in proportion to that capacity.
+- Selecting nodes in proportion to their computing power?
+    - Allow nodes to compete with one another by using their computing power.
+    - This results in nodes being picked in proportion to that capacity.
 
 ---
 
 class: middle
 
-## PoW with hash puzzles
-
 .center.width-100[![](figures/lec6/puzzle.png)]
 
-- To create a block, find a $\text{nonce}$ such that
+## PoW with hash puzzles
+
+To create a block, find a $\text{nonce}$ such that
 $$H(\text{nonce} || \text{previous hash} || \text{tx}\_1 || \text{tx}\_2 || ...) < T$$
 for some target $T \ll 2^{256}$.
 - If the hash function $H$ is secure, the only way to succeed is to try enough nonces until getting lucky.
@@ -663,10 +669,9 @@ $$H(\text{nonce} || \text{previous hash} || \text{tx}\_1 || \text{tx}\_2 || ...)
 
 ---
 
-# The 51% attack
+# 51% attack
 
 - The whole system relies on the assumption that a majority of miners, weighted by hash power, follow the protocol.
-
 - Therefore, the protocol is vulnerable to attackers that would detain 51% or more of the total hashing power.
 
 
@@ -691,9 +696,12 @@ other applications
 
 - The cryptocurrency protocol presented so far corresponds to the general protocol used for **Bitcoin** (BTC).
 - Bitcoin was invented by an unknown person (or group of people) using the name of Satoshi Nakamoto.
-- It was released as an open source software in 2009.
+- It was released as an *open source software* in 2009.
 - Its main goal is to establish a decentralized digital currency that is not tied to a bank or government.
 - The estimated number of unique users is 3-6 million.
+
+<br><br>
+.center.width-20[![](figures/lec6/btc.png)]
 
 ---
 
@@ -701,6 +709,7 @@ class: middle
 
 ## Trading
 
+- Bitcoin can be used to buy or sell goods.
 - Bitcoin can be bought and sold like any other currency.
 - Bitcoin ATMs even exist in some countries!
 
@@ -759,16 +768,13 @@ class: middle
 BTC is only one of many cryptocurrencies. Popular cryptocurrencies include:
 - ETH
 - XRP
-- EOS
-- Stellar
 - LTC
 
-.center.width-80[![](figures/lec6/top100.png)]
-
+.center.width-90[![](figures/lec6/top100.png)]
 
 ---
 
-# Beyond currencies
+# Applications
 
 A blockchain is nothing else than a continuously growing list of records.
 - It is secure by design, with high Byzantine fault tolerance.
@@ -780,7 +786,10 @@ A blockchain is nothing else than a continuously growing list of records.
 
 # Summary
 
-XXX
+- The **blockchain** is a linked list with hash pointers.
+- It can be used for implementing *a ledger* that stores sensitive information that should not be tampered with.
+- Decentralization requires **consensus**.
+- In Bitcoin, consensus is achieved by *proof-of-work*, which provides high Byzantine fault tolerance.
 
 ---
 
