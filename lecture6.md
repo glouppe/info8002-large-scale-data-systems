@@ -14,6 +14,7 @@ Prof. Gilles Louppe<br>
 
 .grid[
 .kol-2-3[
+Blockchain:
 - Hash functions and data structures
 - Digital signatures
 - Simple (fictitious) cryptocurrencies
@@ -247,7 +248,7 @@ class: middle
 
 ## Rule 1: a designated entity (Goofy) can create new coins
 
-To create a coin, Goofy generates *a unique coin ID* `uniqueCoinID` along with the *statement* `"CreateCoin [uniqueCoinID]"`.
+To create a coin, Goofy generates *a unique coin ID* along with the *statement* `"CreateCoin [uniqueCoinID]"`.
 - Goofy computes the **digital signature** of this string with his secret signing key.
 - The string, together with Goofy's signature, is a coin.
 - Anyone can verify that the coin contains Goofy's valid signature of the `CreateCoin` statement and is therefore a valid coin.
