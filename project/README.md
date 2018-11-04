@@ -43,6 +43,7 @@ We expect the following deliverables;
     method iterates through all blocks (unless you have indexing data-structures) to search for all versions of the specified key.
   * code the reproduce the experiments and the associated plots,
   * broadcast implementation to disseminate information through your Blockchain network (choose wisely),
+  * the networking aspect is completed by implementing the REST API (additional method could be required).
 - A **report** in PDF format that must include:
   * a detailed description of the individual components in your solution,
   * a discussion of the consequences and scalability of your broadcast implementation,
