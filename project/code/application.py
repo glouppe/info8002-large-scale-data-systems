@@ -32,11 +32,10 @@ def allocate_application(arguments):
 
 
 def parse_arguments():
-    """Add command-line arguments here if desired."""
     parser = argparse.ArgumentParser("KeyChain - An overengineered key-value store with version control, powered by fancy linked-lists.")
     parser.add_argument("--miner", type=bool, default=False, nargs='?', const=True, help="Starts the mining procedure.")
     parser.add_argument("--bootstrap", type=str, default=None, help="Sets the address of the bootstrap node.")
-    parser.add_argument("--difficulty", type=int, default=1, help="Sets the difficulty of Proof of Work, only has an effect with the `--miner` flag has been set.")
+    parser.add_argument("--difficulty", type=int, default=5, help="Sets the difficulty of Proof of Work, only has an effect with the `--miner` flag has been set.")
     arguments, _ = parser.parse_known_args()
 
     return arguments
