@@ -4,6 +4,7 @@ from keychain import Blockchain
 from keychain import Transaction
 
 
+
 class Callback:
 
     def __init__(self, transaction, chain):

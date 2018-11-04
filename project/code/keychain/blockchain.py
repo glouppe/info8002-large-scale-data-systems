@@ -1,6 +1,7 @@
 import hashlib
 import multilib
 import numpy as np
+import flask
 
 from keychain.util import hash
 
@@ -108,7 +109,6 @@ class Blockchain:
         self._peers.remove(peer)
 
     def is_valid(self):
-        # Check if every block of the chain is valid, and if the subsequent hashes match.
         raise NotImplementedError
 
     def add_transaction(self, transaction):
@@ -121,6 +121,9 @@ class Blockchain:
 
     def blocks(self):
         return list(self._blocks)
+
+    def run(self):
+        raise NotImplementedError
 
     def __getitem__(self, index):
         return self._blocks[index]
