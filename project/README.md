@@ -42,7 +42,7 @@ We expect the following deliverables;
     Retrieves all values from the Blockchain with the specified key. Due to the transactional nature of a Blockchain, you can implicitely get `versioning` for free. In principle, this
     method iterates through all blocks (unless you have indexing data-structures) to search for all versions of the specified key.
   * code the reproduce the experiments and the associated plots,
-  * broadcast implementation to dissipate information through your Blockchain network (choose wisely),
+  * broadcast implementation to disseminate information through your Blockchain network (choose wisely),
 - A **report** in PDF format that must include:
   * a detailed description of the individual components in your solution,
   * a discussion of the consequences and scalability of your broadcast implementation,
