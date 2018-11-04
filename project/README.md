@@ -39,7 +39,8 @@ We expect the following deliverables;
     - `get(key)`
     Searches the Blockchain for the latest value with the specified key.
     - `get_all(key)`
-    Retrieves all values from the Blockchain with the specified key.
+    Retrieves all values from the Blockchain with the specified key. Due to the transactional nature of a Blockchain, you can implicitely get `versioning` for free. In principle, this
+    method iterates through all blocks (unless you have indexing data-structures) to search for all versions of the specified key.
   * code the reproduce the experiments and the associated plots,
   * broadcast implementation to dissipate information through your Blockchain network (choose wisely),
 - A **report** in PDF format that must include:
