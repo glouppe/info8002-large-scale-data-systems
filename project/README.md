@@ -1,54 +1,51 @@
 # KeyChain
 
-## Table of contents
-
-- [Introduction](#introduction)
-- [Instructions](#instructions)
-  - [Group formation](#group-formation)
-- [Evaluation](#evaluation)
-
----
-
-## Introduction
-
 The main objective of this project is to implement your own decentralized Blockchain [key-value store](https://en.wikipedia.org/wiki/Key-value_database).
 
----
+- [Instructions](#instructions)
+- [Implementation](#implementation)
+- [Report](#report)
 
-## Instructions
+## Organization
 
-### Group formation
+This project is a requirement to pass INFO8002, and **must** be completed and submitted with all deliverables to the [Montefiore submission system](https://submit.montefiore.ulg.ac.be/) by the **hard deadline** of `21/12/2018 23:59`. You are allowed to implement the project by yourself, or in groups with a maximum of *3* students.
 
-Please register your group at the [Montefiore submission system](https://submit.montefiore.ulg.ac.be/), also if you are working alone.
+## Implementation
 
-### Evaluation
+You are tasked with the implementation of a distributed key-value store. This module should provide a service to store `(key, value)` pairs while guaranteeing persistence and integrity.
 
-This project is a requirement to pass INFO8002, and **must** be completed and submitted with all deliverables to the [Montefiore submission system](https://submit.montefiore.ulg.ac.be/) by the **hard deadline** of `21/12/2018 23:59`. You are allowed to implement the project by yourself, or in groups with a maximum of *3* students (see [group formation](#group-formation)).
+Your implementation should be designed around three main components:
+- a top-level store component that interfaces with the main application.
+  The top-level API should provide the following methods:
+    - `put(key, value)`:
+    Stores the `value` with the associated `key`. If a value for `key` already exists in the store, then a new version of the pair is created with the value `value`.
+    Please make note of the fact that the `put` operation doesn't necessarily delivers after it has been completed. It may therefore be a good idea to add a `callback` procedure (or a different mechanism) that is called whenever the key has been added to the system, or if a failure occurred.
+    - `get(key)`:
+    Searches the store for the latest value with the specified key.
+    - `get_all(key)`:
+    Retrieves all values historically recorded in the store for the specified key.
+- a blockchain component that takes care of the distributed and persistent storage.
+- a broadcast component for communication between nodes.
 
-We expect the following deliverables;
+Additional requirements:
+- In your blockchain implementation, proof of work should have a parameterizable difficulty level.
+- Your broadcast implementation should be sufficiently reliable while remaining efficient.
+- You must provide a bootstrapping procedure for new nodes joining the network.
+- The store should be resilient to faults.
 
-- An **implementation** with the following requirements:
-  * a Python implementation,
-  * Blockchain and Block architecture with accompanying consensus rules,
-  * a bootstrapping procedure for new nodes joining the network,
-    - New nodes have to "download" the Blockchain from peers.
-  * proof of work (PoW) with a parameterizable difficulty level,
-  * abstraction layer for the top-level application:
-    - `put(key, value)`
-    Stores the `value` with the associated `key` in the Blockchain. Please make note of the fact that the `put` operation doesn't necessarily deliveres after it has been completed. It may therefore be a good idea to add a `callback` procedure (or a different mechanism) that is called whenever the key has been added to the chain, or if a failure occurred (i.e., duplicate key in the same block). This serves the purpose of the `deliver` operation from the lectures.
-    - `get(key)`
-    Searches the Blockchain for the latest value with the specified key.
-    - `get_all(key)`
-    Retrieves all values from the Blockchain with the specified key. Due to the transactional nature of a Blockchain, you can implicitely get `versioning` for free. In principle, this
-    method iterates through all blocks (unless you have indexing data-structures) to search for all versions of the specified key.
-  * code the reproduce the experiments and the associated plots,
-  * broadcast implementation to disseminate information through your Blockchain network (choose wisely),
-  * the networking aspect is completed by implementing the REST API (additional method could be required).
-- A **report** in PDF format that must include:
-  * a detailed description of the individual components in your solution,
-  * a discussion of the consequences and scalability of your broadcast implementation,
-  * a discussion about the applicability of Blockchain to this problem,
-  * an experiment showning the transaction throughput with respect to the difficulty level,
-  * an experiment demonstrating the resistance against Bryzantine attacks under different difficulty levels (e.g., double spending with 51% attack).
+Beyond this coarse structure, you are **free** to design and implement this project in any way you consider appropriate.
 
----
+Coding guidelines:
+- Code should be in Python.
+- The blockchain and broadcast components should both be running behind a REST API.
+- Provide the code for reproducing the experiments and the associated plots.
+
+
+## Report
+
+Your project must comes with a written **report** in PDF format that includes:
+* A detailed description of the individual components in your solution, along with your system assumptions.
+* A discussion of the consequences and scalability of your broadcast implementation.
+* A discussion about the applicability of Blockchain to this problem.
+* An experiment showing the transaction throughput with respect to the difficulty level.
+* An experiment demonstrating the resistance against Byzantine attacks under different difficulty levels (e.g., double spending with 51% attack).
