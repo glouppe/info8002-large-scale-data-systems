@@ -74,10 +74,46 @@ class Blockchain:
         self._difficulty = difficulty
         self._peers = []
         self._transactions = []
+        self._app = Flask("Blockchain")
+        self._initialize_rest()
         # Initialize the chain with the Genesis block.
         self._add_genesis_block()
         # Bootstrap the chain with the specified bootstrap address.
         self._bootstrap(bootstrap)
+
+    def _initialize_rest(self):
+        """REST Methods."""
+
+        # Mining call.
+        @self._app.route("/mine", methods=["GET"])
+        def mine():
+            raise NotImplementedError
+
+        # New transaction.
+        @self._app.route("/transaction", methods=["PUT"])
+        def new_transaction():
+            raise NotImplementedError
+
+        # Blockchain
+        @self._app.route("/blockchain", methods=["GET"])
+        def blockchain():
+            raise NotImplementedError
+
+        # Peers
+        @self._app.route("/peers", methods=["GET"])
+        def peers():
+            raise NotImplementedError
+
+        # Add peer.
+        @self._app.route("/peer", methods=["PUT"])
+        def add_peer():
+            raise NotImplementedError
+
+        # Remove peer.
+        @self._app.route("/peer", methods=["DELETE"])
+        def remove_peer():
+            raise NotImplementedError
+
 
     def _add_genesis_block(self):
         genesis_transactions = []
