@@ -32,9 +32,9 @@ We expect the following deliverables;
   * abstraction layer for the top-level application:
     - `put(key, value)`
     Stores the `value` with the associated `key` in the Blockchain. Please make note of the fact that the `put` operation doesn't necessarily deliveres after it has been completed. It may therefore be a good idea to add a `callback` procedure (or a different mechanism) that is called whenever the key has been added to the chain, or if a failure occurred (i.e., duplicate key in the same block). This serves the purpose of the `deliver` operation from the lectures.
-    - `get(key)`
+    - `retrieve(key)`
     Searches the Blockchain for the latest value with the specified key.
-    - `get_all(key)`
+    - `retrieve_all(key)`
     Retrieves all values from the Blockchain with the specified key. Due to the transactional nature of a Blockchain, you can implicitely get `versioning` for free. In principle, this
     method iterates through all blocks (unless you have indexing data-structures) to search for all versions of the specified key.
   * code the reproduce the experiments and the associated plots,
