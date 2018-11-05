@@ -33,6 +33,7 @@ Additional requirements:
 - In your blockchain implementation, proof of work should have a parameterizable difficulty level.
 - Your broadcast implementation should be sufficiently reliable while remaining efficient.
 - You must provide a bootstrapping procedure for new nodes joining the network.
+- Your implementation must be able to handle conflicts.
 - The store should be resilient to faults.
 
 Beyond this coarse structure, you are **free** to design and implement this project in any way you consider appropriate. However, when in doubt, keep it stupid simple (KISS).
