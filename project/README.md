@@ -25,7 +25,7 @@ We expect the following deliverables;
 
 - An **implementation** with the following requirements:
   * a Python implementation,
-  * Blockchain and Block architecture with accompanying consensus rules,
+  * Blockchain and Block architecture with accompanying consensus rules (i.e., how do you resolve conflicts?),
   * a bootstrapping procedure for new nodes joining the network,
     - New nodes have to "download" the Blockchain from peers.
   * proof of work (PoW) with a parameterizable difficulty level,
