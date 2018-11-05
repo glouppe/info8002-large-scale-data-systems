@@ -1,6 +1,6 @@
 # KeyChain
 
-The main objective of this project is to implement your own decentralized Blockchain [key-value store](https://en.wikipedia.org/wiki/Key-value_database).
+The objective of this project is to implement your own decentralized Blockchain [key-value store](https://en.wikipedia.org/wiki/Key-value_database).
 
 - [Organization](#organization)
 - [Implementation](#implementation)
@@ -8,13 +8,13 @@ The main objective of this project is to implement your own decentralized Blockc
 
 ## Organization
 
-This project is a requirement to pass INFO8002, and **must** be completed and submitted with all deliverables to the [Montefiore submission system](https://submit.montefiore.ulg.ac.be/) by the **hard deadline** of `21/12/2018 23:59`. You are allowed to implement the project by yourself, or in groups with a maximum of *3* students.
-
+This project is a requirement to pass the course, and **must** be completed and submitted with all deliverables to the [Montefiore submission system](https://submit.montefiore.ulg.ac.be/) by the **hard deadline** of  December 21, 2018 23:59.
+You are allowed to implement the project by yourself, or in groups with a maximum of *3* students.
 Please register your group on the platform, also if you are working alone.
 
 ## Implementation
 
-You are tasked with the implementation of a distributed key-value store. This module should provide a service to store `(key, value)` pairs while guaranteeing persistence and integrity.
+You are tasked with the implementation of a distributed key-value store. This module should provide a service to store `(key, value)` pairs while guaranteeing their persistence and integrity.
 
 Your implementation should be designed around three main components:
 - a top-level store component that interfaces with the main application.
@@ -35,7 +35,7 @@ Additional requirements:
 - You must provide a bootstrapping procedure for new nodes joining the network.
 - The store should be resilient to faults.
 
-Beyond this coarse structure, you are **free** to design and implement this project in any way you consider appropriate.
+Beyond this coarse structure, you are **free** to design and implement this project in any way you consider appropriate. However, when in doubt, keep it stupid simple (KISS).
 
 Coding guidelines:
 - Code should be in Python.
