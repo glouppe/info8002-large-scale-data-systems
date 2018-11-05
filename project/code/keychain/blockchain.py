@@ -1,7 +1,8 @@
+import flask
 import hashlib
 import multilib
 import numpy as np
-import flask
+import requests
 
 from keychain.util import hash
 
@@ -74,7 +75,7 @@ class Blockchain:
         self._difficulty = difficulty
         self._peers = []
         self._transactions = []
-        self._app = Flask("Blockchain")
+        self._app = Flask()
         self._initialize_rest()
         # Initialize the chain with the Genesis block.
         self._add_genesis_block()
