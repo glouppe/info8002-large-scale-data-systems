@@ -36,7 +36,7 @@ We expect the following deliverables;
     - `retrieve(key)`
     Searches the Blockchain for the latest value with the specified key.
     - `retrieve_all(key)`
-    Retrieves all values from the Blockchain with the specified key. Due to the transactional nature of a Blockchain, you can implicitely get `versioning` for free. In principle, this
+    Retrieves all values from the Blockchain with the specified key. Due to the transactional nature of a Blockchain, you implicitely get `versioning` for free. In principle, this
     method iterates through all blocks (unless you have indexing data-structures) to search for all versions of the specified key.
   * code the reproduce the experiments and the associated plots,
   * broadcast implementation to disseminate information through your Blockchain network (choose wisely),
