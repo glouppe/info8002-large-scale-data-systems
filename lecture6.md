@@ -721,19 +721,12 @@ As any currency, BTC can be exchanged for other currencies (e.g. USD or EUR).
 
 ---
 
-class: center, black-slide, middle
-
-<iframe width="640" height="400" src="https://www.youtube.com/embed/tt0idBrjpbk?cc_load_policy=1&hl=en&version=3" frameborder="0" allowfullscreen></iframe>
-
----
-
 class: middle
 
 ## Mining as a business
 
 .center.width-100[![](figures/lec6/farm.jpg)]
 .italic.center[A mining farm.]
-
 
 ---
 
@@ -752,6 +745,12 @@ class: middle
 
 .center.width-80[![](figures/lec6/news1.png)]
 .center.width-80[![](figures/lec6/news2.png)]
+
+---
+
+class: center, black-slide, middle
+
+<iframe width="640" height="400" src="https://www.youtube.com/embed/tt0idBrjpbk?cc_load_policy=1&hl=en&version=3" frameborder="0" allowfullscreen></iframe>
 
 ---
 
