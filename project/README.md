@@ -22,9 +22,9 @@ Your implementation should be designed around three main components:
     - `put(key, value)`:
     Stores the `value` with the associated `key`. If a value for `key` already exists in the store, then a new version of the pair is created with the value `value`.
     Please make note of the fact that the `put` operation doesn't necessarily delivers after it has been completed. It may therefore be a good idea to add a `callback` procedure (or a different mechanism) that is called whenever the key has been added to the system, or if a failure occurred.
-    - `get(key)`:
+    - `retrieve(key)`:
     Searches the store for the latest value with the specified key.
-    - `get_all(key)`:
+    - `retrieve_all(key)`:
     Retrieves all values historically recorded in the store for the specified key.
 - a blockchain component that takes care of the distributed and persistent storage.
 - a broadcast component for communication between nodes.
