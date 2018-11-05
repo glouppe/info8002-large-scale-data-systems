@@ -2,13 +2,15 @@
 
 The main objective of this project is to implement your own decentralized Blockchain [key-value store](https://en.wikipedia.org/wiki/Key-value_database).
 
-- [Instructions](#instructions)
+- [Organization](#organization)
 - [Implementation](#implementation)
 - [Report](#report)
 
 ## Organization
 
 This project is a requirement to pass INFO8002, and **must** be completed and submitted with all deliverables to the [Montefiore submission system](https://submit.montefiore.ulg.ac.be/) by the **hard deadline** of `21/12/2018 23:59`. You are allowed to implement the project by yourself, or in groups with a maximum of *3* students.
+
+Please register your group on the platform, also if you are working alone.
 
 ## Implementation
 
@@ -38,7 +40,7 @@ Beyond this coarse structure, you are **free** to design and implement this proj
 Coding guidelines:
 - Code should be in Python.
 - The blockchain and broadcast components should both be running behind a REST API.
-- Provide the code for reproducing the experiments and the associated plots.
+- Provide instructions and code for running your system, as well as for reproducing all experiments and results (including plots, if any).
 
 
 ## Report
@@ -48,4 +50,7 @@ Your project must comes with a written **report** in PDF format that includes:
 * A discussion of the consequences and scalability of your broadcast implementation.
 * A discussion about the applicability of Blockchain to this problem.
 * An experiment showing the transaction throughput with respect to the difficulty level.
-* An experiment demonstrating the resistance against Byzantine attacks under different difficulty levels (e.g., double spending with 51% attack).
+* An experiment demonstrating a 51% attack by rewriting an older version of a key.
+* An experiment demonstrating the resistance of the key-value store against faults.
+
+Experimental results should all come with a critical discussion.
