@@ -2,13 +2,12 @@
 
 import os
 import re
-import sys
 
 from setuptools import find_packages
 from setuptools import setup
 
 
-exclusions=["doc", "experiments", "application"]
+exclusions = ["doc", "experiments", "application"]
 packages = find_packages(exclude=exclusions)
 
 # Get the version string of cag.
@@ -34,7 +33,7 @@ _parameters = {
     "name": "cag",
     "packages": packages,
     "platform": "any",
-    "url": "https://github.com/glouppe/info8002-large-scale-data-systems"
+    "url": "https://github.com/glouppe/info8002-large-scale-data-systems",
     "version": _version
 }
 

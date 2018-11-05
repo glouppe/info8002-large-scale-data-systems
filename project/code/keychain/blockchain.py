@@ -1,13 +1,4 @@
-import flask
-import hashlib
-import multilib
-import numpy as np
-import requests
-
-
-
 class Block:
-
     def __init__(self):
         """Describe the properties of a block."""
         raise NotImplementedError
@@ -22,7 +13,6 @@ class Block:
 
 
 class Transaction:
-
     def __init__(self):
         """A transaction, in our KV setting. A transaction typically involves
         some key, value and an origin (the one who put it onto the storage).
@@ -31,7 +21,6 @@ class Transaction:
 
 
 class Peer:
-
     def __init__(self, address):
         """Address of the peer.
 
@@ -41,19 +30,18 @@ class Peer:
 
 
 class Blockchain:
-
-
     def __init__(self, bootstrap, difficulty):
         raise NotImplementedError
         # Initialize the properties.
         self._blocks = []
         self._peers = []
         self._difficulty = difficulty
+
         # Initialize the chain with the Genesis block.
         self._add_genesis_block()
+
         # Bootstrap the chain with the specified bootstrap address.
         self._bootstrap(bootstrap)
-
 
     def _add_genesis_block(self):
         """Adds the genesis block to your blockchain."""

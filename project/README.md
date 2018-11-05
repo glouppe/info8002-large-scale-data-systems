@@ -10,7 +10,6 @@ The objective of this project is to implement your own decentralized Blockchain 
 
 This project is a requirement to pass the course, and **must** be completed and submitted with all deliverables to the [Montefiore submission system](https://submit.montefiore.ulg.ac.be/) by the **hard deadline** of  December 21, 2018 23:59.
 You are allowed to implement the project by yourself, or in groups with a maximum of *3* students.
-Please register your group on the platform, also if you are working alone.
 
 ## Implementation
 
@@ -40,6 +39,7 @@ Beyond this coarse structure, you are **free** to design and implement this proj
 
 Coding guidelines:
 - Code should be in Python.
+- You code bootstrap your project from the stub provided in `/code/`. You are free to modify or extend any part of it.
 - The blockchain and broadcast components should both be running behind a REST API.
 - Provide instructions and code for running your system, as well as for reproducing all experiments and results (including plots, if any).
 

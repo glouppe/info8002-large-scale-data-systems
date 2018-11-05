@@ -1,12 +1,8 @@
-import numpy as np
-
 from keychain import Blockchain
 from keychain import Transaction
 
 
-
 class Callback:
-
     def __init__(self, transaction, chain):
         self._transaction = transaction
         self._chain = chain
@@ -21,7 +17,6 @@ class Callback:
 
 
 class Storage:
-
     def __init__(self, bootstrap, miner, difficulty):
         """Allocate the backend storage of the high level API, i.e.,
         your blockchain. Depending whether or not the miner flag has
