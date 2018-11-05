@@ -4,8 +4,7 @@
 
 - [Introduction](#introduction)
 - [Instructions](#instructions)
-  - [Group formation](#group-formation)
-- [Evaluation](#evaluation)
+  - [Evaluation](#evaluation)
 
 ---
 
