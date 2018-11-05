@@ -39,6 +39,7 @@ class Peer:
 class Blockchain:
     def __init__(self, bootstrap, difficulty):
         raise NotImplementedError
+
         # Initialize the properties.
         self._blocks = []
         self._peers = []

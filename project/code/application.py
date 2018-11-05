@@ -31,9 +31,6 @@ def main(arguments):
     # Show all values of the key.
     print(storage.retrieve_all(key))
 
-    # XXX: not defined!
-    application.terminate()
-
 
 def allocate_application(arguments):
     application = Storage(

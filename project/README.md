@@ -45,7 +45,7 @@ Beyond this coarse structure, **you are free** to design and implement this proj
 - Code should be in Python, with a proper modular implementation.
 - Style, documentation and unit tests will be evaluated.
 - You can bootstrap your project from the stub provided in `/code/`. You are free to modify, remove or extend any part of it.
-- The blockchain and broadcast components should both be running behind a REST API.
+- Network communication should be implemented through a REST API to simplify development.
 - Provide instructions and code for running your implementation of the key-value store, as well as for reproducing all experiments and results (including plots, if any).
 
 
