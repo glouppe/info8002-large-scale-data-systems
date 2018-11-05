@@ -33,8 +33,7 @@ def allocate_application(arguments):
     application = Storage(
         bootstrap=arguments.bootstrap,
         miner=arguments.miner,
-        difficulty=arguments.difficulty
-    )
+        difficulty=arguments.difficulty)
 
     return application
 
@@ -43,6 +42,7 @@ def parse_arguments():
     parser = argparse.ArgumentParser(
         "KeyChain - An overengineered key-value store "
         "with version control, powered by fancy linked-lists.")
+
     parser.add_argument("--miner", type=bool, default=False, nargs='?',
                         const=True, help="Starts the mining procedure.")
     parser.add_argument("--bootstrap", type=str, default=None,
