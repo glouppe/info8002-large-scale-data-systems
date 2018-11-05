@@ -16,7 +16,7 @@ The main objective of this project is to implement your own decentralized [key-v
 
 ## Instructions
 
-The system should be designed around 3 main components, i.e., the high level storage API, the Blockchain implementation, and a broadcasting mechanism.
+The system should be designed around 3 main components, i.e., the high level storage API, the Blockchain implementation, and a broadcasting mechanism. You are free to use the provided boilerplate code, or start from scratch.
 
 ### Evaluation
 
