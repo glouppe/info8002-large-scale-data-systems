@@ -148,11 +148,6 @@ class Blockchain:
     def is_valid(self):
         raise NotImplementedError
 
-    def add_transaction(self, transaction):
-        raise NotImplementedError
-        ## TODO Remove.
-        self._transactions.append(transaction)
-
     def size(self):
         return len(self._blocks)
 
