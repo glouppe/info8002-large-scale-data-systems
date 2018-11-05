@@ -11,11 +11,13 @@
 
 ## Introduction
 
-The main objective of this project is to implement your own decentralized [key-value store](https://en.wikipedia.org/wiki/Key-value_database).
+The main objective of this project is to implement your own decentralized [key-value store](https://en.wikipedia.org/wiki/Key-value_database) based on Blockchain.
 
 ---
 
 ## Instructions
+
+The project
 
 ### Evaluation
 
