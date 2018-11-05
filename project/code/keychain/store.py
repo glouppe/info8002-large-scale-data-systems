@@ -33,7 +33,7 @@ class Storage:
     def put(self, key, value, block=True):
         """Puts the specified key and value on the Blockchain.
 
-        The block flag specifies whether the call blocks until the value
+        The block flag indicates whether the call should block until the value
         has been put onto the blockchain, or if an error occurred.
         """
         raise NotImplementedError
