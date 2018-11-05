@@ -160,7 +160,7 @@ class Blockchain:
         return list(self._blocks)
 
     def run(self):
-        raise NotImplementedError
+        self._app.run()
 
     def __getitem__(self, index):
         return self._blocks[index]
