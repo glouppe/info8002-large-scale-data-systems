@@ -104,7 +104,7 @@ A commitment is the digital analog of taking a value, sealing it in an envelope,
 class: middle
 
 ## Commitment scheme
-- $\text{commit}(\text{msg}, \text{key}) := (H(\text{msg} || \text{key}), H(\text{key}))$:<br> The commit function takes a message and a (secret) key as input and returns a commitment $\text{com}$.
+- $\text{commit}(\text{msg}, \text{key}) := (H(\text{msg} || \text{key}), H(\text{key}))$:<br> The commit function takes a message and a (secret) key as input and returns a commitment pair $\text{com}$.
 - $\text{verify}(\text{com}, \text{key}, \text{msg})$: The verify function takes a commitment, a key and a message as inputs. It returns true iff $\text{com} = \text{commit}(\text{msg}, \text{key})$.
 
 ## Security properties
@@ -116,7 +116,7 @@ class: middle
 
 # Puzzle-friendliness
 
-A hash function $H$ is said to be **puzzle friendly** if for every possible $n$-bit output value $y$, if $k$ is chosen from a distribution with high entropy and made public, then it remains infeasible to find $x$ such that $H(k || x)$ in time significantly less than $2^n$.
+A hash function $H$ is said to be **puzzle friendly** if for every possible $n$-bit output value $y$, if $k$ is chosen from a distribution with high entropy and made public, then it remains infeasible to find $x$ such that $y=H(k || x)$ in time significantly less than $2^n$.
 
 ---
 
@@ -127,7 +127,7 @@ class: middle
 Given a puzzle ID $i$ and a target set $Y$, try to find a solution $x$ such that $H(i || x) \in Y$.
 
 - Puzzle-friendliness implies that no solving strategy is much better than trying random values of $x$.
-- Later, we will see that *mining is a computational puzzle*.
+- Later, we will see that *mining* is a computational puzzle.
 
 ---
 
@@ -136,7 +136,7 @@ Given a puzzle ID $i$ and a target set $Y$, try to find a solution $x$ such that
 <br><br>
 .center.width-100[![](figures/lec6/sha256.png)]
 
-SHA-256 uses the Merkle-Damgard transform to turn a fixed-length collision resistant compression function $c$ into a hash function that accepts arbitrary-length inputs.
+SHA-256 uses the Merkle–Damgård construction to turn a fixed-length collision resistant compression function $c$ into a hash function that accepts arbitrary-length inputs.
 
 ---
 
@@ -447,7 +447,7 @@ class: middle
 
 For this peer-to-peer system to work:
 - All nodes must have the exact same copy of the ledger.
-- Therefore, they must agree on the transactions that are added in the ledger and in which order.
+- Therefore, they must agree on the transactions that are added in the ledger, and in which order.
 
 $\Rightarrow$ They must reach **consensus**.
 
@@ -517,8 +517,8 @@ class: middle
 
 .center.width-80[![](figures/lec6/double-spend-transaction.png)]
 
-Alice adds an item to her shopping cart on Bob's website.
-- The server requests payment. Alice creates a transaction from her address to Bob's and broadcast it to the network.
+Alice adds an item to her shopping cart on Bob's website. The server requests payment.
+- Alice creates a transaction from her address to Bob's and broadcast it to the network.
 - An honest node creates the next block and includes this transaction in that block.
 - On seeing the transaction included in the blockchain, Bob concludes that Alice has paid him and send the purchased item to Alice.
 
@@ -594,7 +594,7 @@ class: middle
     - include a special coin-creation transaction in the block
     - choose the recipient address of this transaction.
 - The value is fixed: currently 12.5 coins, but halves every 210000 blocks (~ every 4 years).
-- The block creator gets to collect the reward only if the blocks end up on long-term consensus branch.
+- The block creator gets to collect the reward only if the blocks end up on the long-term consensus branch.
 
 ---
 
@@ -604,13 +604,18 @@ class: middle
 
 Total supply of coins with time. The block reward is cut in half every 4 years, limiting the total supply to 21 millions.
 
+???
+
+Geometric series.
+Analogy with the arrow story.
+
 ---
 
 class: middle
 
 ## Incentive 2: transaction fees
 
-- The creator of a transaction can choose to make output value less than input value.
+- The creator of a transaction can choose to make the output value less than input value.
 - The remainder is a transaction fee and goes to the block creator.
 - Purely voluntary.
 
@@ -622,17 +627,18 @@ How does one select a node at random without being vulnerable to Sybil attacks?
 - Approximate the selection of a random node by instead selecting nodes in proportion to a resource that (we hope) nobody can monopolize.
     - in proportion to computer power: **proof of work** (PoW)
     - in proportion to currency ownership: *proof of stake* (PoS)
-- Selecting nodes in proportion to their computing power?
-    - Allow nodes to compete with one another by using their computing power.
-    - This results in nodes being picked in proportion to that capacity.
+
+Selecting nodes in proportion to their computing power?
+- Allow nodes to compete with one another by using their computing power.
+- This results in nodes being picked in proportion to that capacity.
 
 ---
 
 class: middle
 
-.center.width-100[![](figures/lec6/puzzle.png)]
-
 ## PoW with hash puzzles
+
+.center.width-100[![](figures/lec6/puzzle.png)]
 
 To create a block, find a $\text{nonce}$ such that
 $$H(\text{nonce} || \text{previous hash} || \text{tx}\_1 || \text{tx}\_2 || ...) < T$$
@@ -655,7 +661,7 @@ class: middle
 
 ## Property 2: parameterizable cost
 
-- The target $T$ is adjusted periodically as a function of how much hashing power has been deployed in the system by the block creators.
+- The target $T$ is adjusted periodically as a function of how much hashing power has been deployed in the system by the miners.
 - The goal is to maintain an average time of 10 minutes between blocks.
 
 ---
