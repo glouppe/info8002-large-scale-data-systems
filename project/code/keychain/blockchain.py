@@ -71,6 +71,9 @@ class Blockchain:
     def add_transaction(self, transaction):
         """Adds a transaction to your current list of transactions,
         and broadcasts it to your Blockchain network.
+
+        If the `mine` method is called, it will collect the current list
+        of transactions, and attempt to mine a block with those.
         """
         raise NotImplementedError
 
