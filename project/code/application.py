@@ -26,7 +26,7 @@ def main(arguments):
     print(storage.retrieve_all(key))
 
     # XXX: not defined!
-    storage.terminate()
+    application.terminate()
 
 
 def allocate_application(arguments):
