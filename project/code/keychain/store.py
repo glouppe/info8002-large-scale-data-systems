@@ -1,3 +1,9 @@
+"""
+KeyChain key-value store (stub).
+
+NB: Feel free to extend or modify.
+"""
+
 from keychain import Blockchain
 from keychain import Transaction
 

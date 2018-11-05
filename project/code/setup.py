@@ -1,4 +1,8 @@
-"""```KeyChain``` setup file."""
+"""
+KeyChain setup file (stub).
+
+NB: Feel free to extend or modify.
+"""
 
 import os
 import re

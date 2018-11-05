@@ -1,3 +1,10 @@
+"""
+Blockchain (stub).
+
+NB: Feel free to extend or modify.
+"""
+
+
 class Block:
     def __init__(self):
         """Describe the properties of a block."""
