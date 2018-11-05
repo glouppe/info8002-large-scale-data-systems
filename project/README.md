@@ -38,9 +38,11 @@ We expect the following deliverables;
     - `retrieve_all(key)`
     Retrieves all values from the Blockchain with the specified key. Due to the transactional nature of a Blockchain, you implicitely get `versioning` for free. In principle, this
     method iterates through all blocks (unless you have indexing data-structures) to search for all versions of the specified key.
-  * code the reproduce the experiments and the associated plots,
   * broadcast implementation to disseminate information through your Blockchain network (choose wisely),
   * the networking aspect is completed by implementing the REST API (additional method could be required).
+- **Instructions and scripts**:
+  * to use your application, and how to use it,
+  * to reproduce the experiments in your report.
 - A **report** in PDF format that must include:
   * a detailed description of the individual components in your solution,
   * a discussion of the consequences and scalability of your broadcast implementation,
@@ -49,5 +51,4 @@ We expect the following deliverables;
   * an experiment demonstrating a 51% attack by rewriting an older version of a key,
   * an experiment demonstrating the resistance of the key-value store against faults,
   * a critical discussion for every individual experiment.
-
 ---
