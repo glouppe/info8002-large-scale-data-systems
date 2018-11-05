@@ -682,15 +682,6 @@ class: middle
 
 # Bitcoin and friends
 
-???
-
-trading
-Volatility
-extrem competition
-energy sinkhole
-video
-other applications
-
 ---
 
 # Bitcoin
