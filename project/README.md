@@ -11,11 +11,13 @@
 
 ## Introduction
 
-The main objective of this project is to implement your own decentralized Blockchain [key-value store](https://en.wikipedia.org/wiki/Key-value_database).
+The main objective of this project is to implement your own decentralized [key-value store](https://en.wikipedia.org/wiki/Key-value_database).
 
 ---
 
 ## Instructions
+
+
 
 ### Group formation
 
@@ -48,7 +50,9 @@ We expect the following deliverables;
   * a detailed description of the individual components in your solution,
   * a discussion of the consequences and scalability of your broadcast implementation,
   * a discussion about the applicability of Blockchain to this problem,
-  * an experiment showning the transaction throughput with respect to the difficulty level,
-  * an experiment demonstrating the resistance against Bryzantine attacks under different difficulty levels (e.g., double spending with 51% attack).
+  * an experiment showing the transaction throughput with respect to the difficulty level,
+  * an experiment demonstrating a 51% attack by rewriting an older version of a key,
+  * an experiment demonstrating the resistance of the key-value store against faults,
+  * a critical discussion for every individual experiment.
 
 ---
