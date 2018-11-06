@@ -259,6 +259,12 @@ To create a coin, Goofy generates *a unique coin ID* along with the *statement* 
 .kol-1-4.width-80[![](figures/lec6/goofy.png)]
 ]
 
+???
+
+Same as for a bank or a government that decide to print money at will.
+
+Verification of banknotes  can be done by anyone.
+
 ---
 
 class: middle
@@ -343,8 +349,8 @@ class: middle
 
 ## Coin creation
 
-Same as for Goofycoin, but we extend to semantics to allow for multiple coins to be created per transaction.
-Coins are referred to by a transaction ID and a coin's serial number in that transaction.
+- Same as for Goofycoin, but we extend the semantics to allow for multiple coins to be created per transaction.
+- Coins are referred to by a transaction ID and a coin's serial number in that transaction.
 
 <br>
 .center.width-70[![](figures/lec6/scrooge-create.png)]
@@ -487,7 +493,7 @@ Why not simply use a **Byzantine fault-tolerant** variant of *Paxos*?
 - It would never produce inconsistent results.
 - However
     - there are certain (rare) conditions in which the protocol may fail to make any progress,
-    - no solution exists if less than $2/3$ of the nodes are honest.
+    - no solution exists if less than $\tfrac{2}{3}$ of the nodes are honest.
 
 ---
 
@@ -496,6 +502,10 @@ class: middle
 ## Additional constraints
 - *Pseudonymity*: we do not want nodes to have an identity.
 - *Sybil attacks*: we do not want an adversary to be able to spawn many nodes (e.g., a majority) and take control of the system.
+
+???
+
+Draw diagram of a Sybil attack.
 
 ---
 
@@ -510,6 +520,13 @@ Assume the ability to select a random node in manner that is not vulnerable to S
 3. In each round, a **random node** gets to broadcast its block.
 4. Other nodes accept the block only if all transactions in it are valid (unspent, valid signatures).
 5. Nodes express their acceptance of the block by including its hash in the next block they create.
+
+<br><br><br>
+<span class="Q">[Q]</span> To what basic abstraction does random selection is an implementation of?
+
+???
+
+Random selection is a leader detector.
 
 ---
 
@@ -628,7 +645,7 @@ How does one select a node at random without being vulnerable to Sybil attacks?
     - in proportion to computer power: **proof of work** (PoW)
     - in proportion to currency ownership: *proof of stake* (PoS)
 
-Selecting nodes in proportion to their computing power?
+How does one select nodes in proportion to their computing power?
 - Allow nodes to compete with one another by using their computing power.
 - This results in nodes being picked in proportion to that capacity.
 
@@ -642,7 +659,7 @@ class: middle
 
 To create a block, find a $\text{nonce}$ such that
 $$H(\text{nonce} || \text{previous hash} || \text{tx}\_1 || \text{tx}\_2 || ...) < T$$
-for some target $T \ll 2^{256}$.
+for some target $T \ll 2^{256} \approx 10^{77}$.
 - If the hash function $H$ is secure, the only way to succeed is to try enough nonces until getting lucky.
 - Node creators are called *miners*.
 
@@ -754,9 +771,25 @@ class: middle
 
 ---
 
+class: middle
+
+## Mining economics
+
+.center.width-90[![](figures/lec6/economics.png)]
+
+See also the [Bitcoin Mining Profit Calculator](https://jblevins.org/btcmpc/).
+
+---
+
 class: center, black-slide, middle
 
 <iframe width="640" height="400" src="https://www.youtube.com/embed/tt0idBrjpbk?cc_load_policy=1&hl=en&version=3" frameborder="0" allowfullscreen></iframe>
+
+---
+
+class: center, black-slide, middle
+
+<iframe width="640" height="400" src="https://www.youtube.com/embed/fgrD0Bse70A?cc_load_policy=1&hl=en&version=3" frameborder="0" allowfullscreen></iframe>
 
 ---
 
