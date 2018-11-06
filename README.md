@@ -29,7 +29,7 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2018.
 
 ### Programming project
 
-TBD.
+KeyChain. Due by **December 21, 2018 at 23:59**. See the [`/project/`](https://github.com/glouppe/info8002-large-scale-data-systems/tree/master/project) folder for instructions.
 
 ### Reading assignment
 
@@ -48,6 +48,7 @@ Constraints:
 - English
 - Up to 4 pages
 - Formatted using the LaTeX template [`template-report-reading-assignment.tex`](https://glouppe.github.io/info8002-large-scale-data-systems/template-report-reading-assignment.tex)
+- You are allowed to complete the project by yourself, or in groups with a maximum of 3 students.
 
 Your report should be submitted  by **December 21, 2018 at 23:59** on the [submission platform](https://submit.montefiore.ulg.ac.be/). This is a **hard** deadline.
 
