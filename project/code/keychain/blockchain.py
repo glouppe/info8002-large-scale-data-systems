@@ -38,6 +38,10 @@ class Peer:
 
 class Blockchain:
     def __init__(self, bootstrap, difficulty):
+        """The bootstrap address serves as the initial entry point of
+        the bootstrapping procedure. In principle it will contact the specified
+        addres, download the peerlist, and start the bootstrapping procedure.
+        """
         raise NotImplementedError
 
         # Initialize the properties.
