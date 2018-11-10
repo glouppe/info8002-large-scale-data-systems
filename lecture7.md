@@ -20,6 +20,12 @@ How do we program this thing?
 
 ---
 
+class: middle, center, black-slide
+
+.width-80[![](figures/lec7/iceberg.png)]
+
+---
+
 # Dealing with lots of data
 
 - Example: $130$+ trillion web pages $\times$ $50\text{KB} = 6.5$ exabytes.
@@ -43,8 +49,7 @@ How do we program this thing?
 
 ---
 
-
-# Traditional network programming
+class: middle
 
 .center[![](figures/lec7/trends.png)]
 
@@ -65,11 +70,12 @@ How do we program this thing?
 
 # History
 
+<br><br>
 .center.width-100[![](figures/lec7/history.png)]
 
 ---
 
-class: middle, center
+class: middle
 
 # MapReduce
 
@@ -127,13 +133,17 @@ class: middle, center
 
 ---
 
-# Overview
+class: middle
+
+## Overview
 
 .center.width-100[![](figures/lec7/mr-full.png)]
 
 ---
 
-# Step 1: Split input files
+class: middle
+
+## Step 1: Split input files
 
 .center.width-100[![](figures/lec7/mr-shards.png)]
 
@@ -141,7 +151,9 @@ class: middle, center
 
 ---
 
-# Step 2: Fork processes
+class: middle
+
+## Step 2: Fork processes
 
 .center.width-80[![](figures/lec7/mr-forks.png)]
 
@@ -158,7 +170,9 @@ class: middle, center
 
 ---
 
-# Step 3: Map task
+class: middle
+
+## Step 3: Map task
 
 .center.width-50[![](figures/lec7/mr-read.png)]
 
@@ -170,7 +184,9 @@ class: middle, center
 
 ---
 
-# Step 4: Create intermediate files
+class: middle
+
+## Step 4: Create intermediate files
 
 .center.width-70[![](figures/lec7/mr-if.png)]
 
@@ -185,7 +201,9 @@ class: middle, center
 
 ---
 
-# Step 5: Sorting/Shuffling
+class: middle
+
+## Step 5: Sorting/Shuffling
 
 .center.width-60[![](figures/lec7/mr-reduce1.png)]
 
@@ -198,7 +216,9 @@ associated to their partition.
 
 ---
 
-# Step 6: Reduce tasks
+class: middle
+
+## Step 6: Reduce tasks
 
 .center.width-60[![](figures/lec7/mr-reduce2.png)]
 
@@ -209,7 +229,9 @@ associated to their partition.
 
 ---
 
-# Step 7: Return to user
+class: middle
+
+## Step 7: Return to user
 
 - When all Map and Reduce tasks have completed, the master wakes up the user program.
 - The MapReduce call in the user program returns and the program can resume execution.
@@ -217,13 +239,17 @@ associated to their partition.
 
 ---
 
-# Example: Counting words
+class: middle
+
+## Example: Counting words
 
 .center.width-100[![](figures/lec7/mr-example.png)]
 
 ---
 
-# Other examples
+class: middle
+
+## Other examples
 
 - *Distributed grep*
     - Search for words in lots of documents.
@@ -241,10 +267,10 @@ associated to their partition.
 
 ---
 
-# MapReduce is widely applicable
+# Wide applicability
 
-.center.width-100[![](figures/lec7/mr-programs.png)]
-.caption[Number of MapReduce programs in Google code source tree.]
+.center.width-90[![](figures/lec7/mr-programs.png)]
+.center[Number of MapReduce programs in Google code source tree.]
 
 ---
 
@@ -293,13 +319,15 @@ The master single-point of failure is fixed in Hadoop 2.0 ("high availability").
 
 ---
 
-# Hadoop Ecosystem (1)
+# Hadoop Ecosystem
+
+<br>
 
 .center.width-100[![](figures/lec7/hadoop-eco.png)]
 
 ---
 
-# Hadoop Ecosystem (2)
+class: middle
 
 - *Hadoop HDFS*: A distributed file system for reliably storing huge amounts of unstructured, semi-structured and structured data in the form of files.
 - **Hadoop MapReduce**: A distributed algorithm framework for the parallel processing of large datasets on *HDFS* filesystem. It runs on Hadoop cluster but also supports other database formats like *Cassandra* and *HBase*.
@@ -311,7 +339,7 @@ The master single-point of failure is fixed in Hadoop 2.0 ("high availability").
 
 ---
 
-# Hadoop Ecosystem (3)
+class: middle
 
 - *Pig*: Pig is a scripting interface over MapReduce for developers who prefer scripting interface over native Java MapReduce programming.
 - *Hive*:  Hive is a SQL interface over MapReduce for developers and analysts who prefer SQL interface over native Java MapReduce programming.
@@ -322,7 +350,7 @@ The master single-point of failure is fixed in Hadoop 2.0 ("high availability").
 
 ---
 
-class: middle, center
+class: middle
 
 # Spark
 
@@ -406,7 +434,7 @@ Time to sort $100\text{TB}$:
 
 ---
 
-# RDD
+class: middle
 
 .center.width-100[![](figures/lec7/rdd-1.png)]
 
@@ -414,7 +442,9 @@ Time to sort $100\text{TB}$:
 
 ---
 
-# Operations on RDDs
+class: middle
+
+## Operations on RDDs
 
 - *Transformations*: $f(\text{RDD}) \rightarrow \text{RDD'}$
     - Coarse-grained operations only (à la pandas/numpy).
@@ -437,7 +467,9 @@ Time to sort $100\text{TB}$:
 
 ---
 
-# Example: Log mining (1)
+class: middle
+
+## Example: Log mining
 
 Goal: Load error messages in memory, then interactively search for various patterns.
 
@@ -447,7 +479,10 @@ Goal: Load error messages in memory, then interactively search for various patte
 
 ---
 
-# Example: Log mining (2)
+class: middle
+count: false
+
+## Example: Log mining
 
 Goal: Load error messages in memory, then interactively search for various patterns.
 
@@ -457,7 +492,10 @@ Goal: Load error messages in memory, then interactively search for various patte
 
 ---
 
-# Example: Log mining (3)
+class: middle
+count: false
+
+## Example: Log mining
 
 Goal: Load error messages in memory, then interactively search for various patterns.
 
@@ -467,7 +505,10 @@ Goal: Load error messages in memory, then interactively search for various patte
 
 ---
 
-# Example: Log mining (4)
+class: middle
+count: false
+
+## Example: Log mining
 
 Goal: Load error messages in memory, then interactively search for various patterns.
 
@@ -477,7 +518,10 @@ Goal: Load error messages in memory, then interactively search for various patte
 
 ---
 
-# Example: Log mining (5)
+class: middle
+count: false
+
+## Example: Log mining
 
 Goal: Load error messages in memory, then interactively search for various patterns.
 
@@ -487,7 +531,10 @@ Goal: Load error messages in memory, then interactively search for various patte
 
 ---
 
-# Example: Log mining (6)
+class: middle
+count: false
+
+## Example: Log mining
 
 Goal: Load error messages in memory, then interactively search for various patterns.
 
@@ -497,7 +544,10 @@ Goal: Load error messages in memory, then interactively search for various patte
 
 ---
 
-# Example: Log mining (7)
+class: middle
+count: false
+
+## Example: Log mining
 
 Goal: Load error messages in memory, then interactively search for various patterns.
 
@@ -507,7 +557,10 @@ Goal: Load error messages in memory, then interactively search for various patte
 
 ---
 
-# Example: Log mining (8)
+class: middle
+count: false
+
+## Example: Log mining
 
 Goal: Load error messages in memory, then interactively search for various patterns.
 
@@ -517,7 +570,10 @@ Goal: Load error messages in memory, then interactively search for various patte
 
 ---
 
-# Example: Log mining (9)
+class: middle
+count: false
+
+## Example: Log mining
 
 Goal: Load error messages in memory, then interactively search for various patterns.
 
@@ -530,7 +586,7 @@ Goal: Load error messages in memory, then interactively search for various patte
 # Rich, high-level API
 
 .grid.center[
-.col-1-3[
+.kol-1-3[
 *`map`*<br>
 `filter`<br>
 `sort`<br>
@@ -539,7 +595,7 @@ Goal: Load error messages in memory, then interactively search for various patte
 `join`<br>
 ...
 ]
-.col-1-3[
+.kol-1-3[
 *`reduce`*<br>
 `count`<br>
 `fold`<br>
@@ -549,7 +605,7 @@ Goal: Load error messages in memory, then interactively search for various patte
 `zip`<br>
 ...
 ]
-.col-1-3[
+.kol-1-3[
 `sample`<br>
 `take`<br>
 `first`<br>
@@ -574,7 +630,7 @@ Goal: Load error messages in memory, then interactively search for various patte
 
 ---
 
-# Lineage
+class: middle
 
 `newRDD = myRDD.map(myfund)`
 
@@ -598,8 +654,6 @@ Goal: Load error messages in memory, then interactively search for various patte
 
 ---
 
-class: smaller
-
 # Dependencies
 
 .center.width-60[![](figures/lec7/spark-deps.png)]
@@ -619,17 +673,20 @@ class: smaller
 
 ---
 
-class: smaller
-
 # Job scheduler
 
-.center.width-40[![](figures/lec7/spark-stages.png)]
+.center.width-50[![](figures/lec7/spark-stages.png)]
 
 - Whenever an *action* is called, the scheduler examines that RDD's lineage graph to build a **DAG of stages** to execute.
 - Each *stage* contains as many pipeline transformations with narrow dependencies as possible.
 - The boundaries of the stages are
     - the shuffle operations required for wide dependencies, or
     - already computed partitions that can short-circuit the computation of a parent RDD.
+
+---
+
+class: middle
+
 - The scheduler launches *tasks* to a lower-level scheduler to compute missing partitions from each stage until it has computed the target RDD.
     - One task per partition.
 - Tasks are assigned to machines based on *data locality*.
@@ -641,6 +698,7 @@ class: smaller
 - If a task fails, it is rescheduled on another node, as long as its stage's parents are still available.
 - If some stages have become unavailable, all corresponding tasks are resubmit to compute the missing partitions in parallel.
 
+<br>
 .center.width-70[![](figures/lec7/spark-failure.png)]
 
 ---
@@ -668,6 +726,13 @@ class: smaller
 - **Spark** generalizes MapReduce by making use of:
     - fast data sharing (data resides in memory)
     - general direct acyclic graphs of operations.
+
+---
+
+class: end-slide, center
+count: false
+
+The end.
 
 ---
 

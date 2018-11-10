@@ -16,7 +16,7 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2018.
 - Lecture 4 (October 9): [Shared memory](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture4.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec4.pdf)]
 - Lecture 5 (October 23): [Consensus](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture5.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec5.pdf)]
 - Lecture 6 (November 6): [Blockchain](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture6.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec6.pdf)]
-- Lecture 7 (November 13): Cloud computing [PDF]
+- Lecture 7 (November 13): [Cloud computing](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture7.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec7.pdf)]
 - Lecture 8 (November 20): Distributed file systems [PDF]
 - Invited seminar (November 27): Data warehouse modelling (Olivier Bui Quoc, HERMES Engineering)
 - Lecture 9 (December 4): Distributed hash tables [PDF]
