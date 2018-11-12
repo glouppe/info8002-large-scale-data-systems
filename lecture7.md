@@ -24,11 +24,16 @@ class: middle, center, black-slide
 
 .width-80[![](figures/lec7/iceberg.png)]
 
+???
+
+Comment on the fact that data systems are likely to be obsolete within before they graduated.
+
 ---
 
 # Dealing with lots of data
 
-- Example: $130$+ trillion web pages $\times$ $50\text{KB} = 6.5$ exabytes.
+- Example:
+    - $130$+ trillion web pages $\times$ $50\text{KB} = 6.5$ exabytes.
     - ~$6500000$ hard drives ($1\text{TB}$) just to store the web.
 - Assuming a data transfer rate of $200\text{MB}/s$, it would require $1000$+ years for a single computer to read the web!
     - And even more to make any useful usage of this data.
@@ -53,13 +58,13 @@ class: middle
 
 .center[![](figures/lec7/trends.png)]
 
-.center[Almost nobody does message-passing anymore!$^*$]
+.center.italic[Almost nobody does message-passing anymore!$^*$]
 
 .footnote[\*: except in niches, like scientific computing.]
 
 ---
 
-# Data-Parallel models
+# Data-parallel models
 
 - **Restrict** and **simplify** the programming interface so that the system can *do more automatically*.
 - "Here is an operation, run it on all of the data".
@@ -73,6 +78,10 @@ class: middle
 <br><br>
 .center.width-100[![](figures/lec7/history.png)]
 
+???
+
+Should now be updated with technologies such as Dask, Tensorflow, etc.
+
 ---
 
 class: middle
@@ -83,12 +92,18 @@ class: middle
 
 # What is MapReduce?
 
-- **MapReduce** is a *parallel programming* model for processing distributed data on a cluster.
-- Simple *high-level* API limited two operations: **map** and **reduce**, as inspired by Lisp primitives:
-    - `map`: apply function to each value in a set.
-        - `(map 'length '(() (a) (a b) (a b c)))` $\rightarrow$ `(0 1 2 3)`
-    - `reduce`: combines all the values using a binary function.
-        - `(reduce #'+ '(1 2 3 4 5))` $\rightarrow$ `15`
+**MapReduce** is a *parallel programming* model for processing distributed data on a cluster.
+
+It comes with a simple *high-level* API limited two operations: **map** and **reduce**, as inspired by Lisp primitives:
+- `map`: apply function to each value in a set.
+    - `(map 'length '(() (a) (a b) (a b c)))` $\rightarrow$ `(0 1 2 3)`
+- `reduce`: combines all the values using a binary function.
+    - `(reduce #'+ '(1 2 3 4 5))` $\rightarrow$ `15`
+
+---
+
+class: middle
+
 - MapReduce is best suited for *embarrassingly parallel* tasks.
     - When processing can be broken into parts of equal size.
     - When processes can concurrently work on these parts.
@@ -103,7 +118,7 @@ class: middle
 # Programming model
 
 - **Map**: input key/value pairs $\rightarrow$ intermediate key/value pairs
-    - User function gets called for each input key/value pairs.
+    - User function gets called for each input key/value pair.
     - Produces a set of intermediate key/value pairs.
 - **Reduce**: intermediate key/value pairs $\rightarrow$  result files
     - Combine all intermediate values for a particular key through a user-defined function.
@@ -111,25 +126,32 @@ class: middle
 
 ---
 
-# What really happens
+# Under the hood
 
-- **Map worker**:
-    - Map:
-        - Map calls are distributed across machines by automatically **partitioning** the input data into $M$ *shards*.
-        - Parse the input shards into input key/value pairs.
-        - Process each input pair through a user-defined `map` function to produce a set of intermediate key/value pairs.
-        - Write the result to an intermediate file.
-    - Partition:
-        - Assign an intermediate result to one of $R$ reduce tasks based on a partitioning function.
-            - Both $R$ and the partitioning function are user defined.
-- **Reduce worker**:
-    - Sort:
-        - Fetch the relevant partition of the output from all mappers.
-        - Sort by keys.
-            - Different mappers may have output the same key.
-    - Reduce:
-        - Accept an intermediate key and a set of values for the key.
-        - For each unique key, combine all values through a user-defined `reduce` function to form a smaller set of values.
+## Map worker
+
+- Map:
+    - Map calls are distributed across machines by automatically **partitioning** the input data into $M$ *shards*.
+    - Parse the input shards into input key/value pairs.
+    - Process each input pair through a user-defined `map` function to produce a set of intermediate key/value pairs.
+    - Write the result to an intermediate file.
+- Partition:
+    - Assign an intermediate result to one of $R$ reduce tasks based on a partitioning function.
+        - Both $R$ and the partitioning function are user defined.
+
+---
+
+class: middle
+
+## Reduce worker
+
+- Sort:
+    - Fetch the relevant partition of the output from all mappers.
+    - Sort by keys.
+        - Different mappers may have output the same key.
+- Reduce:
+    - Accept an intermediate key and a set of values for the key.
+    - For each unique key, combine all values through a user-defined `reduce` function to form a smaller set of values.
 
 ---
 
@@ -413,9 +435,10 @@ Draw a diagram illustrating the issue with intermediate writes.
 
 # Performance
 
-Time to sort $100\text{TB}$:
+Time for sorting $100\text{TB}$ of data:
 
-.center.width-80[![](figures/lec7/spark-sort.png)]
+<br>
+.center.width-100[![](figures/lec7/spark-sort.png)]
 
 .footnote[Credits: [sortbenchmark.org](http://sortbenchmark.org/)]
 
