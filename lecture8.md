@@ -13,9 +13,9 @@ Prof. Gilles Louppe<br>
 # Today
 
 - Google File System (GFS)
-    - Design considerations behind GFS .
+    - Design considerations
     - Data replication
-    - Reading and writing.
+    - Reading and writing
     - Recovery from failure
 - Hadoop Distributed File System (HDFS)
 
@@ -54,6 +54,8 @@ class: middle
 .grid[
 .kol-1-2[
 
+<br><br><br><br>
+
 ## How would you design a DFS?
 
 We want *single system illusion* for data storage.
@@ -87,7 +89,7 @@ GFS was developed at Google around 2003, jointly with MapReduce.
 - Handle **failures** gracefully and transparently.
 - *Low synchronization* overhead between entities.
 - Exploit *parallelism* of numerous entities.
-- Ensure **high sustained throughput** over high latency for individual reads/writes.
+- Ensure **high sustained throughput** for individual reads/writes.
 
 ---
 
@@ -125,12 +127,11 @@ class: middle, red-slide
 
 .bold[Disclaimer]
 
-- GFS (and HDFS) are not a good fit for:
-    - Low latency data access (in the ms range).
-        - Solution: distributed databases, such as HBase.
-    - Many small files.
-    - Constantly changing data.
-- Not all details of GFS are public knowledge.
+GFS (and HDFS) are not a good fit for:
+- Low latency data access (in the ms range).
+    - Solution: distributed databases, such as HBase.
+- Many small files.
+- Constantly changing data.
 
 ---
 
@@ -156,14 +157,14 @@ class: middle, red-slide
 
 # Files
 
+.center.width-60[![](figures/lec8/gfs-chunks.png)]
+
 - A single **file** may contain several *objects* (e.g., images, web pages, etc).
 - Files are divided into fixed-size **chunks**.
     - Each chunk is identified by a globally unique 64 bit *chunk handle*.
 - Chunkservers store chunks on local disks as plain Linux files.
     - Read or write data specified by a pair (chunk handle, byte range).
     - By default **three replicas** of a chunk stored across chunkservers.
-
-.center.width-60[![](figures/lec8/gfs-chunks.png)]
 
 ---
 
@@ -397,7 +398,7 @@ class: middle
 
 ---
 
-# (Relaxed) Consistency model
+# Consistency model
 
 - Changes to metadata are always *atomic*.
     - Guaranteed by having a single master server.
@@ -475,7 +476,7 @@ Scenario: a chunkserver misses a mutation applied to a chunk (e.g., a chunk was 
 - Master keeps up to date through *hearbeat* messages.
 - A chunkserver has the **final word** over what chunks it stores.
 
-<br><br><br><br><br><br><br><br><br><br><br><span class="Q">[Q]</span> What does this design decision simplify?
+<span class="Q">[Q]</span> What does this design decision simplify?
 
 ---
 
@@ -509,7 +510,7 @@ Scenario: a chunkserver misses a mutation applied to a chunk (e.g., a chunk was 
 - Read requests: the chunkserver *verifies the checksum* of the data blocks that overlap with the read range.
     - Corrupted data are not sent to the clients.
 
-<br><br><br><br><br><br><br><span class="Q">[Q]</span> What if a read request fails because of corrupted data?
+<span class="Q">[Q]</span> What if a read request fails because of corrupted data?
 
 ---
 
@@ -558,7 +559,7 @@ class: middle
 
 # Summary
 
-- **Success**: used actively by Google to support search service and other applications.
+- GFS has been used actively by Google to support search service and other applications.
     - Availability and recoverability on cheap hardware.
     - High throughput by decoupling control and data.
     - Supports massive data sets and concurrent appends.
@@ -599,17 +600,36 @@ class: middle
 
 ---
 
-# GFS vs. HDFS
+class: middle
 
-| GFS | HDFS |
-| --- | ---- |
-| Master | NameNode |
-| Chunkserver | DataNode |
-| Operation log | Journal, edit log |
-| Chunk | Block |
-| Random file writes are possible | Only append is possible |
-| Multiple writers, multiple readers model | Single writer, multiple reader model |
-| Default chunk size = 64MB | Default block size = 128MB |
+.grid[
+.kol-2-5[
+## GFS
+
+- Master
+- Chunkserver
+- Operation log
+- Chunk
+- Random file writes are possible
+- Multiple writers, multiple readers model
+- Default chunk size = 64MB
+]
+.kol-1-5.center[
+<br><br><br><br><br><br>
+$\Rightarrow$
+]
+.kol-2-5[
+## HDFS
+
+- NameNode
+- DataNode
+- Journal, edit log
+- Block
+- Only append is possible
+- Single writer, multiple reader model
+- Default block size = 128MB
+]
+]
 
 ---
 

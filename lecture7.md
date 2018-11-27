@@ -26,6 +26,8 @@ class: middle, center, black-slide
 
 ???
 
+Cloud computing: high-level computing abstractions that make it possible to not worry about the messy stuff below, while offering efficient services at the application level.
+
 Comment on the fact that data systems are likely to be obsolete within before they graduated.
 
 ---
@@ -267,6 +269,8 @@ class: middle
 
 .center.width-100[![](figures/lec7/mr-example.png)]
 
+.center[See also the [Hadoop tutorial](https://hadoop.apache.org/docs/stable/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html).]
+
 ---
 
 class: middle
@@ -430,6 +434,8 @@ Draw a diagram illustrating the issue with intermediate writes.
 .center.width-100[![](figures/lec7/spark-short.png)]
 
 .footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
+
+.center[See also [Spark examples](https://spark.apache.org/examples.html)]
 
 ---
 
@@ -655,7 +661,7 @@ Goal: Load error messages in memory, then interactively search for various patte
 
 class: middle
 
-`newRDD = myRDD.map(myfund)`
+`newRDD = myRDD.map(myfunc)`
 
 .center.width-90[![](figures/lec7/rdd-2.png)]
 

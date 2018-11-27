@@ -17,9 +17,10 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2018.
 - Lecture 5 (October 23): [Consensus](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture5.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec5.pdf)]
 - Lecture 6 (November 6): [Blockchain](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture6.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec6.pdf)]
 - Lecture 7 (November 13): [Cloud computing](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture7.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec7.pdf)]
-- Lecture 8 (November 20): [Distributed file systems](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture8.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec8.pdf)]
+- Lecture 8 (November 20): Cancelled (power outage).
 - Invited seminar (November 27): Data warehouse modeling (Olivier Bui Quoc, HERMES Engineering)
-- Lecture 9 (December 11): Distributed hash tables [PDF]
+- Lecture 8 (December 11): [Distributed file systems](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture8.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec8.pdf)]
+- Lecture 9 (December 20): Distributed hash tables [PDF]
 
 
 
@@ -27,10 +28,10 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2018.
 
 - Exercise session 1 (October 9) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/ex1.pdf)]
 - Exercise session 2 (November 13) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/ex2.pdf)]
-- Exercise session 3 (November 20) [[PDF]](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/ex3.pdf)]
-- Exercise session 4 (November 27)
-- Exercise session 5 (December 4)
-
+- Exercise session 3 (November 20) Cancelled (power outage).
+- Exercise session 3 (November 27)
+- Exercise session 4 (December 4)
+- Exercise session 5 (December 11)
 
 ## Projects
 
