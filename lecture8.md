@@ -70,6 +70,14 @@ We want *single system illusion* for data storage.
 ]
 ]
 
+???
+
+Pause here: this is a good example of the skill we want to practice in this course.
+- What do we want? (efficiency, reliability)
+- What do we have to cope with? (failures, volumes of data, low synchronization overhead, high throughput)
+- What components could we use?
+- How do we architecture the thing?
+
 ---
 
 # History
@@ -429,6 +437,10 @@ class: middle
 - Re-balancing
     - Changes in replica distribution for better load balancing.
     - New chunk servers are gradually filled.
+
+???
+
+Can be formulated as an optimization problem (e.g. a linear program).
 
 ---
 
