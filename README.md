@@ -29,7 +29,7 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2018.
 - Exercise session 3 (November 20) Cancelled (power outage).
 - Exercise session 3 (November 27) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/ex3.pdf)]
 - Exercise session 4 (December 4)
-- Exercise session 5 (December 11) [[PDF]](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/ex4.pdf)]
+- Exercise session 5 (December 11) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/ex4.pdf)]
 
 ## Projects
 
