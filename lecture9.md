@@ -27,7 +27,7 @@ class: middle, center, black-slide
 
 # Hash tables
 
-A **hash table** is data data structure that implements an associative array abstract data type, i.e. a structure than can map keys to values.
+A **hash table** is a data structure that implements an associative array abstract data type, i.e. a structure than can map keys to values.
 - It uses a *hash function* to compute an index into array of buckets or slots, from which the desired value can be found.
 - Efficient and scalable: $\mathcal{O}(1)$ look-up and store operations (on a single machine).
 
@@ -35,7 +35,7 @@ A **hash table** is data data structure that implements an associative array abs
 
 ---
 
-# Distributed Hash Tables
+# Distributed hash tables
 
 A **distributed hash table** (DHT) is a class of decentralized distributed systems that provide a lookup service similar to a hash table.
 - Extends upon multiple machines in the case when the data is so large we cannot store it on a single machine.
@@ -91,7 +91,7 @@ Chord is a protocol and algorithm for a peer-to-peer distributed hash table.
 - Evenly distributes $x$ objects over $n$ bins.
 - When $n$ changes:
   - Only $\mathcal{O}(\frac{x}{n})$ objects need to be rehashed.
-  - Uses a deterministic hash function.
+  - Uses a deterministic hash function, independent of $n$.
 
 ---
 
@@ -109,7 +109,8 @@ Consistent hashing in Chord assigns keys to nodes as follows:
 class: middle
 
 To maintain the consistent (hashing) mapping, let us consider a node $n$ which
-- joins: keys assigned to $\text{successor}(n)$ are now assigned to $n$. Which? $\text{predecessor}(n) < k \leq n$
+- joins: some of the keys assigned to $\text{successor}(n)$ are now assigned to $n$.
+    - Which? $\text{predecessor}(n) < k \leq n$
 - leaves: All of $n$'s assigned keys are assigned to $\text{successor}(n)$.
 
 .center.width-80[![](figures/lec9/dht-chord.png)]
@@ -124,21 +125,24 @@ The core usage of the Chord protocol is to query a key from a client (generally 
 
 - Any node $n$ stores its immediate successor $\text{successor}(n)$.
 - If the key cannot be found locally, then the query is passed to the node's successor.
-- Scalable yes, but $\mathcal{O}(n)$ operations are required.
+- Scalable, but $\mathcal{O}(n)$ operations are required.
     - **Unacceptable** in  large systems!
 
 ---
 
 class: middle
 
-## Finger Table
+## Finger table
 
-In Chord, each node maintains a finger table to accelerate lookups.
+In Chord, in addition to $\text{successor}$ and $\text{predecessor}$ pointers, each node maintains a finger table to accelerate lookups.
 - As before, let $m$ be the number of bits in the identifier.
 - Every node $n$ maintains a routing (finger) table with at most $m$ entries.
 - Entry $i$ in the finger table of node $n$:
   - First node $s$ that succeeds $n$ by at least $2^{i - 1}$ on the identifier circle.
-  - Therefore, $s = \text{successor}((n + 2^{i-1})\mod 2^m)$
+  - Therefore, $s = \text{successor}((n + 2^{i-1})\text{~}\textrm{mod}\text{~}2^m)$
+
+<br>
+.center.width-60[![](figures/lec9/chord-variable.png)]
 
 ---
 
@@ -252,8 +256,8 @@ Of course, one could implement a mechanism that prevents node 4 from looking up 
 
 # Join
 
-We must ensure a consistent network when a node $n$ joins the network by connecting to a node $n^\prime$. This is performed in three steps:
-1. Initialize the predecessor and fingers of node $n$.
+We must ensure the network remains consistent when a node $n$ joins by connecting to a node $n^\prime$. This is performed in three steps:
+1. Initialize the successor of $n$.
 2. Update the fingers and predecessors of existing nodes to reflect the addition of $n$.
 3. Transfer the keys and their corresponding values to $n$.
 
@@ -261,48 +265,38 @@ We must ensure a consistent network when a node $n$ joins the network by connect
 
 class: middle
 
-## Initializing fingers and predecessor
+## Initializing $n$'s successor
 
-- $n$ learns its predecessor and fingers by asking $n^\prime$ to look them up $\text{find-predecessor}(n)$.
-- Finger table can also constructed through this mechanism.
-  - Remember: $i$-th entry is $\text{successor}((n + 2^{i - 1})\text{~}\mathrm{mod}\text{~}2^m)$
-  - However: $\mathcal{O}(m \text{~log~} N)$ look-ups, can we do better?
-  - Check if the $i$-th finger is also correct for $i + 1$.
-  - Happens when there is no node in that interval, meaning, `finger[i].node >= finger[i + 1].start`.
-  - This change allows a new node to complete its finger table with "high probability" in $\mathcal{O}(\text{log~}N)$ steps.
-
----
-
-class: middle
+$n$ learns its successor by asking $n^\prime$ to look them up $\text{find-predecessor}(n)$.
 
 ```
 // join a Chord ring containing node n'.
 n.join(n')
   predecessor = nil;
   successor = n'.find_successor(n);
-
-// called periodically. n asks the successor
-// about its predecessor, verifies if n's immediate
-// successor is consistent, and tells the successor about n
-n.stabilize()
-x = successor.predecessor;
-if (x∈(n, successor))
-  successor = x;
-successor.notify(n);
-
-// n' thinks it might be our predecessor.
-n.notify(n')
-  if (predecessor is nil or n'∈(predecessor, n))
-    predecessor = n';
 ```
 
 ---
 
 class: middle
 
-## Updating fingers of existing nodes.
+## Periodic consistency check
 
 ```
+// called periodically. n asks the successor
+// about its predecessor, verifies if n's immediate
+// successor is consistent, and tells the successor about n
+n.stabilize()
+  x = successor.predecessor;
+  if (x∈(n, successor))
+    successor = x;
+  successor.notify(n);
+
+// n' thinks it might be our predecessor.
+n.notify(n')
+  if (predecessor is nil or n'∈(predecessor, n))
+    predecessor = n';
+
 // called periodically. refreshes finger table entries.
 // next stores the index of the finger to fix
 n.fix_fingers()
