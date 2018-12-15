@@ -351,6 +351,8 @@ class: middle
 
 # Kademlia
 
+Kademlia is a peer-to-peer hash table with **provable** consistency and performance in a fault-prone environment.
+
 - Configuration information spreads automatically as a side-effect of key look-ups (gossiping).
 - Nodes have enough knowledge and flexibility to route queries through low-latency paths.
 - Asynchronous queries to avoid timeout delays from failed nodes.
@@ -361,11 +363,11 @@ class: middle
 
 ---
 
-# Kademlia binary tree
+# System description
 
-- Treat node identifiers as leaves in an (unbalanced) binary suffix tree.
+- Treat nodes as leaves in an (unbalanced) binary  tree, wich each node's position determined by the shortest unique prefix of its ID.
 - The Kademlia protocol ensures that every node knows at least one other node in every sub-tree.
-  - This guarantees that any node can locate any other node given its identifier.
+  This guarantees that any node can locate any other node given its identifier.
 
 .center.width-70[![](figures/lec9/kademlia-subtrees.png)]
 
@@ -376,6 +378,10 @@ class: middle
 ## Node distance
 
 The distance between two identifiers is defined as $$d(x, y) = x \oplus y.$$
+- XOR is valid, albeit non-Euclidean metric.
+- XOR captures the notion of distance between two IDs: in a fully-populated binary tree of 160-bit IDs, it is the height of the smallest subtree containing them both.
+- XOR is symmetric.
+- XOR is unidirectional.
 
 ---
 
@@ -383,7 +389,7 @@ class: middle
 
 ## Node state
 
-- For every prefix $0 < i < 160$, every node keeps a list of (IP address, Port, ID) for nodes of distance between $2^i$ and $2^{i+1}$: *k-buckets*.
+- For every prefix $0 < i < 160$, every node keeps a list, called a **k-bucket**,  of (IP address, Port, ID) for nodes of distance between $2^i$ and $2^{i+1}$ of itself.
 - Every k-bucket is sorted by time last seen (descending, i.e, last-seen first).
 - When a node receives a message, it updates the corresponding k-bucket for the sender's identifier. If the sender already exists, it is moved to the tail of the list.
   - **Important**: If the k-bucket is full, the node pings the **last** seen node and checks if it is still available. **Only if** the node is **not available** it will replace it.
@@ -399,27 +405,26 @@ class: middle
 
 ---
 
-# Kademlia protocol
+# Interface
 
-Provides four remote procedure calls:
+Kademlia provides four remote procedure calls (RPCs):
 
 - `PING(id)` returns (IP, Port, ID)
   - Probes the node to check whether it is still online.
 - `STORE(key, value)`
 - `FIND_NODE(id)` returns (IP, Port, ID) for the $k$ nodes it knows about closest to ID.
-- `FIND_VALUE(key)` returns (IP, Port, ID) for the $k$ nodes it knows about closest to ID.
-  - **OR** the value if it maintains the key.
+- `FIND_VALUE(key)` returns (IP, Port, ID) for the $k$ nodes it knows about closest to ID, or the value if it maintains the key.
 
 ---
 
 class: middle
 
-## Node Lookup Procedure
+## Node lookup
 
 The most important procedure a Kademlia participant must perform is locating the $k$ closest nodes to some given identifier.
 
-- Kademlia achieves this by performing a recursive (more iterative) lookup procedure.
-- The initiator issues asynchronous `FIND_NODE` requests to $\alpha$ (system parameter) nodes it has chosen.
+- Kademlia achieves this by performing a recursive  lookup procedure.
+- The initiator issues asynchronous `FIND_NODE` requests to $\alpha$ (system parameter) nodes from its closest non-empty k-bucket.
   - Parallel search with the cost of increased network traffic.
   - Nodes return the $k$ closest nodes to the query ID.
   - Repeat and select the $\alpha$ nodes from the new set of nodes.
@@ -428,13 +433,19 @@ The most important procedure a Kademlia participant must perform is locating the
 
 ---
 
+class: middle, center
+
+.width-80[![](figures/lec9/kademlia-lookup.png)]
+
+---
+
 class: middle
 
 ## Storing data
 
-Using the `FIND_NODE(id)` procedure, *storing* and making data *persistent* is trivial.
+Using the lookup procedure, *storing* and making data *persistent* is trivial.
 
-$\rightarrow$ Use $k$ closest node to store and persist the data.
+$\rightarrow$ Send a `STORE` RPC to the $k$ closest nodes identified by the lookup procedure.
 
 - To ensure persistence in the presence of *node failures*, every node periodically republishes the key-value pair to the $k$ closest nodes.
 - Updating scheme can be implemented. For example: delete data after 24 hours after publication to limit stale information.
@@ -446,11 +457,11 @@ class: middle
 ## Retrieving data
 
 1. Find $k$ closest nodes of the specified identifier using `FIND_VALUE(id)`.
-2. Halt procedure whenever the set of closest nodes doesn't change or a value is returned.
+2. Halt procedure immediately whenever the set of closest nodes doesn't change or a value is returned.
 
 $\rightarrow$ For caching purposes, once a lookup succeeds, the requesting node stores the key-value pair at the *closest node to the key that did not return the value*.
 
-- Because of the *unidirectionality* of the topology (requests will usually follow the same path), future searches for the same key are likely to hit cached entries before querying the closest node.
+Because of the *unidirectionality* of the topology (requests will usually follow the same path), future searches for the same key are likely to hit cached entries before querying the closest node.
 
 $\rightarrow$ Induces problem with popular nodes: *over-caching*.
 
@@ -458,23 +469,28 @@ $\rightarrow$ Induces problem with popular nodes: *over-caching*.
 
 ---
 
-# Join
+class: middle
+
+## Join
 
 Straightforward approach compared to other implementations.
 
 1. Node $n$ initializes it's k-bucket (empty).
 2. A node $n$ connects to an already participating node $j$.
 3. Node $n$ then performs a *node-lookup* for its own identifier.
-   - Yielding the $k$ closest node.
+   - Yielding the $k$ closest nodes.
    - By doing so $n$ inserts itself in other nodes $k$-buckets.
 
 **Note**: The new node should store keys which are the closest to its own identifier by obtaining the $k$-closest nodes.
 
+
 ---
 
-# Leave and failures
+class: middle
 
-Again, as is joining, leaving is very simple as well. Just disconnect.
+## Leave and failures
+
+Leaving is very simple as well. Just disconnect.
 - Failure handling is *implicit* in Kademlia due to *data persistence*.
 - No special actions required by other nodes (failed node will just be removed from the k-bucket).
 
@@ -482,17 +498,17 @@ Again, as is joining, leaving is very simple as well. Just disconnect.
 
 # Routing table
 
-- Routing table is an (unbalanced) binary tree whose leaves are $k$-buckets.
-    - Every $k$-bucket contains some nodes with a common prefix.
-    - The shared prefix is the $k$-buckets position in the binary tree.
-    - Thus, a $k$-buckets covers some range of the 160 bit identifier space.
+The routing table is an (unbalanced) binary tree whose leaves are $k$-buckets.
+- Every $k$-bucket contains some nodes with a common prefix.
+- The shared prefix is the $k$-buckets position in the binary tree.
+- Thus, a $k$-buckets covers some range of the 160 bit identifier space.
 - All $k$-buckets cover the *complete* identifier space with *no* overlap.
 
 ---
 
 class: middle
 
-## Dynamic construction of the routing Table
+## Dynamic construction of the routing table
 
 - Nodes in the routing table are allocated dynamically as needed.
 - A bucket is split whenever the $k$-bucket is *full* and the range *includes* the node's own *identifier*.
