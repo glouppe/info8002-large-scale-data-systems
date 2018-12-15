@@ -133,6 +133,7 @@ class: middle
 
 ## Finger Table
 
+In Chord, each node maintains a finger table to accelerate lookups.
 - As before, let $m$ be the number of bits in the identifier.
 - Every node $n$ maintains a routing (finger) table with at most $m$ entries.
 - Entry $i$ in the finger table of node $n$:
@@ -197,23 +198,20 @@ class: middle
 
 class: middle
 
-## Properties of the finger table
+## Improved lookup
 
-- Every nodes stores only a small number of other nodes.
-- Every nodes knows more about *close* nodes compared to far away nodes.
-
-What happens when a node $n$ does not know the successor of a key $k$ (probably since nodes can join and leave arbitrarily)?
-- *Intuition*: If $n$ can find a node whose ID is closer to $k$ than its own, find that node, until it finds the successor of $k$.
-    - Jump to the *closest predecessor* node of the desired identifier (with high probability it knows more about the desired identifier).
-- **Invariant required**: Every node's successor is correctly maintained.
+A lookup for $\text{successor}(k)$ now works as follows:
+- if $k$ falls between $n$ and $\text{successor}(n)$, return $\text{successor}(n)$.
+- otherwise, the lookup is forwarded at $n'$, where $n'$ is the node if the finger table that most immediately precedes $k$.
+- Since each node has finger entries at power of two intervals around the identifier circle, each node can forward a query at least halfway along the remaining distance between the node and the target key.
+- $\mathcal{O}(\log N)$ nodes need to be contacted.
 
 ---
 
 class: middle
 
-## Lookup
-
 ```
+// ask node n to find the successor of id
 n.find_successor(id)
   if (id ∈ (n, successor])
     return successor;
@@ -224,6 +222,7 @@ n.find_successor(id)
 ```
 
 ```
+// search the local table for the highest predecessor of id
 n.closest_preceding_node(id)
   for i = m downto 1
     if (finger[i]∈(n,id))
@@ -253,8 +252,7 @@ Of course, one could implement a mechanism that prevents node 4 from looking up 
 
 # Join
 
-What needs to happen in order to ensure a consistent network when a node $n$ joins the network by connecting to a node $n^\prime$?
-
+We must ensure a consistent network when a node $n$ joins the network by connecting to a node $n^\prime$. This is performed in three steps:
 1. Initialize the predecessor and fingers of node $n$.
 2. Update the fingers and predecessors of existing nodes to reflect the addition of $n$.
 3. Transfer the keys and their corresponding values to $n$.
@@ -277,13 +275,42 @@ class: middle
 
 class: middle
 
-## Updating fingers of existing nodes
+```
+// join a Chord ring containing node n'.
+n.join(n')
+  predecessor = nil;
+  successor = n'.find_successor(n);
 
-- Node $n$ will become the $i$-th finger of a node $p$ if and only if:
-  - $p$ precedes $n$ by at least $2^{i - 1}$.
-  - The $i$-th finger of node $p$ succeeds $n$.
-- The first node that can meet these two conditions is the immediate predecessor of $n$, which is $n - 2^{i -1}$.
-- Then it increments $i$ and finds the next predecessor which meets this criterion (thus moving counter-clockwise).
+// called periodically. n asks the successor
+// about its predecessor, verifies if n's immediate
+// successor is consistent, and tells the successor about n
+n.stabilize()
+x = successor.predecessor;
+if (x∈(n, successor))
+  successor = x;
+successor.notify(n);
+
+// n' thinks it might be our predecessor.
+n.notify(n')
+  if (predecessor is nil or n'∈(predecessor, n))
+    predecessor = n';
+```
+
+---
+
+class: middle
+
+## Updating fingers of existing nodes.
+
+```
+// called periodically. refreshes finger table entries.
+// next stores the index of the finger to fix
+n.fix_fingers()
+  next = next + 1;
+  if (next > m)
+    next = 1;
+  finger[next] = find_successor(n+2^{next-1});
+```
 
 ---
 
@@ -300,9 +327,9 @@ class: middle
 
 ## Failures
 
-A failure of $n$ must not be allowed to disrupt queries.
-- Maintain a list of possible successors.
-- A different thread maintains the finger table (and notifies others) in parallel.
+- Since the successor (or predecessor) of a node may disappear from the network (because of failure or departure), each node records a whole segment of the circle adjacent to it, i.e., the $r$ nodes following it.
+- This successor list results in a high probability that a node is able to correctly locate its successor (or predecessor), even if the network in question suffers from a high failure rate.
+
 
 ## Replication
 
@@ -312,8 +339,7 @@ A failure of $n$ must not be allowed to disrupt queries.
 
 # Summary
 
-- Fast lookup $\text{log}(N)$
-- Small routing table $\text{log}(N)$
+- Fast lookup $\mathcal{O}(\log N)$, small routing table $\mathcal{O}(\log N)$.
 - Handling failures and addressing replication (load balance) using same mechanism (successor list).
 - Relatively small join/leave cost.
 - Iterative lookup process.
@@ -341,12 +367,11 @@ class: middle
 
 ---
 
-# System description
+# Kademlia binary tree
 
-- $m = 160$ bits
-- Treat nodes as leaves in an (unbalanced) binary tree (sorted by prefix)
+- Treat node identifiers as leaves in an (unbalanced) binary suffix tree.
 - The Kademlia protocol ensures that every node knows at least one other node in every sub-tree.
-  - Guarantees that any node can locate any other node given its identifier.
+  - This guarantees that any node can locate any other node given its identifier.
 
 .center.width-70[![](figures/lec9/kademlia-subtrees.png)]
 
@@ -356,22 +381,17 @@ class: middle
 
 ## Node distance
 
-Before we look into storing and retrieving key value pairs in Kademlia, we first define a notion of *identifier closeness*.
-
-- This allows us to store and retrieve information on $k$ (system parameter) closest nodes.
-- The distance between two identifiers is defined as: $d(x, y) = x \oplus y$.
-
-$\rightarrow$ Ensures redundancy
+The distance between two identifiers is defined as $$d(x, y) = x \oplus y.$$
 
 ---
 
 class: middle
 
-## Node State
+## Node state
 
 - For every prefix $0 < i < 160$, every node keeps a list of (IP address, Port, ID) for nodes of distance between $2^i$ and $2^{i+1}$: *k-buckets*.
 - Every k-bucket is sorted by time last seen (descending, i.e, last-seen first).
-- When a node receives a message, it updates the corresponding k-bucket for the sender's identifier. If the sender already exist, it is moved to the tail of the list.
+- When a node receives a message, it updates the corresponding k-bucket for the sender's identifier. If the sender already exists, it is moved to the tail of the list.
   - **Important**: If the k-bucket is full, the node pings the **last** seen node and checks if it is still available. **Only if** the node is **not available** it will replace it.
   - Policy of replacement only when a nodes leaves the network $\rightarrow$ prevents Denial of Service (DoS) attacks (e.g., flushing routing tables).
 
@@ -387,7 +407,7 @@ class: middle
 
 # Kademlia protocol
 
-Provides 4 RPC's (Remote Procedure Call):
+Provides four remote procedure calls:
 
 - `PING(id)` returns (IP, Port, ID)
   - Probes the node to check whether it is still online.
@@ -423,7 +443,7 @@ Using the `FIND_NODE(id)` procedure, *storing* and making data *persistent* is t
 $\rightarrow$ Use $k$ closest node to store and persist the data.
 
 - To ensure persistence in the presence of *node failures*, every node periodically republishes the key-value pair to the $k$ closest nodes.
-- Updating scheme can be implemented. For example: delete data after 24 after publication to limit stale information.
+- Updating scheme can be implemented. For example: delete data after 24 hours after publication to limit stale information.
 
 ---
 
@@ -446,7 +466,7 @@ $\rightarrow$ Induces problem with popular nodes: *over-caching*.
 
 # Join
 
-Very simple approach compared to other implementations.
+Straightforward approach compared to other implementations.
 
 1. Node $n$ initializes it's k-bucket (empty).
 2. A node $n$ connects to an already participating node $j$.
@@ -460,219 +480,162 @@ Very simple approach compared to other implementations.
 
 # Leave and failures
 
-Again, as is joining, leaving is very simple as well.
-
-$\rightarrow$ Just disconnect.
-
+Again, as is joining, leaving is very simple as well. Just disconnect.
 - Failure handling is *implicit* in Kademlia due to *data persistence*.
 - No special actions required by other nodes (failed node will just be removed from the k-bucket).
 
 ---
 
-# Routing and Routing Table
+# Routing table
 
 - Routing table is an (unbalanced) binary tree whose leaves are $k$-buckets.
-- Every $k$-bucket contains some nodes with a common prefix.
-- The shared prefix is the $k$-buckets position in the binary tree.
-
-$\rightarrow$ Thus, a $k$-buckets covers some range of the 160 bit identifier space.
-
+    - Every $k$-bucket contains some nodes with a common prefix.
+    - The shared prefix is the $k$-buckets position in the binary tree.
+    - Thus, a $k$-buckets covers some range of the 160 bit identifier space.
 - All $k$-buckets cover the *complete* identifier space with *no* overlap.
 
 ---
 
-# Dynamic Construction of the Routing Table
+class: middle
+
+## Dynamic construction of the routing Table
 
 - Nodes in the routing table are allocated dynamically as needed.
 - A bucket is split whenever the $k$-bucket is *full* and the range *includes* the node's own *identifier*.
 
-.center[
-.width-80[
-![k-bucket](figures/lec9/k-bucket.png)
-]
-]
+.center.width-70[![](figures/lec9/k-bucket.png)]
 
 ---
 
-# Example: Routing Table
+class: middle
+
+## Example
 
 - $k$ = 2
 - $\alpha = 1$ (no asynchronous requests, also no asynchronous pings)
 - Node identifier (000000) is *not* in the routing table
 
-.center[
-.width-80[
-![Kademlia Routing 1](figures/lec9/kademlia-routing-1.svg)
-]
-]
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-1.svg)]
 
 ---
 
 class: middle, center
+count: false
 
-### Node `000111` is involved with an RPC request, what happens?
+Node `000111` is involved with an RPC request, what happens?
 
-.center[
-.width-100[
-![Kademlia Routing 2](figures/lec9/kademlia-routing-2.svg)
-]
-]
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-2.svg)]
+
+---
+
+class: middle
+count: false
+
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-3.svg)]
+
+---
+
+class: middle
+count: false
+
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-4.svg)]
+
+---
+
+class: middle
+count: false
+
+.center.width-80[![Kademlia Routing 1](figures/lec9/kademlia-routing-5.svg)]
+
+---
+
+class: middle
+count: false
+
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-6.svg)]
+
+---
+
+class: middle
+count: false
+
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-7.svg)]
 
 ---
 
 class: middle, center
+count: false
 
-.center[
-.width-100[
-![Kademlia Routing 3](figures/lec9/kademlia-routing-3.svg)
-]
-]
+A new node `011000` is involved with a RPC message.
 
----
-
-class: middle, center
-
-.center[
-.width-100[
-![Kademlia Routing 4](figures/lec9/kademlia-routing-4.svg)
-]
-]
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-8.svg)]
 
 ---
 
-class: middle, center
+class: middle
+count: false
 
-.center[
-.width-100[
-![Kademlia Routing 5](figures/lec9/kademlia-routing-5.svg)
-]
-]
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-9.svg)]
 
 ---
 
-class: middle, center
+class: middle
+count: false
 
-.center[
-.width-100[
-![Kademlia Routing 6](figures/lec9/kademlia-routing-6.svg)
-]
-]
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-10.svg)]
 
 ---
 
-class: middle, center
+class: middle
+count: false
 
-.center[
-.width-100[
-![Kademlia Routing 7](figures/lec9/kademlia-routing-7.svg)
-]
-]
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-11.svg)]
 
 ---
 
-class: middle, center
+class: middle
+count: false
 
-### A new node `011000` is involved with a RPC message.
-
-.center[
-.width-100[
-![Kademlia Routing 8](figures/lec9/kademlia-routing-8.svg)
-]
-]
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-12.svg)]
 
 ---
 
-class: middle, center
+class: middle
+count: false
 
-.center[
-.width-100[
-![Kademlia Routing 9](figures/lec9/kademlia-routing-9.svg)
-]
-]
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-13.svg)]
 
 ---
 
-class: middle, center
+class: middle
+count: false
 
-.center[
-.width-100[
-![Kademlia Routing 10](figures/lec9/kademlia-routing-10.svg)
-]
-]
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-14.svg)]
 
 ---
 
-class: middle, center
+class: middle
+count: false
 
-.center[
-.width-100[
-![Kademlia Routing 11](figures/lec9/kademlia-routing-11.svg)
-]
-]
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-15.svg)]
 
 ---
 
-class: middle, center
+class: middle
+count: false
 
-.center[
-.width-100[
-![Kademlia Routing 12](figures/lec9/kademlia-routing-12.svg)
-]
-]
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-16.svg)]
 
 ---
 
-class: middle, center
+class: middle
+count: false
 
-.center[
-.width-100[
-![Kademlia Routing 13](figures/lec9/kademlia-routing-13.svg)
-]
-]
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-17.svg)]
 
 ---
 
-class: middle, center
-
-.center[
-.width-100[
-![Kademlia Routing 14](figures/lec9/kademlia-routing-14.svg)
-]
-]
-
----
-
-class: middle, center
-
-.center[
-.width-100[
-![Kademlia Routing 15](figures/lec9/kademlia-routing-15.svg)
-]
-]
-
----
-
-class: middle, center
-
-.center[
-.width-100[
-![Kademlia Routing 16](figures/lec9/kademlia-routing-16.svg)
-]
-]
-
----
-
-class: middle, center
-
-.center[
-.width-100[
-![Kademlia Routing 17](figures/lec9/kademlia-routing-17.svg)
-]
-]
-
----
-
-# Kademlia Summary
+# Summary
 
 - Efficient, guaranteed look-ups $\mathcal{O}(\text{log} N)$
 - XOR-based metric topology (provable consistency and performance).
@@ -692,5 +655,5 @@ The end.
 
 # References
 
-- https://pdos.csail.mit.edu/papers/chord:sigcomm01/chord_sigcomm.pdf (Chord)
-- https://pdos.csail.mit.edu/~petar/papers/maymounkov-kademlia-lncs.pdf (Kademlia)
+- Stoica, I., Morris, R., Karger, D., Kaashoek, M. F., & Balakrishnan, H. (2001). Chord: A scalable peer-to-peer lookup service for internet applications. ACM SIGCOMM Computer Communication Review, 31(4), 149-160.
+- Maymounkov, P., & Mazieres, D. (2002, March). Kademlia: A peer-to-peer information system based on the xor metric. In International Workshop on Peer-to-Peer Systems (pp. 53-65). Springer, Berlin, Heidelberg.
