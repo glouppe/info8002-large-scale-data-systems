@@ -20,7 +20,7 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2018.
 - Lecture 8 (November 20): Cancelled (power outage).
 - Invited seminar (November 27): Data warehouse modeling (Olivier Bui Quoc, HERMES Engineering) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/talk-dwm.pdf)]
 - Lecture 8 (December 11): [Distributed file systems](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture8.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec8.pdf)]
-- Lecture 9 (December 20): [Distributed hash tables](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture9.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec9.pdf)]
+- Lecture 9 (December 18): [Distributed hash tables](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture9.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec9.pdf)]
 
 ## Practicals
 
