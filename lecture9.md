@@ -69,7 +69,7 @@ Chord is a protocol and algorithm for a peer-to-peer distributed hash table.
 - It organizes the participating nodes in an **overlay network**, where each node is responsible for a set of keys.
 - Keys are defined as $m$-bit identifiers, where $m$ is a predefined system parameter.
 - The overlay network is arranged in a **identifier circle** ranging from $0$ to $2^m - 1$.
-    - A *node identifier* is chosen by hashing the IP address.
+    - A *node identifier* is chosen by hashing the node IP address.
     - A *key identifier* is chosen by hashing the key.
 - Based on **consistent hashing** with SHA-1 hash function.
 - Supports a single operation: $\text{lookup}(k)$.
@@ -123,7 +123,7 @@ The core usage of the Chord protocol is to query a key from a client (generally 
 
 ## Basic query
 
-- Any node $n$ stores its immediate successor $\text{successor}(n)$.
+- Any node $n$ stores its immediate successor $\text{successor}(n)$, and no other information.
 - If the key cannot be found locally, then the query is passed to the node's successor.
 - Scalable, but $\mathcal{O}(n)$ operations are required.
     - **Unacceptable** in  large systems!
@@ -148,7 +148,7 @@ In Chord, in addition to $\text{successor}$ and $\text{predecessor}$ pointers, e
 
 class: middle
 
-## Finger table example
+## Example
 
 - $m = 4$ bits $\rightarrow$ max 4 entries in the table.
 - $i$-th entry in finger table: $s = \text{successor}((n + 2^{i - 1})\text{~}\mathrm{mod}\text{~}2^m)$
@@ -159,7 +159,7 @@ class: middle
 
 class: middle
 
-## First entry
+## Example: first entry
 
 - $n=4$, $i = 1$
 - $s = \text{successor}((n + 2^{i-1}) \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(5) = 5$
@@ -170,7 +170,7 @@ class: middle
 
 class: middle
 
-## Second entry
+## Example: second entry
 
 - $n=4$, $i = 2$
 - $s = \text{successor}((n + 2^{i-1}) \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(6) = 8$
@@ -181,7 +181,7 @@ class: middle
 
 class: middle
 
-## Third entry
+## Example: third entry
 
 - $n=4$, $i = 3$
 - $s = \text{successor}((n + 2^{i-1}) \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(8) = 8$
@@ -192,7 +192,7 @@ class: middle
 
 class: middle
 
-## Fourth entry
+## Example: fourth entry
 
 - $n=4$, $i = 4$
 - $s = \text{successor}((n + 2^{i-1}) \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(12) = 14$
@@ -207,7 +207,7 @@ class: middle
 
 A lookup for $\text{successor}(k)$ now works as follows:
 - if $k$ falls between $n$ and $\text{successor}(n)$, return $\text{successor}(n)$.
-- otherwise, the lookup is forwarded at $n'$, where $n'$ is the node if the finger table that most immediately precedes $k$.
+- otherwise, the lookup is forwarded at $n'$, where $n'$ is the node in the finger table that most immediately precedes $k$.
 - Since each node has finger entries at power of two intervals around the identifier circle, each node can forward a query at least halfway along the remaining distance between the node and the target key.
 - $\mathcal{O}(\log N)$ nodes need to be contacted.
 
@@ -239,19 +239,19 @@ n.closest_preceding_node(id)
 
 class: middle
 
-## Example: finding $\text{successor}(k=3)$ from $n=4$
+## Example: finding $\text{successor}(k=3)$ from $\text{node}\_4$
 
-1. $n=4$ checks if $k$ is in the interval (4, 5].
-2. No, $n=4$ checks its finger table (starting from the last entry, i.e., $i = m$).
-   1. Is *node 14* in the interval (4, 4)? *Yes!*
-3. $n=14$ checks if $k$ is in the interval (14, 0].
-4. No, $n=14$ checks its finger table for closest preceding node.
-   1. Return *node 0*.
-5. $n=0$ checks if $k$ is in the interval (0, 4]. *Yes!*
+1. $\text{node}\_4$ checks if $k$ is in the interval (4, 5].
+2. No, $\text{node}\_4$ checks its finger table (starting from the last entry, i.e., $i = m$).
+   1. Is $\text{node}\_{14}$ in the interval (4, 4)? *Yes!*
+3. $\text{node}\_{14}$ checks if $k$ is in the interval (14, 0].
+4. No, $\text{node}\_{14}$ checks its finger table for closest preceding node.
+   1. Return $\text{node}\_{0}$.
+5. $\text{node}\_{0}$ checks if $k$ is in the interval (0, 4]. *Yes!*
 
-$\rightarrow$ Node 0 is the preceding node of $k = 4$. Therefore $\text{successor}(k=3)=4$.
+$\rightarrow$ Node 0 is the preceding node of $k = 4$. Therefore $\text{successor}(k=3)=\text{node}\_0.\text{successor}=4$.
 
-Of course, one could implement a mechanism that prevents node 4 from looking up its own preceding node in the network.
+Of course, one could implement a mechanism that prevents $\text{node}\_{4}$ from looking up its own preceding node in the network.
 
 ---
 
@@ -268,7 +268,7 @@ class: middle
 
 ## Initializing $n$'s successor
 
-$n$ learns its successor by asking $n^\prime$ to look them up $\text{find-predecessor}(n)$.
+$n$ learns its successor by asking $n^\prime$ to look them up.
 
 ```
 // join a Chord ring containing node n'.
@@ -314,7 +314,7 @@ class: middle
 ## Transferring keys
 
 - $n$ can become the successor only for keys that were previously the responsibility of the node immediately following $n$.
-- $n$ only needs to contact the successor of $n + 1$ to transfer responsibility of all relevant keys.
+- $n$ only needs to contact $\text{successor}(n)$ to transfer responsibility of all relevant keys.
 
 ---
 
@@ -328,7 +328,7 @@ class: middle
 
 ## Replication
 
-- Use the same successor-list to replicate the data!
+- Use the same successor-list to replicate the data on the segment!
 
 ---
 
