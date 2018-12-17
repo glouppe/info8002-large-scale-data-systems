@@ -66,7 +66,7 @@ class: middle
 # Chord
 
 Chord is a protocol and algorithm for a peer-to-peer distributed hash table.
-- It organizes the participating nodes in an overlay network, where each node is responsible for a set of keys.
+- It organizes the participating nodes in an **overlay network**, where each node is responsible for a set of keys.
 - Keys are defined as $m$-bit identifiers, where $m$ is a predefined system parameter.
 - The overlay network is arranged in a **identifier circle** ranging from $0$ to $2^m - 1$.
     - A *node identifier* is chosen by hashing the IP address.
@@ -150,9 +150,10 @@ class: middle
 
 ## Finger table example
 
-- $m = 4$ bits $\rightarrow$ max 4 entries in the routing table.
+- $m = 4$ bits $\rightarrow$ max 4 entries in the table.
 - $i$-th entry in finger table: $s = \text{successor}((n + 2^{i - 1})\text{~}\mathrm{mod}\text{~}2^m)$
-.center.width-50[![](figures/lec9/chord-clean.png)]
+
+.center.width-40[![](figures/lec9/chord-clean.png)]
 
 ---
 
@@ -241,7 +242,7 @@ class: middle
 ## Example: finding $\text{successor}(k=3)$ from $n=4$
 
 1. $n=4$ checks if $k$ is in the interval (4, 5].
-2. It not, $n=4$ checks its  finger table (starting from the last entry, i.e., $i = m$).
+2. No, $n=4$ checks its finger table (starting from the last entry, i.e., $i = m$).
    1. Is *node 14* in the interval (4, 4)? *Yes!*
 3. $n=14$ checks if $k$ is in the interval (14, 0].
 4. No, $n=14$ checks its finger table for closest preceding node.
@@ -365,11 +366,12 @@ Kademlia is a peer-to-peer hash table with **provable** consistency and performa
 
 # System description
 
-- Treat nodes as leaves in an (unbalanced) binary  tree, wich each node's position determined by the shortest unique prefix of its ID.
-- The Kademlia protocol ensures that every node knows at least one other node in every sub-tree.
-  This guarantees that any node can locate any other node given its identifier.
+Nodes are structured in an overlay network where they correspond
+to the leaves of an (unbalanced) binary  tree, with each node's position determined by the shortest unique prefix of its identifier.
+- Node identifiers are chosen at random in the identifier space.
+- Kamdelia ensures that every node knows at least one other node in every sub-tree. This guarantees that any node can locate any other node given its identifier.
 
-.center.width-70[![](figures/lec9/kademlia-subtrees.png)]
+.center.width-60[![](figures/lec9/kademlia-subtrees.png)]
 
 ---
 
