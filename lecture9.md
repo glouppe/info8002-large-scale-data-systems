@@ -380,10 +380,14 @@ class: middle
 ## Node distance
 
 The distance between two identifiers is defined as $$d(x, y) = x \oplus y.$$
-- XOR is valid, albeit non-Euclidean metric.
-- XOR captures the notion of distance between two IDs: in a fully-populated binary tree of 160-bit IDs, it is the height of the smallest subtree containing them both.
+- XOR is a valid, albeit non-Euclidean metric.
+- XOR captures the notion of distance between two identifiers: in a fully-populated binary tree of 160-bit IDs, it is the height of the smallest subtree containing them both.
 - XOR is symmetric.
 - XOR is unidirectional.
+
+???
+
+unidirectional: for any x and distance delta>0, there is exactly one y such that d(x,y)=delta.
 
 ---
 
