@@ -396,10 +396,16 @@ class: middle
 ## Node state
 
 - For every prefix $0 < i < 160$, every node keeps a list, called a **k-bucket**,  of (IP address, Port, ID) for nodes of distance between $2^i$ and $2^{i+1}$ of itself.
-- Every k-bucket is sorted by time last seen (descending, i.e, last-seen first).
+- Every k-bucket is sorted by time last seen (least recently seen first).
 - When a node receives a message, it updates the corresponding k-bucket for the sender's identifier. If the sender already exists, it is moved to the tail of the list.
-  - **Important**: If the k-bucket is full, the node pings the **last** seen node and checks if it is still available. **Only if** the node is **not available** it will replace it.
+  - **Important**: If the k-bucket is full, the node pings the **least recently** seen node and checks if it is still available.
+        - Only if the node is **not available** it will replace it.
+        - If available, the node is pushed back at the end of the bucket.
   - Policy of replacement only when a nodes leaves the network $\rightarrow$ prevents Denial of Service (DoS) attacks (e.g., flushing routing tables).
+
+???
+
+R: check ordering of the k-bucket entries.
 
 ---
 
