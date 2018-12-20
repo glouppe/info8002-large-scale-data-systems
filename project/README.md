@@ -2,7 +2,7 @@
 
 The objective of this project is to implement your own decentralized Blockchain [key-value store](https://en.wikipedia.org/wiki/Key-value_database).
 
-This project is a requirement to pass the course. It  **must** be completed and submitted with all deliverables to the [Montefiore submission system](https://submit.montefiore.ulg.ac.be/) by the **hard deadline** of **December 21, 2018 23:59**.
+This project is a requirement to pass the course. It  **must** be completed and submitted with all deliverables to the [Montefiore submission system](https://submit.montefiore.ulg.ac.be/) by the **hard deadline** of **December 22, 2018 23:59**.
 
 You are allowed to implement the project by yourself, or in groups with a maximum of *3* students.
 
