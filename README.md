@@ -35,7 +35,7 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2018.
 
 ### Programming project
 
-KeyChain. Due by **December 21, 2018 at 23:59**. See the [`/project/`](https://github.com/glouppe/info8002-large-scale-data-systems/tree/master/project) folder for instructions.
+KeyChain. Due by **December 22, 2018 at 23:59**. See the [`/project/`](https://github.com/glouppe/info8002-large-scale-data-systems/tree/master/project) folder for instructions.
 
 ### Reading assignment
 
