@@ -691,7 +691,7 @@ class: middle
 - **Consensus** is the problem of making processes all *agree* on one of the values they propose.
 - The **FLP impossibility result** states that no consensus protocol can be proven
 to always terminate in an asynchronous system.
-- In fail-silent, *Hierarchical Consensus* provides an implementation based on broadcast and failure detection.
+- In fail-stop, *Hierarchical Consensus* provides an implementation based on broadcast and failure detection.
 - In fail-noisy, *Leader-Driven Consensus* achieves consensus by repeatedly running epoch consensus until all decisions are taken.
 - The consensus primitive **greatly simplifies** the implementation of any fault-tolerant consistent distributed system.
     - Total-order broadcast

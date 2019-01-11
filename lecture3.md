@@ -554,9 +554,9 @@ In eager reliable broadcast,
 # Probabilistic validity
 
 At time $t$, the probability of not receiving a message is
-$$(1 - \frac{k}{N})^{i(t)}$$
+$$(1 - \frac{k}{N})^{I(t)}$$
 Therefore the probability of having received of one or more gossip messages up to time $t$, that is to have PB-delivered, is
-$$p(\text{delivery}) = 1 - (1 - \frac{k}{N})^{\sum_{t_i=0}^t i(t_i)}$$
+$$p(\text{delivery}) = 1 - (1 - \frac{k}{N})^{\sum_{t_i=0}^t I(t_i)}$$
 
 <span class="Q">[Q]</span> What if nodes fail? if packets are loss?
 
