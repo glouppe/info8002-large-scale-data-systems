@@ -8,6 +8,10 @@ Lecture 1: Introduction
 Prof. Gilles Louppe<br>
 [g.louppe@uliege.be](g.louppe@uliege.be)
 
+???
+
+R: https://marcoserafini.github.io/teaching/systems-for-data-science/fall18/systems-for-data-science.html
+
 ---
 
 class: middle
