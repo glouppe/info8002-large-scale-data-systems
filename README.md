@@ -7,18 +7,19 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2019.
 - When: Fall 2019, Tuesday 2:00 PM.
 - Classroom: R7 / B28 (Montefiore Institute)
 
-## Slides
+## Agenda
 
-- [Outline](https://glouppe.github.io/info8002-large-scale-data-systems/?p=outline.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/outline.pdf)]
-- Lecture 1 (September 17): Introduction
-- Lecture 2 (September 24): Basic distributed
-- Lecture 3 (October 1): Reliable broadcast
-- Lecture 4 (October 8): Shared memory
-- Lecture 5 (October 22): Consensus
-- Lecture 6 (November 5): Blockchain
-- Lecture 7 (November 12): Cloud computing
-- Lecture 8 (November 19): Distributed file systems
-- Lecture 9 (November 26): Distributed hash tables
+| Date | Topic |
+| --- | --- |
+| September 17 | [Outline](https://glouppe.github.io/info8002-large-scale-data-systems/?p=outline.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/outline.pdf)]<br>Lecture 1: Introduction [PDF] |
+| September 24 | Lecture 2: Basic distributed abstractions |
+| October 1 | Lecture 3: Reliable broadcast |
+| October 8 | Lecture 4: Shared memory |
+| October 22 | Lecture 5: Consensus |
+| November 5 | Lecture 6: Blockchain |
+| November 12 | Lecture 7: Cloud computing |
+| November 19 | Lecture 8: Distributed file systems |
+| November 26 | Lecture 9: Distributed hash tables |
 
 ## Practicals
 
