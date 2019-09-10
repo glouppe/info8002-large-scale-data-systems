@@ -8,6 +8,10 @@ Lecture 7: Cloud computing
 Prof. Gilles Louppe<br>
 [g.louppe@uliege.be](g.louppe@uliege.be)
 
+???
+
+R: talk about amazon s3/lambda?
+
 ---
 
 # Today

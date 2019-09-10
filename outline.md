@@ -2,7 +2,7 @@ class: middle, center, title-slide
 
 # Large-scale Data Systems
 
-Fall 2018
+Fall 2019
 
 <br><br>
 Prof. Gilles Louppe<br>
@@ -14,7 +14,7 @@ Prof. Gilles Louppe<br>
 
 This course is given by:
 - Theory: Prof. Gilles Louppe ([g.louppe@uliege.be](mailto:g.louppe@uliege.be))
-- Exercises and projects: Joeri Hermans ([joeri.hermans@doct.ulg.ac.be](mailto:joeri.hermans@doct.ulg.ac.be))
+- Practicals and projects: Joeri Hermans ([joeri.hermans@doct.ulg.ac.be](mailto:joeri.hermans@doct.ulg.ac.be))
 
 Feel free to contact any of us for help!
 
@@ -31,7 +31,7 @@ Feel free to contact any of us for help!
 Slides are available at [github.com/glouppe/info8002-large-scale-data-systems](https://github.com/glouppe/info8002-large-scale-data-systems).
 - In HTML and in PDFs.
 - Posted online the day before the lesson.
-- Slightly different from previous years.
+- Slight differences/improvements/fixes from previous years.
 
 Slides are partially adapted from [CSE 486/585 Distributed systems](https://www.cse.buffalo.edu/~stevko/courses/cse486/spring16/schedule.html) (University at Buffalo) and
 [CS425 Distributed systems](https://courses.engr.illinois.edu/cs425/fa2017/lectures.html) (University of Illinois UC).
@@ -123,9 +123,9 @@ Implement a secure and distributed service using **Blockchain** technology.
 
 # Evaluation
 
-- Oral exam (60%)
+- Oral exam (50%)
 - Reading assignment (10%)
-- Programming project (30%)
+- Programming project (40%)
 
 Projects are **mandatory** for presenting the exam.
 
