@@ -10,6 +10,8 @@ Prof. Gilles Louppe<br>
 
 ???
 
+R: amazon stuff
+
 R: https://marcoserafini.github.io/teaching/systems-for-data-science/fall18/systems-for-data-science.html
 
 R: universal scalability law https://twitter.com/tacertain/status/1166039932386676737?s=03

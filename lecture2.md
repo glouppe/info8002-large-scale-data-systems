@@ -354,7 +354,7 @@ class: middle
     - Can be implemented using stubborn links.
     - **By default**, we assume the perfect links abstraction.
 
-- <span class="Q">[Q]</span> What abstraction do UDP and TCP implement?
+.exercice[What abstraction do UDP and TCP implement?]
 
 ???
 
@@ -369,7 +369,7 @@ class: middle
 
 .center[![](figures/lec2/sl-interface.png)]
 
-<span class="Q">[Q]</span> Which property is safety/liveness/neither?
+.exercice[Which property is safety/liveness/neither?]
 
 ???
 
@@ -384,7 +384,7 @@ class: middle
 
 .center[![](figures/lec2/pl-interface.png)]
 
-<span class="Q">[Q]</span> Which property is safety/liveness/neither?
+.exercice[Which property is safety/liveness/neither?]
 
 ???
 
@@ -399,7 +399,7 @@ class: middle
 
 .center[![](figures/lec2/pl-impl.png)]
 
-<span class="Q">[Q]</span> How does TCP efficiently maintain its `delivered` log?
+.exercice[How does TCP efficiently maintain its `delivered` log?]
 
 ???
 
@@ -571,7 +571,7 @@ Assumption of three properties:
     - Processes have access to a local physical clock;
     - Known upper bound on clock drift and clock skew.
 
-<span class="Q">[Q]</span> Why studying synchronous systems? What services can be provided?
+.exercice[Why studying synchronous systems? What services can be provided?]
 
 ???
 
@@ -591,7 +591,7 @@ A partially synchronous system is a system that is synchronous *most of the time
 - There are periods where the timing assumptions of a synchronous system do not hold.
 - But the distributed algorithm will have a long enough time window where everything behaves nicely, so that it can achieve its goal.
 
-<span class="Q">[Q]</span> Are there such systems?
+.exercice[Are there such systems?]
 
 ???
 
@@ -629,7 +629,7 @@ Assuming a crash-stop process abstraction, the **perfect detector** encapsulates
 
 .center.width-90[![](figures/lec2/pfd-interface.png)]
 
-<span class="Q">[Q]</span> Which property is safety/liveness/neither?
+.exercice[Which property is safety/liveness/neither?]
 
 ???
 
@@ -693,7 +693,7 @@ class: middle
 ]
 ]
 
-<span class="Q">[Q]</span> Show that this implementation is correct.
+.exercice[Show that this implementation is correct.]
 
 ---
 
@@ -718,9 +718,8 @@ class: middle
 
 .center[![](figures/lec2/le-impl.png)]
 
-<span class="Q">[Q]</span> Show that this implementation is correct.
-
-<span class="Q">[Q]</span> Is LE a failure detector?
+.exercice[- Show that this implementation is correct.
+- Is $le$ a failure detector?]
 
 ---
 

@@ -58,11 +58,13 @@ This textbook is **recommended**, although not required.
 
 - Understand the **foundational principles** of distributed systems, on top of
 which distributed *databases* and *computing* systems are operating.
+- Understand why data systems are designed the way they are designed.
 
 ## Practical
 
 - Exposition to *industrial software*.
 - Fun and challenging course project.
+- Practice and improve **your system engineering skills**!
 
 ## Critical thinking
 
@@ -74,7 +76,7 @@ which distributed *databases* and *computing* systems are operating.
 # Lectures
 
 - Theoretical lectures
-- Exercise sessions
+- Practicals
 
 ---
 
