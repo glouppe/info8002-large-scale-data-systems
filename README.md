@@ -21,9 +21,6 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2019.
 | November 19 | Lecture 8: Distributed file systems |
 | November 26 | Lecture 9: Distributed hash tables |
 
-## Practicals
-
-TBD.
 
 ## Projects
 
