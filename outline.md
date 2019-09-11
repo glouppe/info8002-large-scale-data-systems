@@ -13,7 +13,7 @@ Prof. Gilles Louppe<br>
 # Logistics
 
 This course is given by:
-- Theory: Prof. Gilles Louppe ([g.louppe@uliege.be](mailto:g.louppe@uliege.be))
+- Theory: Gilles Louppe ([g.louppe@uliege.be](mailto:g.louppe@uliege.be))
 - Practicals and projects: Joeri Hermans ([joeri.hermans@doct.ulg.ac.be](mailto:joeri.hermans@doct.ulg.ac.be))
 
 Feel free to contact any of us for help!
