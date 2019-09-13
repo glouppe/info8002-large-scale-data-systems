@@ -52,6 +52,24 @@ This textbook is **recommended**, although not required.
 
 ---
 
+# Outline
+
+- Lecture 1: Introduction
+- Lecture 2: Basic distributed abstractions
+- Lecture 3: Reliable broadcast
+- Lecture 4: Shared memory
+- Lecture 5: Consensus
+- Lecture 6: Blockchain
+- Lecture 7: Cloud computing
+- Lecture 8: Distributed hash tables
+- Lecture 9: Distributed file systems
+
+???
+
+Maybe Lecture 10: Column stores?
+
+---
+
 # Philosophy
 
 ## Solid ground
@@ -73,28 +91,22 @@ which distributed *databases* and *computing* systems are operating.
 
 ---
 
+class: middle, black-slide
+
+.center.width-75[![](./figures/outline/lego.jpg)]
+
+.center[
+We give you Lego bricks.<br> Your job is to assemble them into well-engineered solutions.
+]
+
+.footnote[Image credits: Photo by Kelly Sikkema.]
+
+---
+
 # Lectures
 
 - Theoretical lectures
 - Practicals
-
----
-
-# Outline
-
-- Lecture 1: Introduction
-- Lecture 2: Basic distributed abstractions
-- Lecture 3: Reliable broadcast
-- Lecture 4: Shared memory
-- Lecture 5: Consensus
-- Lecture 6: Blockchain
-- Lecture 7: Cloud computing
-- Lecture 8: Distributed hash tables
-- Lecture 9: Distributed file systems
-
-???
-
-Maybe Lecture 10: Column stores?
 
 ---
 
@@ -106,10 +118,6 @@ Read, summarize and criticize a major scientific paper in Large-Scale Data Syste
 (Paper to be announced later.)
 
 .center.width-70[![](figures/outline/mr-paper.png)]
-
-???
-
-Probably https://storage.googleapis.com/pub-tools-public-publication-data/pdf/39966.pdf
 
 ---
 
