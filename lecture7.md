@@ -12,6 +12,8 @@ Prof. Gilles Louppe<br>
 
 R: talk about amazon s3/lambda?
 
+R: universal scalability law https://twitter.com/tacertain/status/1166039932386676737?s=03 (formalize scalability)
+
 ---
 
 # Today

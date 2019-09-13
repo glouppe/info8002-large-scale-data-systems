@@ -323,6 +323,16 @@ td {
     border-top: solid 0px;
 }
 
+.black-slide em {
+    color: white;
+    font-style: italic;
+}
+
+.black-slide strong{
+    color: white;
+    font-weight: bold;
+}
+
 .red-slide {
     background-color: red;
     color: white;

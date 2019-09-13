@@ -8,14 +8,6 @@ Lecture 1: Introduction
 Prof. Gilles Louppe<br>
 [g.louppe@uliege.be](g.louppe@uliege.be)
 
-???
-
-R: amazon stuff
-
-R: https://marcoserafini.github.io/teaching/systems-for-data-science/fall18/systems-for-data-science.html
-
-R: universal scalability law https://twitter.com/tacertain/status/1166039932386676737?s=03
-
 ---
 
 class: middle
@@ -24,11 +16,9 @@ class: middle
 
 ---
 
-class: middle, center
+class: middle, center, black-slide
 
-Big data? Data science?
-
-.width-70[![](figures/lec1/big-data-everywhere.jpg)]
+.width-90[![](figures/lec1/big-data-everywhere.jpg)]
 
 ???
 
@@ -95,28 +85,6 @@ class: center, middle
 
 ---
 
-class: middle, center
-
-![](figures/lec1/data-analysis-knowledge.png)
-
-???
-
-Also, from knowledge back to data.
-
----
-
-class: middle, center
-
-.width-50[![](figures/lec1/galileo.gif)]
-
-.caption[Haven't we be doing data analysis forever?]
-
-???
-
-Yes! So, what's new?
-
----
-
 class: middle
 
 .circle.center.width-40[![](figures/lec1/schmidt.jpeg)]
@@ -126,7 +94,7 @@ class: middle
 
 Let me repeat that: we create as much information in two days now as we did from the dawn of man through 2003.]
 
-.pull-right[Eric Schmidt, **2010**.]
+.pull-right[Eric Schmidt, 2010.]
 
 ---
 
@@ -159,7 +127,7 @@ Actually, **none of that is really new**... What is new is:
 
 ---
 
-class: middle
+class: middle, black-slide
 
 .grid[
 .kol-1-2[.width-90[![](figures/lec1/4th-paradigm.jpeg)]]
@@ -203,6 +171,12 @@ class: middle, center, black-slide
 ???
 
 In this course, we will focus on the technology of data systems that enable data science.
+
+---
+
+class: middle, center, black-slide
+
+.width-80[![](figures/lec9/iceberg.png)]
 
 ---
 
@@ -274,12 +248,11 @@ A distributed system appears to its users as a *single* **coherent** system.
 
 ---
 
-class: middle
-
-## Internet
+class: middle, black-slide
 
 .center.width-90[![](figures/lec1/internet.jpg)]
-.caption[What are the *entities*? What is the *communication medium*?]
+
+.center[.bold[Internet]: What are the entities? What is the communication medium?]
 
 ???
 
@@ -289,12 +262,11 @@ class: middle
 
 ---
 
-class: middle
-
-## Data center
+class: middle, black-slide
 
 .center.width-90[![](figures/lec1/cern-datacenter.jpg)]
-.caption[What are the *entities*? What is the *communication medium*?]
+
+.center[.bold[Data center]: What are the entities? What is the communication medium?]
 
 ???
 
@@ -303,7 +275,9 @@ class: middle
 
 ---
 
-# Why study distributed systems?
+class: middle
+
+## Why study distributed systems?
 
 - Distributed systems are **everywhere**:
     - Internet
@@ -342,7 +316,9 @@ class: middle
 
 ---
 
-# Teaser: Two Generals' Problem
+class: middle
+
+## Teaser: Two Generals' Problem
 
 Two generals need to coordinate an attack.
 
@@ -350,6 +326,8 @@ Two generals need to coordinate an attack.
 - They will win only if they attack **simultaneously**.
 - They communicate through **messengers**.
 - Messengers may be **killed** on their way.
+
+.exercice[What should they do?]
 
 ---
 
