@@ -12,76 +12,13 @@ Prof. Gilles Louppe<br>
 
 class: middle
 
-# The data science era
+# The zettabyte era
 
 ---
 
 class: middle, center, black-slide
 
 .width-90[![](figures/lec1/big-data-everywhere.jpg)]
-
-???
-
-- Who is in the master in data science?
-- Can you define big data or data science?
-
----
-
-class: middle, center
-
-hype **vs.** business **vs.** science
-
-???
-
-Distinguishing the hype from the science is one of the goal of this class, but also of the master.
-
----
-
-class: middle
-
-.italic["A data scientist is someone who knows more
-statistics than a computer scientist and more
-computer science than a statistician."]
-<br>
-.pull-right[Josh Blumenstock]
-
----
-
-class: middle
-
-.italic["Data scientist = statistician + programmer + coach + storyteller + artist"]
-<br><br>
-.pull-right[Shlomo Aragmon]
-
----
-
-class: center, middle
-
-.width-80[![](figures/lec1/ds.jpg)]
-
-???
-
-- Subject expertise includes business expertise.
-- Hacking + Domain expertise = danger zone. The absence of rigorous methods can beget incorrect analysis.
-- There are few unicorns. Hence training in data science.
-
----
-
-class: center, middle
-
-.width-80[![](figures/lec1/nate1.png)]
-.caption[Nate Silver]
-
-???
-
-Nate Silver successfully called the outcomes in 49 of the 50 states in the 2008 US Presidential election.
-
----
-
-class: center, middle
-
-.width-80[![](figures/lec1/nate2.png)]
-.caption["Nate Silver won the election" - Harvard Business Review]
 
 ---
 
@@ -92,7 +29,7 @@ class: middle
 
 .italic["Every two days now we create as much information as we did from the dawn of civilization up until  2003, according to Schmidt. That’s something like five exabytes of data, he says.
 
-Let me repeat that: we create as much information in two days now as we did from the dawn of man through 2003.]
+Let me repeat that: .bold[we create as much information in two days now as we did from the dawn of man] through 2003.]
 
 .pull-right[Eric Schmidt, 2010.]
 
@@ -101,6 +38,15 @@ Let me repeat that: we create as much information in two days now as we did from
 class: middle, center, black-slide
 
 .width-80[![](figures/lec1/growth.png)]
+
+---
+
+class: middle
+
+.exercice[
+- How many iPads would you need to store 1 ZB?
+- What distance and volume does that represent?
+]
 
 ???
 
@@ -111,17 +57,36 @@ class: middle, center, black-slide
 
 "A full-length episode of FOX TV's hit series 24 running continuously for 125 million years."
 
+
 ---
 
-class: middle, center
+# The four V of big data
 
-.width-100[![](figures/lec1/4v.jpg)]
+.center.width-100[![](./figures/lec1/1-volume.jpg)]
 
 ---
 
 class: middle
 
-Actually, **none of that is really new**... What is new is:
+.center.width-100[![](./figures/lec1/2-velocity.jpg)]
+
+---
+
+class: middle
+
+.center.width-100[![](./figures/lec1/3-variety.jpg)]
+
+---
+
+class: middle
+
+.center.width-100[![](./figures/lec1/4-veracity.jpg)]
+
+---
+
+class: middle
+
+What's new?
 - our ability to *store machine generated data*, at unprecedented scale and rate.
 - the broad understanding that *we cannot just manually get value out of data*.
 
@@ -414,7 +379,15 @@ class: middle, center
 
 class: middle
 
-## The Hadoop ecosystem
+## Cloud services
+
+.center.width-100[![](figures/lec1/cloud.png)]
+
+---
+
+class: middle
+
+## The Hadoop ecosystem (less and less)
 
 .center.width-90[![](figures/lec1/hadoop.jpg)]
 

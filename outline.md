@@ -26,32 +26,6 @@ Feel free to contact any of us for help!
 
 ---
 
-# Slides
-
-Slides are available at [github.com/glouppe/info8002-large-scale-data-systems](https://github.com/glouppe/info8002-large-scale-data-systems).
-- In HTML and in PDFs.
-- Posted online the day before the lesson.
-- Slight differences/improvements/fixes from previous years.
-
-Slides are partially adapted from [CSE 486/585 Distributed systems](https://www.cse.buffalo.edu/~stevko/courses/cse486/spring16/schedule.html) (University at Buffalo) and
-[CS425 Distributed systems](https://courses.engr.illinois.edu/cs425/fa2017/lectures.html) (University of Illinois UC).
-
-.center.width-80[![](figures/outline/slides.png)]
-
----
-
-# Textbook
-
-.center[![](figures/outline/textbook.jpg)]
-
-The core content of this course (lectures 2 to 5) is based on the following textbook:
-
-> .italic[Christian Cachin, Rachid Guerraoui, Luis Rodrigues, "Introduction to Reliable and Secure Distributed Programming", Springer.]
-
-This textbook is **recommended**, although not required.
-
----
-
 # Outline
 
 - Lecture 1: Introduction
@@ -96,10 +70,12 @@ class: middle, black-slide
 .center.width-75[![](./figures/outline/lego.jpg)]
 
 .center[
-We give you Lego bricks.<br> Your job is to assemble them into well-engineered solutions.
+We give you Lego bricks.
+
+Your job is to assemble them into well-engineered solutions.
 ]
 
-.footnote[Image credits: Photo by Kelly Sikkema.]
+.footnote[Image credits: Kelly Sikkema.]
 
 ---
 
@@ -107,6 +83,32 @@ We give you Lego bricks.<br> Your job is to assemble them into well-engineered s
 
 - Theoretical lectures
 - Practicals
+
+---
+
+# Slides
+
+Slides are available at [github.com/glouppe/info8002-large-scale-data-systems](https://github.com/glouppe/info8002-large-scale-data-systems).
+- In HTML and in PDFs.
+- Posted online the day before the lesson.
+- Slight differences/improvements/fixes from previous years.
+
+Slides are partially adapted from [CSE 486/585 Distributed systems](https://www.cse.buffalo.edu/~stevko/courses/cse486/spring16/schedule.html) (University at Buffalo) and
+[CS425 Distributed systems](https://courses.engr.illinois.edu/cs425/fa2017/lectures.html) (University of Illinois UC).
+
+.center.width-80[![](figures/outline/slides.png)]
+
+---
+
+# Textbook
+
+.center[![](figures/outline/textbook.jpg)]
+
+The core content of this course (lectures 2 to 5) is based on the following textbook:
+
+> .italic[Christian Cachin, Rachid Guerraoui, Luis Rodrigues, "Introduction to Reliable and Secure Distributed Programming", Springer.]
+
+This textbook is **recommended**, although not required.
 
 ---
 
@@ -126,6 +128,7 @@ class: middle
 ## Programming project
 
 Implement a secure and distributed service using **Blockchain** technology.
+(To be confirmed.)
 
 .center.width-70[![](figures/outline/blockchain.png)]
 
