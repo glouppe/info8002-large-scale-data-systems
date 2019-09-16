@@ -86,7 +86,17 @@ class: middle
 
 class: middle
 
-What's new?
+## Example: your own Facebook data
+
+How much data do you generate through your interactions with Facebook?
+
+Let's check!
+
+---
+
+class: middle
+
+## What's new?
 - our ability to *store machine generated data*, at unprecedented scale and rate.
 - the broad understanding that *we cannot just manually get value out of data*.
 
@@ -136,12 +146,6 @@ class: middle, center, black-slide
 ???
 
 In this course, we will focus on the technology of data systems that enable data science.
-
----
-
-class: middle, center, black-slide
-
-.width-80[![](figures/lec9/iceberg.png)]
 
 ---
 
@@ -419,6 +423,18 @@ class: middle
 
 ---
 
+class: middle, center, black-slide
+
+.width-80[![](figures/lec1/iceberg.png)]
+
+---
+
+class: middle, center, black-slide
+
+.width-80[![](figures/lec9/iceberg.png)]
+
+---
+
 # Fundamentals of distributed systems
 
 Understand the **foundational principles** required for the *design*, *implementation* and *maintenance* of distributed systems.
@@ -496,11 +512,3 @@ class: end-slide, center
 count: false
 
 The end.
-
----
-
-# References
-
-- Hey, Tony, Stewart Tansley, and Kristin M. Tolle. The fourth paradigm: data-intensive scientific discovery. Vol. 1. Redmond, WA: Microsoft research, 2009.
-- Kersten, Martin L., et al. "The researcher’s guide to the data deluge: Querying a scientific database in just a few seconds." PVLDB Challenges and Visions 3.3 (2011).
-- Silver, Nate. The signal and the noise: the art and science of prediction. Penguin UK, 2012.
