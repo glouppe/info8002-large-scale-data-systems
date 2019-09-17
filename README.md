@@ -4,7 +4,7 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2019.
 
 - Instructor: Gilles Louppe ([g.louppe@uliege.be](mailto:g.louppe@uliege.be))
 - Teaching assistant: Joeri Hermans ([joeri.hermans@doct.ulg.ac.be](mailto:joeri.hermans@doct.ulg.ac.be))
-- When: Fall 2019, Tuesday 2:00 PM.
+- When: Fall 2019, Tuesday 1:45 PM.
 - Classroom: R7 / B28 (Montefiore Institute)
 
 ## Agenda
