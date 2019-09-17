@@ -50,13 +50,17 @@ class: middle
 
 ???
 
-- 1 zettabyte = 1 trillion gigabytes
-- 1 followed by 21 zeroes
+1 ZB = 10^12 GB
 
-"75 billion fully-loaded 16 GB Apple iPads, which would fill the entire area of Wembley Stadium to the brim 41 times, the Mont Blanc Tunnel 84 times, CERN's Large Hadron Collider tunnel 151 times, Beijing National Stadium 15.5 times or the Taipei 101 Tower 23 times."
+iPad 10.2 => 128 GB, 250x175x7.5mm
+https://www.apple.com/ipad-10.2/specs/
 
-"A full-length episode of FOX TV's hit series 24 running continuously for 125 million years."
+10^12 / 128 => 7 812 500 000 iPads to store 1ZB
 
+Hence a stack of 58593km!
+or 2343750 km for 40 ZB
+
+that's 1.7 the diameter of the sun!
 
 ---
 
@@ -92,13 +96,25 @@ How much data do you generate through your interactions with Facebook?
 
 Let's check!
 
+???
+
+To notice:
+- search history
+- advertisers
+- location
+- security
+
+Also...
+- https://myactivity.google.com/myactivity
+- https://www.google.com/maps/timeline?pb
+
 ---
 
 class: middle
 
 ## What's new?
 - our ability to *store machine generated data*, at unprecedented scale and rate.
-- the broad understanding that *we cannot just manually get value out of data*.
+- the broad understanding that we **cannot just manually get value out of data**.
 
 ---
 
