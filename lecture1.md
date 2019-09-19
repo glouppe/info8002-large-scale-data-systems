@@ -37,7 +37,7 @@ Let me repeat that: .bold[we create as much information in two days now as we di
 
 class: middle, center, black-slide
 
-.width-80[![](figures/lec1/growth.png)]
+.width-100[![](figures/lec1/growth.png)]
 
 ---
 
@@ -314,6 +314,10 @@ Two generals need to coordinate an attack.
 
 .exercice[What should they do?]
 
+???
+
+How do you reach agreement between multiple asynchronous entities?
+
 ---
 
 class: middle, center, black-slide
@@ -347,7 +351,7 @@ The generals must reach a consensus.
 
 class: middle, center
 
-This problem is **impossible** to solve!
+This problem is provably **impossible** to solve!
 
 (Unless we make additional assumptions)
 
@@ -394,6 +398,12 @@ Our main focus will be on data systems for data science purposes.
 class: middle, center
 
 .center.width-100[![](figures/lec1/big-data-landscape.png)]
+
+???
+
+Many data systems exist for data science.
+
+We will focus on some of them during this course, including...
 
 ---
 

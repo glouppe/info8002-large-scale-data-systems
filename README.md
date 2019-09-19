@@ -12,7 +12,7 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2019.
 | Date | Topic |
 | --- | --- |
 | September 17 | [Outline](https://glouppe.github.io/info8002-large-scale-data-systems/?p=outline.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/outline.pdf)]<br>Lecture 1: [Introduction](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture1.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec1.pdf)] |
-| September 24 | Lecture 2: Basic distributed abstractions |
+| September 24 | Lecture 2: [Basic distributed abstractions](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture2.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec2.pdf)]  |
 | October 1 | Lecture 3: Reliable broadcast |
 | October 8 | Lecture 4: Shared memory |
 | October 22 | Lecture 5: Consensus |

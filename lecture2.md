@@ -131,9 +131,10 @@ class: middle
 
 ---
 
-# Example: Job handler
+class: middle
 
-<br><br>
+## Example: Job handler
+
 .center.width-90[![](figures/lec2/jh1.png)]
 
 ---

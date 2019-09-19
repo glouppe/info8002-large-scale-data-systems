@@ -38,10 +38,6 @@ Feel free to contact any of us for help!
 - Lecture 8: Distributed hash tables
 - Lecture 9: Distributed file systems
 
-???
-
-Maybe Lecture 10: Column stores?
-
 ---
 
 # Philosophy
