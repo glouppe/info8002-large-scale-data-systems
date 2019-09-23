@@ -94,10 +94,15 @@ class: middle
 - Asynchronous **events** represent *communication* or *control flow* between components.
     - Each component is constructed as a state-machine whose transitions are triggered by the reception of events.
     - Events carry information (sender, message, etc)
-- Reactive programming model:
-<br><br>
+---
+
+class: middle
+
+## Reactive programming model
+
 .center[![](figures/lec2/handler-notations.png)]
-- Effectively, a distributed algorithm is described by a set of event handlers.
+
+Effectively, a distributed algorithm is described by a set of event handlers.
 
 ---
 
