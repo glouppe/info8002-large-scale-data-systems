@@ -142,6 +142,10 @@ class: middle
 
 .center.width-90[![](figures/lec2/jh1.png)]
 
+???
+
+As for a supercomputer.
+
 ---
 
 class: middle
@@ -159,6 +163,12 @@ class: middle
 class: middle
 
 .center.width-90[![](figures/lec2/jh5.png)]
+
+???
+
+Illustrate how modules can be composed together in stacks.
+
+Here we will define a Transformation module to apply some arbitrary transformation to a job before its processing.
 
 ---
 
@@ -187,6 +197,10 @@ class: middle
         - A liveness property is a property such that for any prefix $E'$ of $E$, there exists an extension of $E'$ for which
         the property is satisfied.
 - Any property can be expressed as the conjunction of safety property and a liveness property.
+
+???
+
+How do we define correctness? (before showing correctness)
 
 ---
 
@@ -758,7 +772,7 @@ class: middle
     - Perfect links
     - Eventually perfect failure detector
 - *Fail-recovery*
-    - Crash-stop process abstraction
+    - Crash-recovery process abstraction
     - Stubborn links
 
 The fail-stop distributed system model substantially simplifies the design of distributed algorithms.

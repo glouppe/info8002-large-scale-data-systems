@@ -30,7 +30,7 @@ class: middle, center, black-slide
 
 .center.width-100[![](figures/lec3/unreliable-broadcast.png)]
 
-Constraints:
+## Constraints
 - The sender may fail.
 - Recipients may fail.
 - Packets might get lost.
@@ -326,7 +326,7 @@ class: middle
 
 ## Correctness of All-ack URB
 
-**Lemma.** If a correct node $p$ BEB delivers $m$, then $p$ eventually URB delivers $m$.
+.italic[Lemma.] If a correct node $p$ BEB delivers $m$, then $p$ eventually URB delivers $m$.
 
 Proof:
 - A correct node $p$ BEB broadcasts $m$ as soon as it gets $m$.
