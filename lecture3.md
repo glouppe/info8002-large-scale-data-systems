@@ -78,7 +78,7 @@ class: middle
 
 .center.width-100[![](figures/lec3/beb-example1.png)]
 
-<span class="Q">[Q]</span> Is this allowed?
+.exercice[Is this allowed?]
 
 ???
 
@@ -92,7 +92,7 @@ class: middle
 
 .center.width-100[![](figures/lec3/beb-example2.png)]
 
-<span class="Q">[Q]</span> Is this allowed?
+.exercice[Is this allowed?]
 
 ???
 
@@ -121,7 +121,7 @@ class: middle
 
 .center.width-100[![](figures/lec3/rb-example1.png)]
 
-<span class="Q">[Q]</span> Is this allowed?
+.exercice[Is this allowed?]
 
 ???
 
@@ -135,7 +135,7 @@ class: middle
 
 .center.width-100[![](figures/lec3/rb-example2.png)]
 
-<span class="Q">[Q]</span> Is this allowed?
+.exercice[Is this allowed?]
 
 ???
 
@@ -149,7 +149,7 @@ class: middle
 
 .center.width-100[![](figures/lec3/rb-example3.png)]
 
-<span class="Q">[Q]</span> Is this allowed?
+.exercice[Is this allowed?]
 
 ???
 
@@ -163,7 +163,7 @@ class: middle
 
 .center.width-100[![](figures/lec3/rb-example4.png)]
 
-<span class="Q">[Q]</span> Is this allowed?
+.exercice[Is this allowed?]
 
 ???
 
@@ -239,7 +239,7 @@ class: middle
 
 .center.width-100[![](figures/lec3/lrb-case2.png)]
 
-<span class="Q">[Q]</span> Which case?
+.exercice[Which case?]
 
 ???
 
@@ -253,7 +253,7 @@ class: middle
 
 .center.width-100[![](figures/lec3/lrb-case1.png)]
 
-<span class="Q">[Q]</span> Which case?
+.exercice[Which case?]
 
 ???
 
@@ -290,7 +290,7 @@ class: middle
 
 .center[![](figures/lec3/erb-impl.png)]
 
-<span class="Q">[Q]</span> Show that eager reliable broadcast is correct.
+.exercice[Show that eager reliable broadcast is correct.]
 
 ---
 
@@ -361,7 +361,7 @@ class: middle
 
 .center[![](figures/lec3/maurb-impl.png)]
 
-<span class="Q">[Q]</span> Show that this variant is correct.
+.exercice[Show that this variant is correct.]
 
 ---
 
@@ -379,7 +379,7 @@ Reliable broadcast:
 - Exactly-once delivery: *guaranteed* by the properties of RB.
 - Order of message? **Not guaranteed!**
 
-<span class="Q">[Q]</span> Does uniform reliable broadcast remedy this?
+.exercice[Does uniform reliable broadcast remedy this?]
 
 ???
 
@@ -410,6 +410,8 @@ A message $m_1$ may have caused another message $m_2$, denoted $m_1 \to m_2$ if 
 
 .center[![](figures/lec3/nwcrb-impl.png)]
 
+???
+
 point out issue of growing history size
 
 ---
@@ -431,7 +433,9 @@ causally preceding messages `mpast`.
 
 .center[![](figures/lec3/wcrb-impl.png)]
 
-<span class="Q">[Q]</span> Show the correctness of the algorithm.
+???
+
+.exercice[Show the correctness of the algorithm.]
 
 ---
 
@@ -449,7 +453,7 @@ class: middle
 
 .center.width-100[![](figures/lec3/possible-execution.png)]
 
-<span class="Q">[Q]</span> Is this a valid execution? the order of delivery is not the same.
+.exercice[Is this a valid execution? the order of delivery is not the same.]
 
 ---
 
@@ -558,7 +562,7 @@ $$(1 - \frac{k}{N})^{I(t)}$$
 Therefore the probability of having received of one or more gossip messages up to time $t$, that is to have PB-delivered, is
 $$p(\text{delivery}) = 1 - (1 - \frac{k}{N})^{\sum_{t_i=0}^t I(t_i)}$$
 
-<span class="Q">[Q]</span> What if nodes fail? if packets are loss?
+.exercice[What if nodes fail? if packets are loss?]
 
 ???
 
