@@ -121,7 +121,7 @@ class: middle
 
 .width-100[![](figures/lec4/regular-example1.png)]
 
-<span class="Q">[Q]</span> Regular or non-regular?
+.exercice[Regular or non-regular?]
 
 ???
 
@@ -135,7 +135,7 @@ class: middle
 
 .width-100[![](figures/lec4/regular-example2.png)]
 
-<span class="Q">[Q]</span> Regular or non-regular?
+.exercice[Regular or non-regular?]
 
 ???
 
@@ -149,7 +149,7 @@ class: middle
 
 .width-100[![](figures/lec4/regular-example3.png)]
 
-<span class="Q">[Q]</span> Regular or non-regular?
+.exercice[Regular or non-regular?]
 
 ???
 
@@ -168,7 +168,11 @@ This could not happen if we had a true single storage illusion!
 - To $\text{write}(v)$:
     - Update leader's value to $v$.
 
-<span class="Q">[Q]</span> Problem? **Does not work if leader crashes!**
+.exercice[What is the issue with this algorithm?]
+
+???
+
+Problem? **Does not work if leader crashes!**
 
 ---
 
@@ -184,7 +188,7 @@ This could not happen if we had a true single storage illusion!
     - Broadcast $v$ to all (each node then locally updates).
     - Return.
 
-<span class="Q">[Q]</span> Problem?
+.exercice[What is the issue with this algorithm?]
 
 ---
 
@@ -230,7 +234,7 @@ class: middle
 
 # Quorum principle
 
-Can we implement a regular register in *fail-silent*? (without a failure detector)
+Can we implement a regular register in **fail-silent**? (without a failure detector)
 
 --
 
@@ -261,7 +265,7 @@ class: middle
 
 .width-70[![](figures/lec4/majority-voting-impl2.png)]
 
-<span class="Q">[Q]</span> Why resetting `acks` and `readlist` right after having received back just more than $N/2$ messages?
+.exercice[Why do we reset `acks` and `readlist` right after having received back just more than $N/2$ messages?]
 
 ---
 
@@ -360,9 +364,9 @@ Linearizability **disallows** such execution.
 
 # $(1, N)$ atomic registers
 
-.center[![](figures/lec4/atomic-register.png)]
+.center.width-80[![](figures/lec4/atomic-register.png)]
 
-<span class="Q">[Q]</span> Show that linearizability is equivalent to validity + ordering.
+.exercice[Show that linearizability is equivalent to validity + ordering.]
 
 ---
 
@@ -426,7 +430,11 @@ class: middle
 
 ![](figures/lec4/riwa-impl2.png)
 
-<span class="Q">[Q]</span> How to adapt to fail-silent? **Read-Impose Write-Majority**
+.exercice[How to adapt to fail-silent?]
+
+???
+
+**Read-Impose Write-Majority**
 
 ---
 
@@ -440,7 +448,7 @@ class: middle
     - when $q$ completes its read, all correct processes have a timestamp $ts \geq ts_w$.
     - there is no way for $r$ to changes its value back to $v$ after this because $ts_v < ts_w$.
 
-<span class="Q">[Q]</span> Show that the termination and validity properties are satisfied.
+.exercice[Show that the termination and validity properties are satisfied.]
 
 ???
 
@@ -469,6 +477,7 @@ class: middle
         - by comparing timestamps,
         - by breaking ties using the process IDs.
 
+???
 
 <span class="Q">[Q]</span> How many messages are exchanged per read and write operations?
 

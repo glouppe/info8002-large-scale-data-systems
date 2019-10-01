@@ -194,7 +194,7 @@ td {
 }
 
 .exercice:before {
-    content: "Exercice";
+    content: "Exercise";
     font-weight: bold;
     display: block;
 }

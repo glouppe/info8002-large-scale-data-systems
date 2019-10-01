@@ -373,7 +373,11 @@ class: middle
 
 class: middle
 
-.center[![](figures/lec3/tweet-difficult.png)]
+.center.width-90[![](figures/lec3/tweet-difficult.png)]
+
+---
+
+class: middle
 
 Reliable broadcast:
 - Exactly-once delivery: *guaranteed* by the properties of RB.
