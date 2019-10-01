@@ -16,7 +16,7 @@ a
 | October 1 | Lecture 3: [Reliable broadcast](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture3.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec3.pdf)]<br>Exercise session 1a [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/ex1.pdf)] |
 | October 8 | Lecture 4: Shared memory |
 | October 22 | Lecture 5: Consensus<br>Exercise session 2 |
-| November 5 | Lecture 5: Distributed file systems |
+| November 5 | Lecture 6: Distributed file systems |
 | November 12 | Lecture 7: Distributed hash tables<br>Exercise session 3 |
 | November 19 | Lecture 8: Cloud computing |
 | November 26 | Lecture 9: Blockchain<br>Exercise session 4 |
