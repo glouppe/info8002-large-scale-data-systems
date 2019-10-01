@@ -8,12 +8,12 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2019.
 - Classroom: R7 / B28 (Montefiore Institute)
 
 ## Agenda
-
+a
 | Date | Topic |
 | --- | --- |
 | September 17 | [Outline](https://glouppe.github.io/info8002-large-scale-data-systems/?p=outline.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/outline.pdf)]<br>Lecture 1: [Introduction](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture1.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec1.pdf)] |
 | September 24 | Lecture 2: [Basic distributed abstractions](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture2.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec2.pdf)]  |
-| October 1 | Lecture 3: [Reliable broadcast](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture3.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec3.pdf)]<br>Exercise session 1 |
+| October 1 | Lecture 3: [Reliable broadcast](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture3.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec3.pdf)]<br>Exercise session 1a [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/ex1.pdf)] |
 | October 8 | Lecture 4: Shared memory |
 | October 22 | Lecture 5: Consensus<br>Exercise session 2 |
 | November 5 | Lecture 6: Cloud computing |
