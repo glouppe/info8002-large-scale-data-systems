@@ -159,7 +159,9 @@ This could not happen if we had a true single storage illusion!
 
 ---
 
-# Centralized algorithm
+class: middle
+
+## Centralized algorithm
 
 - Designates one process as the **leader**.
     - E.g., using the leader election abstraction (see Lecture 2).
@@ -176,7 +178,9 @@ Problem? **Does not work if leader crashes!**
 
 ---
 
-# Decentralized algorithm (bogus)
+class: middle
+
+## Decentralized algorithm (bogus)
 
 - Intuitively, make an algorithm in which
     - A $\text{read}()$ reads the local value.
@@ -193,8 +197,6 @@ Problem? **Does not work if leader crashes!**
 ---
 
 class: middle
-
-## Decentralized algorithm (bogus) example
 
 .width-100[![](figures/lec4/bogus-example.png)]
 
@@ -438,14 +440,16 @@ class: middle
 
 ---
 
-# Correctness
+class: middle
+
+## Correctness
 
 - *Ordering*: if a read returns $v$ and a subsequent read returns $w$, then the write of $w$ does not precede the write of $v$.
     - $p$ writes $v$ with timestamp $ts_v$.
     - $p$ writes $w$ with timestamp $ts_w > ts_v$.
-    - $q$ reads the values the $w$.
+    - $q$ reads the value $w$.
     - some time later, $r$ invokes a read operation.
-    - when $q$ completes its read, all correct processes have a timestamp $ts \geq ts_w$.
+    - when $q$ completes its read, all correct processes (including $r$) have a timestamp $ts \geq ts_w$.
     - there is no way for $r$ to changes its value back to $v$ after this because $ts_v < ts_w$.
 
 .exercice[Show that the termination and validity properties are satisfied.]
@@ -454,8 +458,7 @@ class: middle
 
 Make the plot.
 
-R: the explanation was not really convincing.
-R: what about the two other properties?
+Termination and validity are ensured in the same way as for Read-One Write-All.
 
 ---
 
