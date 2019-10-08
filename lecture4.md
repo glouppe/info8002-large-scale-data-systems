@@ -259,6 +259,8 @@ count: false
 
 A quorum is the minimum number of votes that a distributed transaction has to obtain in order to be allowed to perform an operation in a distributed system.
 
+R: work on this slide. This was not convincing at all.
+
 ---
 
 # Majority voting algorithm
