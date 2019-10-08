@@ -8,6 +8,10 @@ Lecture 4: Shared memory
 Prof. Gilles Louppe<br>
 [g.louppe@uliege.be](g.louppe@uliege.be)
 
+???
+
+R: study the lecture! explanations were sometime not too convincing...
+
 ---
 
 # Today
@@ -269,12 +273,22 @@ class: middle
 
 .exercice[Why do we reset `acks` and `readlist` right after having received back just more than $N/2$ messages?]
 
+???
+
+Validity:
+1. consider a read without any concurrent write. This will return the latest value written since we have majority.
+2. consider a read concurrent with a write. Two valid values: the previous one or the one currently being written.
+
 ---
 
 class: middle
 
 # Atomic registers
 Towards single storage illusion.
+
+???
+
+Jump back to regular register example (3), slide 13.
 
 ---
 
@@ -287,6 +301,10 @@ An execution $E$ is **sequentially consistent** if an execution $F$ exists such 
 - $F$ is sequential;
 - Read responses have value of the preceding write invocation in $F$;
 - If $o_1$ locally precedes $o_2$ in $E$, then $o_1$ locally precedes $o_2$ in $F$.
+
+???
+
+"... the result of any execution is the same as if the operations of all the processors were executed in some sequential order, and the operations of each individual processor appear in this sequence in the order specified by its own program."
 
 ---
 
@@ -311,6 +329,8 @@ Sequential consistency *allows* such execution.
 ???
 
 F: read at p2, write at p1, read at p3
+
+This is ok because the two reads do not locally precede each other.
 
 ---
 
@@ -378,7 +398,11 @@ class: middle
 
 .width-100[![](figures/lec4/linearization-example1.png)]
 
-<span class="Q">[Q]</span> Atomic? **No**, not possible to find linearization points.
+<span class="Q">[Q]</span> Atomic?
+
+???
+
+**No**, not possible to find linearization points.
 
 ---
 
@@ -388,7 +412,11 @@ class: middle
 
 .width-100[![](figures/lec4/linearization-example2.png)]
 
-<span class="Q">[Q]</span> Atomic? *Yes*
+<span class="Q">[Q]</span> Atomic?
+
+???
+
+*Yes*
 
 ---
 
@@ -398,7 +426,11 @@ class: middle
 
 .width-100[![](figures/lec4/linearization-example3.png)]
 
-<span class="Q">[Q]</span> Atomic? *Yes*
+<span class="Q">[Q]</span> Atomic?
+
+???
+
+*Yes*
 
 ---
 
@@ -407,6 +439,10 @@ class: middle
 ## Regular but not atomic
 
 .width-100[![](figures/lec4/regular-not-atomic.png)]
+
+<span class="Q">[Q]</span> Atomic? Regular?
+
+???
 
 <span class="Q">[Q]</span> Atomic? **No**. Regular? *Yes*, using majority voting.
 

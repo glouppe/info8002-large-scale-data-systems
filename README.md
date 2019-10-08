@@ -18,9 +18,10 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2019.
 | October 15 | Lecture 5: Consensus<br>Exercise session 2 |
 | October 22 | Lecture 6: Distributed file systems |
 | November 5 | Lecture 7: Distributed hash tables<br>Exercise session 3 |
-| November 12 | Lecture 8: Cloud computing |
+| November 12 | Lecture 8: Distributed computing |
 | November 19 | _(no class)_ |
-| November 26 | Lecture 9: Blockchain<br>Exercise session 4 |
+| November 26 | Visit of NRB |
+| December 3 | Lecture 9: Blockchain<br>Exercise session 4 |
 
 
 ## Projects
