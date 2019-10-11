@@ -49,6 +49,7 @@ We would like you to hand in the following deliverables:
   - A clear description of your architecture and assumptions.
     - A discussion on the fault-tolerance of your system and safeguards when performing high-level operations (e.g., what happens if I use put and a worker fails)? Additionally, what kind of fault-tolerance can you deliver?
     - A discussion on the implementation of `ls` (list files) and `rm` (remove files) within your framework.
+    - An experiment demonstrating the fault-tolerance of your system.
 
 The project **must** be completed in order to pass the course. The project can be completed in a group with a maximum of 3 students.
 
