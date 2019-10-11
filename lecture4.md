@@ -10,7 +10,7 @@ Prof. Gilles Louppe<br>
 
 ???
 
-R: study the lecture! explanations were sometime not too convincing...
+R: Make sure all explanations are convincing...
 
 ---
 

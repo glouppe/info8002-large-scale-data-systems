@@ -27,7 +27,14 @@ class: middle, center, black-slide
 
 ???
 
-Mention leader election, which we say as part of the basic abstractions.
+Bump on Francois' question: is reality as complicated as the lasagna of abstractions we have been defining?
+- Not necessarily, and we could certainly implement services in a more compact and optimized way.
+- However, what our theoretical framework allows us to do properly is to ensure correctness.
+- In all previous lectures, we have defined self-contained components with a limited number of features, which allowed to properly analyze them and prove their correctness.
+- We also went from simple to more and more complicated components by building in a bottom-up fashion and relying on things for which correctness was already ensured.
+- Directly starting from a complicated set of requirements and implementing everything in one go is possible, but would be much more difficult to achieve, debug and analyze.
+
+Also, this core set of abstractions is here to stay. We will study some applications that make use of those principles, but they likely to be obsolete in 5 to 10 years. In fact, some of them already are. The theory is not.
 
 ---
 
@@ -63,7 +70,7 @@ class: middle
 
 .width-90[![](figures/lec5/consensus-interface.png)]
 
-<span class="Q">[Q]</span> Which is safety, which is liveness?
+.exercice[Which is safety, which is liveness?]
 
 ???
 
@@ -80,7 +87,7 @@ class: middle
 
 .center.width-100[![](figures/lec5/consensus-exec.png)]
 
-<span class="Q">[Q]</span> Does this satisfy consensus?
+.exercice[Does this satisfy consensus?]
 
 ???
 
@@ -100,7 +107,7 @@ class: middle
 
 .center.width-100[![](figures/lec5/consensus-exec.png)]
 
-<span class="Q">[Q]</span> Does this satisfy uniform consensus?
+.exercice[Does this satisfy uniform consensus?]
 
 ???
 
@@ -179,9 +186,8 @@ class: middle
 
 .center.width-100[![](figures/lec5/hierarchical-consensus-exec2.png)]
 
-<span class="Q">[Q]</span> Uniform consensus?
-
-<span class="Q">[Q]</span> How many failures can be tolerated?
+.exercice[- Uniform consensus?
+- How many failures can be tolerated?]
 
 ???
 
@@ -243,6 +249,8 @@ class: middle
 
 .width-70[![](figures/lec5/uniform-hierarchical-consensus2.png)]
 
+???
+
 <span class="Q">[Q]</span> Why is reliable non-uniform broadcast sufficient to have uniform consensus?
 
 ---
@@ -279,7 +287,7 @@ We will build a consensus component in **fail-noisy** by combining three abstrac
 
 .center[![](figures/lec5/ele.png)]
 
-<span class="Q">[Q]</span> This abstraction can be implemented from an eventually perfect failure detector. How?
+.exercice[This abstraction can be implemented from an eventually perfect failure detector. How?]
 
 ???
 
@@ -338,11 +346,10 @@ class: middle
 
 .center.width-100[![](figures/lec5/ec-exec2.png)]
 
-<span class="Q">[Q]</span> What if $p_1$ fails only later, some time after the second `bebDeliver` event?
-
-<span class="Q">[Q]</span> What if instead of crashing, $p_1$ eventually trusts $p_2$?
-
-<span class="Q">[Q]</span> Could $p_1$ and $p_2$ keep bouncing NACKs to each other?
+.exercice[
+- What if $p_1$ fails only later, some time after the second `bebDeliver` event?
+- What if instead of crashing, $p_1$ eventually trusts $p_2$?
+- Could $p_1$ and $p_2$ keep bouncing NACKs to each other?]
 
 
 ---
@@ -422,7 +429,7 @@ class: middle
 
 .center.width-100[![](figures/lec5/econs-exec3.png)]
 
-<span class="Q">[Q]</span> What is wrong in this execution?
+.exercice[What is wrong in this execution?]
 
 ---
 
@@ -472,6 +479,8 @@ class: middle
     - $l$ sends the same value to all processes in the `Decided` message.
 - *Termination*: If the leader $l$ is correct, has ep-proposed a value, and no correct process aborts this epoch consensus, then every correct process eventually ep-decides some value.
     - When $l$ is correct and no process aborts the epoch, then every process eventually receives a `Decide` message and ep-decides.
+
+???
 
 <span class="Q">[Q]</span> What may go wrong if we do not assume a majority of correct processes?
 
@@ -594,12 +603,6 @@ Leader-driven consensus is a modular formulation  of the **Paxos** consensus alg
 ]
 
 .center.width-80[![](figures/lec5/paxos1.png)]
-
----
-
-class: middle
-
-.center.width-80[![](figures/lec5/paxos2.png)]
 
 ---
 
