@@ -4,13 +4,11 @@
 ## Introduction
 The main objective of this project is to implement a distributed and fault-tolerant file system.
 This implies that if one or more processes fail, the normal operation of the file-system and its
-interface should be guaranteed. We give you the complete freedom to implement and design the file
+interface should be guaranteed.
+
+## Implementation
+We give you the complete freedom to implement and design the file
 system. However, the following interfaces should be implemented:
-
-
-Other methods are most likely required, but these are the endpoints available to the end-user.
-**Data should NOT be replicated to all processes** (assume the data is too large).
-Doing so will result in a fail for this project.
 
 > **`put(path, bytes)`**
 
@@ -27,7 +25,12 @@ Returns all bytes of the file present at the specified path. If the path does no
 > **`exists(path)`**
 
 Checks if a file exists at the specified path. Returns “true” (not a string) if a file is present at the specified location, false otherwise.
+Other methods are most likely required, but these are the endpoints available to the end-user.
 
+**Data should NOT be replicated to all processes** (assume the data is too large).
+Doing so will result in a fail for this project.
+
+## Deliverables
 
 We would like you to hand in the following deliverables:
 
