@@ -6,6 +6,9 @@ The main objective of this project is to implement a distributed and fault-toler
 This implies that if one or more processes fail, the normal operation of the file-system and its
 interface should be guaranteed.
 
+This project is a requirement to pass the course. It must be completed and submitted with all deliverables to the Montefiore submission system by the hard deadline of December 22, 2019 23:59.
+The project can be completed in a group with a maximum of 3 students.
+
 ## Implementation
 We give you the complete freedom to implement and design the file
 system. However, the following interfaces should be implemented:
@@ -50,8 +53,6 @@ We would like you to hand in the following deliverables:
     - A discussion on the fault-tolerance of your system and safeguards when performing high-level operations (e.g., what happens if I use put and a worker fails)? Additionally, what kind of fault-tolerance can you deliver?
     - A discussion on the implementation of `ls` (list files) and `rm` (remove files) within your framework.
     - An experiment demonstrating the fault-tolerance of your system.
-
-The project **must** be completed in order to pass the course. The project can be completed in a group with a maximum of 3 students.
 
 ## General tips and guidelines
 
