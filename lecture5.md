@@ -57,12 +57,13 @@ class: middle
 
 ## Motivation
 
-- Solving consensus is **key** to solving many problems in distributed computing:
-    - synchronizing replicated state machines;
-    - electing a leader;
-    - managing group membership;
-    - deciding to commit or abort distributed transactions.
-- Any algorithm that helps multiple processes *maintain common state* or to *decide on a future action*, in a model where processes may fail, involves **solving a consensus problem**.
+Solving consensus is **key** to solving many problems in distributed computing:
+- synchronizing replicated state machines;
+- electing a leader;
+- managing group membership;
+- deciding to commit or abort distributed transactions.
+
+Any algorithm that helps multiple processes *maintain common state* or to *decide on a future action*, in a model where processes may fail, involves **solving a consensus problem**.
 
 ---
 
@@ -123,10 +124,11 @@ class: center, middle
 
 class: middle
 
-So, are we done? **No!**
+Are we done then? **No!**
 - The FLP impossibility result holds for *asynchronous systems* only.
 - Consensus can be implemented in **synchronous** and **partially synchronous** systems. (We will prove it!)
-- The result only states that termination cannot be guaranteed. Can we have other guarantees while maintaining a high probability of termination?
+- The result only states that termination cannot be guaranteed.
+    - Can we have other guarantees while maintaining a high probability of termination?
 
 ---
 
@@ -141,7 +143,7 @@ class: middle
 ## Asumptions
 
 - Assume a **perfect failure detector** (synchronous system).
-- Assume processes $1, ..., N$ form an ordered **hierarchy** as given by a $\text{rank}(p)$ function.
+- Assume processes $1, ..., N$ form an ordered **hierarchy** as given by $\text{rank}(p)$.
     - $\text{rank}(p)$ is a *unique* number between $1$ and $N$ (e.g., the pid).
 
 ---
@@ -237,6 +239,10 @@ class: middle
     - This ensures that if a decision is made (at a faulty or correct process), then this decision will be made at all correct processes.
     - Processes proceed to the next round only if the current leader fails.
 
+???
+
+Different from Hierarchical consensus in the sense that we dont necessarily have to wait N rounds.
+
 ---
 
 class: middle
@@ -277,9 +283,9 @@ class: middle
 
 We will build a consensus component in **fail-noisy** by combining three abstractions:
 
-- an eventual leader detector
-- an epoch-change abstraction
-- an epoch consensus abstraction
+1. an eventual leader detector
+2. an epoch-change abstraction
+3. an epoch consensus abstraction
 
 ---
 
@@ -301,6 +307,10 @@ Elect as leader the correct process with the minimal rank. Eventually the set of
 - An indication event `StartEpoch` contains:
     - an epoch timestamp $ts$
     - a leader process $l$.
+
+???
+
+This component is emitting only.
 
 ---
 
@@ -346,20 +356,23 @@ class: middle
 
 .center.width-100[![](figures/lec5/ec-exec2.png)]
 
+---
+
+class: middle
+
 .exercice[
 - What if $p_1$ fails only later, some time after the second `bebDeliver` event?
 - What if instead of crashing, $p_1$ eventually trusts $p_2$?
 - Could $p_1$ and $p_2$ keep bouncing NACKs to each other?]
 
-
 ---
 
 # Epoch consensus ($ep$)
 
-- Let us  define an **epoch consensus** abstraction, whose purpose is similar to *consensus*, but with the following simplifications:
+- Let us  define an **epoch consensus** abstraction, whose purpose is similar to consensus, but with the following simplifications:
     - Epoch consensus represents an *attempt* to reach consensus.
         - The procedure can be aborted when it does not decide or when the next epoch should already be started by the higher-level algorithm.
-    - Every epoch consensus instance is identified by an *epoch timestamp* $ts$ and a *designated leader* $l$.
+    - Every epoch consensus instance is identified by an epoch timestamp $ts$ and a designated leader $l$.
     - **Only the leader** proposes a value. Epoch consensus is required to decide *only when the leader is correct*.
 - An instance **must terminate** when the application locally triggers an `Abort` event.
 - The state of the component is initialized
@@ -430,6 +443,10 @@ class: middle
 .center.width-100[![](figures/lec5/econs-exec3.png)]
 
 .exercice[What is wrong in this execution?]
+
+???
+
+$p1$ should not proceed since 2 is not > 2.
 
 ---
 
@@ -610,6 +627,12 @@ class: center, black-slide, middle
 
 <iframe width="640" height="400" src="https://www.youtube.com/embed/s8JqcZtvnsM?cc_load_policy=1&hl=en&version=3" frameborder="0" allowfullscreen></iframe>
 
+???
+
+Formulation is different but equivalent.
+- Leader election, epoch change =p Promise phase
+- Lock-in = commitment
+
 ---
 
 class: middle
@@ -645,11 +668,6 @@ class: middle, center
 class: middle
 
 .width-80[![](figures/lec5/tob-impl.png)]
-
-???
-
-R: clarify the initialization phase
-R: note that consensus is necessarily started at all correct process, since it is trigger at the RB delivery, which all correct process reach.
 
 ---
 
