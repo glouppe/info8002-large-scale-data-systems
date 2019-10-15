@@ -48,6 +48,7 @@ We would like you to hand in the following deliverables:
     - `POST` **/copy** (with arguments `source_path` and `destination_path`)
   - It is preferable that these HTTP endpoints have proper HTTP response code (e.g., HTTP 200 for success).
   - Resistant to failures (your assumptions, e.g., number of failures). The REST endpoints should remain functional whenever I kill a process.
+  - A script demonstrating the fault-tolerance of your storage (you should be able to retrieve files while killing processes).
 - A **report** in PDF format which must include:
   - A clear description of your architecture and assumptions.
     - A discussion on the fault-tolerance of your system and safeguards when performing high-level operations (e.g., what happens if I use put and a worker fails)? Additionally, what kind of fault-tolerance can you deliver?
