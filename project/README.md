@@ -6,7 +6,7 @@ The main objective of this project is to implement a distributed and fault-toler
 This implies that if one or more processes fail, the normal operation of the file-system and its
 interface should be guaranteed.
 
-This project is a requirement to pass the course. It must be completed and submitted with all deliverables to the Montefiore submission system by the hard deadline of December 22, 2019 23:59.
+This project is a requirement to pass the course. It must be completed and submitted with all deliverables to the Montefiore submission system by the hard deadline of **December 20, 2019 23:59**.
 The project can be completed in a group with a maximum of 3 students.
 
 ## Implementation
@@ -37,7 +37,7 @@ Doing so will result in a fail for this project.
 
 We would like you to hand in the following deliverables:
 
-- An **implementation** with the following requirements:
+- A distributed **implementation** with the following requirements:
   - Bash script to start your distributed file system.
     The bash script should print the `pid`’s (process identifiers)
     of every process you start.
@@ -51,12 +51,14 @@ We would like you to hand in the following deliverables:
   - A script demonstrating the fault-tolerance of your storage (you should be able to retrieve files while killing processes).
 - A **report** in PDF format which must include:
   - A clear description of your architecture and assumptions.
-    - A discussion on the fault-tolerance of your system and safeguards when performing high-level operations (e.g., what happens if I use put and a worker fails)? Additionally, what kind of fault-tolerance can you deliver?
-    - A discussion on the implementation of `ls` (list files) and `rm` (remove files) within your framework.
-    - An experiment demonstrating the fault-tolerance of your system.
+  - A discussion on the fault-tolerance of your system and safeguards when performing high-level operations (e.g., what happens if I use put and a worker fails)? Additionally, what kind of fault-tolerance can you deliver?
+  - A discussion on the implementation of `ls` (list files) and `rm` (remove files) within your framework.
+  - An experiment demonstrating and discussing the fault-tolerance of your system.
 
-## General tips and guidelines
+## General tips and coding guidelines
 
-1. Keep things simple, you don’t need a full-fledged efficient implementation.
-2. This is subjective, but a Python implementation using `flask` and `requests` is probably the easiest approach to handle the requirements and networking aspect of this project.
-3. Create an abstraction layer for the top-level application.
+- You are free to implement your project in any programming language, as long as it comes with a proper modular implementation and an abstraction layer for the top-level application.
+- You can bootstrap your project from the stub provided in `/code/`. You are free to modify, remove or extend any part of it.
+- We recommend network communication to be implemented through a REST API (e.g., using `flask` and `requests` in Python), in order to simplify development.
+- Provide instructions and code for running your implementation of the distributed file system, as well as for reproducing all experiments and results (including plots, if any).
+- Do not over-engineer. We expect a working proof-of-concept, not a full fledged professional solution. Prefer simplicity over complexity.
