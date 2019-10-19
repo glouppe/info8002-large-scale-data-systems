@@ -231,7 +231,7 @@ class: middle
 
 # Hierarchical uniform consensus
 
-- Same as *hierarchical consensus*.
+- Same as *hierarchical consensus*, but must ensure uniform agreement.
 - A round consists of **two communication steps**:
     - The leader BEB broadcasts its proposal
     - The leader collects acknowledgements
@@ -434,6 +434,13 @@ class: middle
 
 .center.width-100[![](figures/lec5/econs-exec2.png)]
 
+???
+
+Note how in the read phase p1 could proceed as soon as it obtains a quorum.
+
+Quorum: minimum number of votes that a distributed transaction must obtain in order to perform an operation.
+
+
 ---
 
 class: middle
@@ -476,7 +483,7 @@ Assume a **majority of correct processes**, i.e. $N > 2f$, where $f$ is the numb
     - If some process ep-decided $v$ at $ts' < ts$, then it decided after receiving a `Decided` message with $v$ from leader $l'$ of epoch $ts'$.
     - Before sending this message, $l'$ had broadcast a `Write` containing $v$ and collected `Accept` messages.
     - These responding processes set their variables $val$ to $v$ and $valts$ to $ts'$.
-    - At the next epoch, the leader sent a `Write` message and collected `Accept` messages with the previous $(ts', v)$ pair.
+    - At the next epoch, the leader sent a `Write` message with the previous $(ts', v)$ pair and collected `Accept` messages.
     - This pair has the highest timestamp with a non-null value.
     - This implies that the leader of this epoch can only ep-decides $v$.
     - This argument can be continued until $ts$, establishing lock-in.

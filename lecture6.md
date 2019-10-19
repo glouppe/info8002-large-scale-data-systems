@@ -2,824 +2,617 @@ class: middle, center, title-slide
 
 # Large-scale Data Systems
 
-Lecture 6: Blockchain
+Lecture 6: Distributed file systems
 
 <br><br>
 Prof. Gilles Louppe<br>
 [g.louppe@uliege.be](g.louppe@uliege.be)
 
+???
+
+R: talk about amazon s3/lambda?
+
 ---
 
 # Today
 
-.grid[
-.kol-2-3[
-Blockchain:
-- Hash functions and data structures
-- Digital signatures
-- Simple (fictitious) cryptocurrencies
-- Consensus in the blockchain
-- Bitcoin and friends
-]
-.kol-1-3[
-.width-100[![](figures/lec6/book.jpg)]
-]
-]
+- Google File System (GFS)
+    - Design considerations
+    - Data replication
+    - Reading and writing
+    - Recovery from failure
+- Hadoop Distributed File System (HDFS)
 
-Most of today's lecture is based on "Bitcoin and cryptocurrency technologies: A comprehensive introduction" by Narayanan et al.
+<br>
+.center.width-70[![](figures/lec8/hadoop-hdfs.png)]
 
 ---
 
 class: middle, center, black-slide
 
-.width-80[![](figures/lec6/iceberg.png)]
+.width-80[![](figures/lec9/iceberg.png)]
 
 ---
 
 class: middle
 
-# Hash functions and data structures
+# Google File System
 
 ---
 
-# Hash functions
+# File systems
 
-A **hash function** is a mathematical function $H$ with the following properties:
-- Its input can be any string of any size.
-- It produces a fixed-size output (e.g. 256 bits).
-- It is efficiently computable.
-    - E.g., computing the hash of an $n$-bit string should be $O(n)$.
+- File systems determine **how** data is stored and retrieved.
+- *Distributed file systems* (DFS) manage the storage across a network of machines.
+    - Goal: single-system **illusion** for users.
+    - Added complexity due to the network.
+- GFS and HDFS are examples of distributed file systems.
+    - They represent *one* way (not the way) to design a distributed file system.
 
-## Security properties
-- Collision resistance
-- Hiding
-- Puzzle-friendliness
-
----
-
-# Collision resistance
-
-A hash function $H$ is said to be **collision resistant** if it is infeasible/difficult to find two values $x$ and $y$ such that $x \neq y$ yet $H(x)=H(y)$.
-
-<br>
-.center.width-80[![](figures/lec6/collision.png)]
+.exercice[Which file systems do you know?]
 
 ---
 
 class: middle
-
-.center[Collisions do exist. But can anyone find them?]
-<br>
-
-.center.width-80[![](figures/lec6/collision2.png)]
-
----
-
-class: middle
-
-How to find a collision:
-- Pick $2^{256}+1$ distinct values and compute the hashes of each of them.
-- At least one pair of inputs must collide!
-
-This works no matter the hash function $H$. But it takes too long to matter!
-
----
-
-# Hiding
-
-A hash function $H$ is said to be **hiding** if when a secret value $r$ is chosen from a probability distribution that has high entropy, then given $H(r || x)$, it is infeasible to find $x$.
-
----
-
-class: middle
-
-## Application: Commitments
-
-A commitment is the digital analog of taking a value, sealing it in an envelope, and putting that envelope out on the table where everyone can see it.
-- Commit to value (the content of the envelope).
-- Reveal it later (open the envelope).
-
----
-
-class: middle
-
-## Commitment scheme
-- $\text{commit}(\text{msg}, \text{key}) := (H(\text{msg} || \text{key}), H(\text{key}))$:<br> The commit function takes a message and a (secret) key as input and returns a commitment pair $\text{com}$.
-- $\text{verify}(\text{com}, \text{key}, \text{msg})$: The verify function takes a commitment, a key and a message as inputs. It returns true iff $\text{com} = \text{commit}(\text{msg}, \text{key})$.
-
-## Security properties
-- Hiding: given $\text{com} := (H(\text{msg} || \text{key}), H(\text{key}))$, it is infeasible to find $\text{msg}$.
-- Binding: Infeasible to find $\text{msg} \neq \text{msg}'$ such that $H(\text{msg} || \text{key}) = H(\text{msg}' || \text{key})$ is true, nor to change the key.
-
----
-
-
-# Puzzle-friendliness
-
-A hash function $H$ is said to be **puzzle friendly** if for every possible $n$-bit output value $y$, if $k$ is chosen from a distribution with high entropy and made public, then it remains infeasible to find $x$ such that $y=H(k || x)$ in time significantly less than $2^n$.
-
----
-
-class: middle
-
-## Application: Search puzzle
-
-Given a puzzle ID $i$ and a target set $Y$, try to find a solution $x$ such that $H(i || x) \in Y$.
-
-- Puzzle-friendliness implies that no solving strategy is much better than trying random values of $x$.
-- Later, we will see that *mining* is a computational puzzle.
-
----
-
-# SHA-256 hash function
-
-<br><br>
-.center.width-100[![](figures/lec6/sha256.png)]
-
-SHA-256 uses the Merkle–Damgård construction to turn a fixed-length collision resistant compression function $c$ into a hash function that accepts arbitrary-length inputs.
-
----
-
-# Hash pointers
-
-A **hash pointer** is a pointer to where some information is stored, together with a cryptographic hash of this information. A hash pointer can be used for:
-- retrieving the information associated to the pointer,
-- verifying that the information has not changed.
-
-<br>
-.center.width-40[![](figures/lec6/hash-pointer.png)]
-
----
-
-class: middle, center, red-slide
-
-.bold[Key idea]: build data structures with hash pointers
-
----
-
-# Blockchain
-
-A **blockchain** is a linked list that makes use of hash pointers.
-- In a regular linked list, each block has data as well as a pointer to the previous block in the list.
-- In a blockchain, the previous-block pointers are replaced by hash pointers.
-
-.center.width-100[![](figures/lec6/hash-chain.png)]
-
----
-
-class: middle
-
-.center.width-100[![](figures/lec6/hash-chain-tampered.png)]
-
-## Tamper-evident log
-
-- If an adversary modifies data anywhere in the blockchain, it will result in the hash pointer in the following block being incorrect.
-- If we stored the head of the list, then even if an adversary modifies all pointers to be consistent with modified data, the head pointer will be incorrect and the change would be detected.
-
----
-
-# Merkle tree
-
-A **merkle tree** is a binary tree that makes use of hash pointers.
-
-.center.width-100[![](figures/lec6/merkle-tree.png)]
-
----
-
-class: middle
-
-.center.width-40[![](figures/lec6/merkle-membership.png)]
-
-## Proof of membership
-
-Proving that a data block is included in the tree only requires showing the blocks in the path from that data block to the root. Hence $O(\log N)$.
-
----
-
-class: middle
-
-# Digital signatures
-
----
-
-# Digital signatures
-
-Digital signatures is the second cryptographic primitive we will need for implementing cryptocurrencies.
-
-A **digital signature** is the digital analog to a handwritten signature on paper:
-- Only you can make your signature, but anyone can verify that it is valid.
-- Signatures are tied to a particular document. They cannot be cut-and-pasted to another document to indicate your agreement or endorsement.
-
-Bitcoin makes use of the *Elliptic Curve Digital Signature Algorithm* (ECDSA) for digital signatures.
-
----
-
-class: middle
-
-## API for digital signatures
-
-- $(\text{sk}, \text{pk}) := \text{generateKeys}(\text{keysize})$
-    - $\text{sk}$: secret signing key
-    - $\text{pk}$: public verification key
-- $\text{sig} := \text{sign}(\text{sk}, \text{msg})$
-- $\text{isValid} := \text{verify}(\text{pk}, \text{msg}, \text{sig})$
-
----
-
-class: middle
-
-## Requirements
-
-- Valid signatures must verify.
-- Signatures are existentially unforgeable.
-
-<br>
-.center.width-90[![](figures/lec6/forge-game.png)]
-
----
-
-class: middle
-
-# Simple (fictitious) cryptocurrencies
-
----
-
-# Goofycoin
-
-## Rule 1: a designated entity (Goofy) can create new coins
-
-To create a coin, Goofy generates *a unique coin ID* along with the *statement* `"CreateCoin [uniqueCoinID]"`.
-- Goofy computes the **digital signature** of this string with his secret signing key.
-- The string, together with Goofy's signature, is a coin.
-- Anyone can verify that the coin contains Goofy's valid signature of the `CreateCoin` statement and is therefore a valid coin.
-
-
-.grid[
-.kol-3-4[<br><br>.center.width-50[![](figures/lec6/goofy-1.png)]]
-.kol-1-4.width-80[![](figures/lec6/goofy.png)]
-]
-
-???
-
-Same as for a bank or a government that decide to print money at will.
-
-Verification of banknotes  can be done by anyone.
-
----
-
-class: middle
-
-.center.width-45[![](figures/lec6/goofy-2.png)]
-
-## Rule 2: Whoever owns a coin can transfer it to someone.
-
-- Let's say Goofy wants to transfer a coin he created to Alice.
-- To do this, Goofy creates a new statement `"Pay this to Alice"`, where
-    - `"this"` is a hash pointer that references the coin in question,
-    - Alice's identity is defined by her public signing key.
-- Alice can prove to anyone that she owns the coin because she can present the data structure with Goofy's valid signature.
-
----
-
-class: middle, center
-
-.center.width-50[![](figures/lec6/goofy-3.png)]
-
-The recipient can pass on the coin again.
-
----
-
-class: middle
-
-.center.width-80[![](figures/lec6/goofy-4.png)]
-
-## Double-spending attack
-
-- Let's say Alice passed her coin on to Bob by sending her signed statement, but didn't tell anyone else.
-- She could create another signed statement that pays the same coin to Chuck.
-- Both Bob and Chuck would have valid-looking claims to be the owner of this coin.
-
-Goofycoin does not solve the *double-spending attack* problem. For this reason, it is **not secure**.
-
-
----
-
-# Scroogecoin
-
-A *designated and trusted entity* (Scrooge McDuck) publishes an **append-only ledger** containing the history of all transactions.
-- Append-only ensures that any data written to this ledger will remain forever in the ledger.
-- Therefore, this can be used to prevent double spending by requiring that all transactions are written in the ledger before they are accepted.
-
-.center.width-40[![](figures/lec6/picsou.png)]
-
----
-
-class: middle
-
-.center.width-90[![](figures/lec6/scrooge-chain.png)]
-
-To implement the append-only ledger, Scrooge makes use of a **blockchain**, which he will digitally sign.
-- The blockchain is a series of data blocks, each with one or more transaction(s) in it.
-- Each block has the IDs of the transactions, the transaction's contents, and a hash pointer to the previous block.
-- Scrooge digitally signs the final hash pointer, which binds all the data in this entire structure, and he publishes the signature along with the blockchain.
-
----
-
-class: middle
-
-.center.width-100[![](figures/lec6/btc-chain.png)]
-
-In Bitcoin, the blockchain contains two different hash structures.
-- The first is a *hash chain of blocks* that links the different blocks to one another.
-- The second is internal to each block and is a *Merkle tree of transactions* within the blocks.
-
----
-
-class: middle
-
-A transaction only counts if it is in the block chain **signed by Scrooge**.
-- Anybody can verify a transaction was endorsed by Scrooge by checking Scrooge's signature on the block that records the transaction.
-- Scrooge makes sure that he does not endorse a transaction that attempts to double spend an already spent coin.
-- If Scrooge tries to add or remove a transaction, or to change an existing transaction, it will affect all following blocks published by Scrooge.
-    - As long as the latest hash pointer published by Scrooge is monitored, the change will be obvious and easy to catch.
-
----
-
-class: middle
-
-## Coin creation
-
-- Same as for Goofycoin, but we extend the semantics to allow for multiple coins to be created per transaction.
-- Coins are referred to by a transaction ID and a coin's serial number in that transaction.
-
-<br>
-.center.width-70[![](figures/lec6/scrooge-create.png)]
-
----
-
-class: middle
-
-## Payments
-
-A transaction consumes (and destroys) some coins and creates new coins of the same total value.
 
 .grid[
 .kol-1-2[
-A transaction is *valid* if:
-- The consumed coins are valid.
-- The consumed coins have not already been consumed.
-- The total value out in the transaction is to equal to the total value in.
-- The transaction is validly signed by all the owners of the consumed coins in the transaction.
-]
-.kol-1-2[
-.center.width-100[![](figures/lec6/scrooge-pay.png)]
-]
-]
-
----
-
-class: middle
-
-## Immutable coins
-
-Coins cannot be transferred, subdivided or combined.
-
-But we can obtain the same effect by using transactions. E.g., to subdivide:
-- create a new transaction;
-- consume your coins;
-- pay out two new coins (of half the value of the original coin) to yourself.
-
----
-
-class: middle
-
-.grid[
-.kol-2-3[
-Scoorge cannot create fake transactions, because he cannot forge other people's signatures.
-
-However,
-- he could stop endorsing transactions from some users, denying them service and making their coins unspendable;
-- he could refuse to publish transactions unless they transfer some mandated transaction fee to him.
-- he can create as many coins for himself as he wants.
-
-Can the system operate **without any central, trusted party**?
-]
-.kol-1-3[<br>.center.width-80[![](figures/lec6/picsou2.gif)]
-.caption[Do not worry.<br> I am honest.]]
-]
-
----
-
-class: middle
-
-# Consensus in the blockchain
-
----
-
-# Decentralization
-
-We want a *decentralized* cryptocurrency system without any central (supposedly) trusted party.
-
-## Solution
-- Implement the currency protocol on top of a **peer-to-peer** network of nodes.
-- Each node maintains its own copy of the ledger.
-
-<br>
-.center.width-70[![](figures/lec6/p2p.png)]
-
----
-
-class: middle
-
-.center.width-100[![](figures/lec6/p2p-broadcast.png)]
-
-When Alice wants to pay Bob, she *broadcasts* the transaction to all nodes in the network. Each node updates its ledger accordingly.
-
-Note that Bob's computer is not (necessarily) in the picture.
-
----
-
-class: middle
-
-- Who maintains the ledger?
-- Who has authority over which transactions are valid?
-- Who creates new coins?
-- Who determines how the rules of the system change?
-- How do coins acquire exchange values?
-
----
-
-# Consensus
-
-For this peer-to-peer system to work:
-- All nodes must have the exact same copy of the ledger.
-- Therefore, they must agree on the transactions that are added in the ledger, and in which order.
-
-$\Rightarrow$ They must reach **consensus**.
-
----
-
-class: middle
-
-## How consensus could work
-
-At any given time:
-- All nodes have a blockchain consisting of a sequence of blocks, each containing a list of transactions they have reached consensus on.
-- Each node has a set of outstanding transactions it has heard about.
-
-At regular intervals, every node in the system proposes its own outstanding transaction pool to be included in the next block, using some consensus protocol.
-
-<br>
-.center.width-80[![](figures/lec6/consensus.png)]
-
----
-
-class: middle
-
-## Consensus is hard
-
-- Nodes may crash
-- Nodes may be malicious
-- Network is highly imperfect
-    - Not all pairs of nodes connected
-    - Faults in the network
-    - Latency (no notion of global time)
-
----
-
-class: middle
-
-Why not simply use a **Byzantine fault-tolerant** variant of *Paxos*?
-- It would never produce inconsistent results.
-- However
-    - there are certain (rare) conditions in which the protocol may fail to make any progress,
-    - no solution exists if less than $\tfrac{2}{3}$ of the nodes are honest.
-
----
-
-class: middle
-
-## Additional constraints
-- *Pseudonymity*: we do not want nodes to have an identity.
-- *Sybil attacks*: we do not want an adversary to be able to spawn many nodes (e.g., a majority) and take control of the system.
-
-???
-
-Draw diagram of a Sybil attack.
-
----
-
-# Implicit consensus
-
-Assume the ability to select a random node in manner that is not vulnerable to Sybil attacks, such that at least 50% of the time an honest node is picked.
-
-## Consensus algorithm
-
-1. New transactions are *broadcast* to all nodes.
-2. Each node collects new transactions into a block.
-3. In each round, a **random node** gets to broadcast its block.
-4. Other nodes accept the block only if all transactions in it are valid (unspent, valid signatures).
-5. Nodes express their acceptance of the block by including its hash in the next block they create.
-
-<br><br><br>
-<span class="Q">[Q]</span> To what basic abstraction does random selection is an implementation of?
-
-???
-
-Random selection is a leader detector.
-
----
-
-class: middle
-
-.center.width-80[![](figures/lec6/double-spend-transaction.png)]
-
-Alice adds an item to her shopping cart on Bob's website. The server requests payment.
-- Alice creates a transaction from her address to Bob's and broadcast it to the network.
-- An honest node creates the next block and includes this transaction in that block.
-- On seeing the transaction included in the blockchain, Bob concludes that Alice has paid him and send the purchased item to Alice.
-
----
-
-class: middle
-
-.center.width-80[![](figures/lec6/double-spend-attack.png)]
-
-## Double-spend attack
-
-- Assume the next random node happens to be controlled by Alice.
-- Since Alice gets to propose the block, she could propose one that ignores the block that contains the payment to Bob.
-- Worse, she could make a transaction that transfers the same coin to an address she controls.
-- Since the two transactions spend the same coins, only of them will be included in the blockchain.
-
----
-
-class: middle
-
-The double-spend attack success will depend on which block will ultimately end up on the long-term consensus chain.
-
-## Policy upon forks
-
-- Honest nodes follow the policy that **extends the longest valid branch**.
-- In step 4 of implicit consensus, if an honest node discovers that the new block belongs to a longer branch than what it thought was part of the longest branch, then the node locally *reorganizes* its chain.
-
-???
-
-Alice's double-spend attempt:
-- The node that chooses the next block may decide to build on either of two blocks.
-- This choice will largely determine whether the double-spend attack succeeds.
-
----
-
-class: middle
-
-.center.width-80[![](figures/lec6/double-spend-bob.png)]
-
-Bob the merchant's point of view:
-- Double-spend probability **decreases exponentially** with the number of confirmations.
-- Common heuristic: wait for 6 confirmations before validating the transaction.
-
----
-
-class: middle
-
-## Recap
-
-- Protection against invalid transactions is cryptographic, but enforced by consensus.
-- Protection against double-spending is purely by consensus.
-- We are never 100% certain that a transaction is part of the consensus branch. **The guarantee is probabilistic**.
-    - Even with 1% of the total hashing power, Alice would have a hard time cheating on Bob.
-    - The probability of mining six blocks in a row is $0.01^6 = 10^{-12}$.
-
----
-
-# Incentives
-
-- Assuming node honesty is problematic.
-- Instead, can we build **incentives** for nodes to behave honestly?
 
 <br><br><br><br>
-.center.width-100[![](figures/lec6/incentives.png)]
 
----
+## How would you design a DFS?
 
-class: middle
+We want *single-system illusion* for data storage.
+- Data is too large be stored in a single machine.
+- Hardware **will** fail.
+]
+.kol-1-2.center[
+.width-60[![](figures/lec8/google-first-server_a.jpg)]
+.width-60[![](figures/lec8/google-first-server.jpg)]
 
-## Incentive 1: block reward
-
-- The creator of a block gets to
-    - include a special coin-creation transaction in the block
-    - choose the recipient address of this transaction.
-- The value is fixed: currently 12.5 coins, but halves every 210000 blocks (~ every 4 years).
-- The block creator gets to collect the reward only if the blocks end up on the long-term consensus branch.
-
----
-
-class: middle
-
-.center.width-70[![](figures/lec6/supply.png)]
-
-Total supply of coins with time. The block reward is cut in half every 4 years, limiting the total supply to 21 millions.
+.italic[Google first servers]
+]
+]
 
 ???
 
-Geometric series.
-Analogy with the arrow story.
+Pause here: this is a good example of the skill we want to practice in this course.
+- What do we want? (efficiency, reliability)
+- What do we have to cope with? (failures, volumes of data, low synchronization overhead, high throughput)
+- What components could we use?
+- How do we architecture the thing?
+
+---
+
+# History
+
+GFS was developed at Google around 2003, jointly with MapReduce.
+- Provide **efficient** and **reliable** access to data.
+- Use large clusters of *commodity hardware*.
+- Proprietary system, but detailed description.
+
+.center.width-80[![](figures/lec8/gfs-paper.png)]
+
+---
+
+# Design aims
+
+- Maintain data and system *availability*.
+- Handle **failures** gracefully and transparently.
+- Low synchronization overhead between entities.
+- Exploit *parallelism* of numerous entities.
+- Ensure high sustained throughput for individual reads/writes.
+
+---
+
+# Assumptions
+
+- Hardware **failures** are common.
+    - We want to use cheap commodity hardware.
+- Files are large (multi-GB files are the norm) and their number is (relatively) limited (millions).
+- Reads:
+    - large streaming reads ($\geq$ 1MB in size), or
+    - small random reads
+- Writes:
+    - Large **sequential writes** that *append* to files.
+    - Concurrent appends by multiple clients.
+    - Once written, files are *seldom modified* ($\neq$ append) again.
+        - Random modification in files is possible, but not efficient in GFS.
+- High sustained bandwidth, but high latency.
 
 ---
 
 class: middle
 
-## Incentive 2: transaction fees
+## Which of those fit the assumptions?
 
-- The creator of a transaction can choose to make the output value less than input value.
-- The remainder is a transaction fee and goes to the block creator.
-- Purely voluntary.
-
----
-
-# Proof of work
-
-How does one select a node at random without being vulnerable to Sybil attacks?
-- Approximate the selection of a random node by instead selecting nodes in proportion to a resource that (we hope) nobody can monopolize.
-    - in proportion to computer power: **proof of work** (PoW)
-    - in proportion to currency ownership: *proof of stake* (PoS)
-
-How does one select nodes in proportion to their computing power?
-- Allow nodes to compete with one another by using their computing power.
-- This results in nodes being picked in proportion to that capacity.
+- Global company dealing with the data of its 100M employees.
+- A search engine's query log.
+- A hospital's medical imaging data generated from an MRI scan.
+- Data sent by the Hubble telescope.
+- A search engine's index (used to serve search results to users).
 
 ---
 
-class: middle
+class: middle, red-slide
 
-## PoW with hash puzzles
+.bold[Disclaimer]
 
-.center.width-100[![](figures/lec6/puzzle.png)]
-
-To create a block, find a $\text{nonce}$ such that
-$$H(\text{nonce} || \text{previous hash} || \text{tx}\_1 || \text{tx}\_2 || ...) < T$$
-for some target $T \ll 2^{256} \approx 10^{77}$.
-- If the hash function $H$ is secure, the only way to succeed is to try enough nonces until getting lucky.
-- Node creators are called *miners*.
+GFS (and HDFS) are not a good fit for:
+- Low latency data access (in the ms range).
+    - Solution: distributed databases, such as HBase.
+- Many small files.
+- Constantly changing data.
 
 ---
 
-class: middle
+# Architecture
 
-## Property 1: difficult to compute
+.center.width-90[![](figures/lec8/gfs-architecture.png)]
 
-- As of 2018, the expected number of hashes to mine a block is $3 \times 10^{22}$.
-- Only some nodes bother to compete.
+- A single **master** node.
+- Many *chunkservers* (100s - 1000s) storing the data, physically spread in different racks.
+- Many clients.
 
----
+.exercice[Why spreading across racks?]
 
-class: middle
+???
 
-## Property 2: parameterizable cost
+- Remember: one way, not the way.
+- Data does not flow across the GFS master.
 
-- The target $T$ is adjusted periodically as a function of how much hashing power has been deployed in the system by the miners.
-- The goal is to maintain an average time of 10 minutes between blocks.
-
----
-
-class: middle
-
-## Property 3: trivial to verify
-
-- The $\text{nonce}$ must be published as part of the block.
-- Hence, anyone can verify that
-$$H(\text{nonce} || \text{previous hash} || \text{tx}\_1 || \text{tx}\_2 || ...) < T$$
+- Why spreading: to ensure availability and for load balancing concerns.
 
 ---
 
-# 51% attack
+# Files
 
-- The whole system relies on the assumption that a majority of miners, weighted by hash power, follow the protocol.
-- Therefore, the protocol is vulnerable to attackers that would detain 51% or more of the total hashing power.
+.center.width-60[![](figures/lec8/gfs-chunks.png)]
 
+- A single **file** may contain several *objects* (e.g., images, web pages, etc).
+- Files are divided into fixed-size **chunks**.
+    - Each chunk is identified by a globally unique 64 bit *chunk handle*.
+- Chunkservers store chunks on local disks as plain Linux files.
+    - Read or write data specified by a pair (chunk handle, byte range).
+    - By default **three replicas** of a chunk stored across chunkservers.
 
 ---
 
-class: middle
+# Master
 
-# Bitcoin and friends
-
----
-
-# Bitcoin
-
-- The cryptocurrency protocol presented so far corresponds to the general protocol used for **Bitcoin** (BTC).
-- Bitcoin was invented by an unknown person (or group of people) using the name of Satoshi Nakamoto.
-- It was released as an *open source software* in 2009.
-- Its main goal is to establish a decentralized digital currency that is not tied to a bank or government.
-- The estimated number of unique users is 3-6 million.
-
-<br><br>
-.center.width-20[![](figures/lec6/btc.png)]
+- The master node stores and maintains all file system **metadata**:
+    - Three main types of metadata:
+        - the file and chunk namespaces,
+        - the mapping from files to chunks,
+        - the locations of each chunk's replicas.
+    - All metadata is kept in master's **memory** (fast random access).
+        - Sets limits on the entire system's capacity.
+- It controls and coordinates *system-wide activities*:
+    - Chunk lease management
+    - Garbage collection of orphaned chunks
+    - Chunk migration between chunkservers
+- **Heartbeat** messages between master and chunkservers.
+    - To detect failures
+    - To send instructions and collect state information
+- An *operation log* persists master's state to permanent storage.
+    - In case master crashes, its state can be recovered (more later).
 
 ---
 
 class: middle
 
-## Trading
+## One node to rule them  all
 
-- Bitcoin can be used to buy or sell goods.
-- Bitcoin can be bought and sold like any other currency.
-- Bitcoin ATMs even exist in some countries!
+- Having a **single master** node vastly simplifies the system design.
+- Enable master to make sophisticated chunk placement and replication decisions, using *global knowledge*.
+- Its involvement in reads and writes should be minimized so to avoid that it becomes a bottleneck.
+    - Clients never read and write file data through master.
+    - Instead, clients ask the master which chunkservers it should contact.
 
-.center.width-50[![](figures/lec6/atm.jpg)]
+.exercice[As the cluster grows, can the master become a bottleneck?]
+
+???
+
+Size of storage increased in the range of petabytes. The amount of metadata maintained by master increased and scanning through such large amounts became an issue. The single master started becoming a bottleneck when thousand client requests came simultaneously.
+
+---
+
+# Chunks
+
+- Default size = 64MB.
+    - This a **key design parameter** in GFS!
+- Advantages of large (but not too large) chunk size:
+    - **Reduced need** for client/master interaction.
+        - 1 request per chunk suits the target workloads.
+        - Client can cache *all the locations* for a multi-TB working set.
+    - **Reduced size** of metadata on master (kept in memory).
+- Disadvantage:
+    - A chunkserver can become a **hotspot** for popular files.
+
+.exercice[
+- How to fix the hotspot problem?
+- What if a file is larger than the chunk size?
+]
+
+---
+
+# <strike>Caching</strike>
+
+Design decisions:
+- Clients do **not** cache file data.
+    - They do cache metadata.
+- Chunckservers do **not** cache file data.
+    - Responsibility of the underlying file system (e.g., Linux's buffer cache).
+- Client caches offer *little benefit* because most applications
+    - stream through huge files
+        - disk seek time negligible compared to transfer time.
+    - have working sets too large to be cached.
+- Not having a caching system **simplifies the overall system** by eliminating cache coherence issues.
+
+---
+
+# Interface
+
+No file system interface at the operating-system level (e.g., under the VFS layer).
+- User-level API is provided instead.
+- Does not support all the features of POSIX file system access.
+    - But looks similar (i.e., `open`, `close`, `read`, `write`, ...)
+
+Two special operations are supported:
+- *Snapshot*: efficient way of creating a copy of the current instance of a file or directory tree.
+- *Append*: append data to a file as an **atomic operation**, without having to lock the file.
+    - Multiple processes can append to the same file concurrently without overwriting one another's data.
 
 ---
 
 class: middle
 
-## Volatility
+## Reads (1)
 
-.center.width-100[![](figures/lec6/volatility.png)]
+.center.width-100[![](figures/lec8/gfs-read1.png)]
 
-As any currency, BTC can be exchanged for other currencies (e.g. USD or EUR).
-- The current exchange rate (November 1, 2018) is 1 BTC = 6358 USD.
-- The price is highly volatile and subject to speculation.
+1) The GFS client translates filename and byte offset specified by the application into a *chunk index* within the file. A request is sent to master.
 
 ---
 
 class: middle
 
-## Mining as a business
+## Reads (2)
 
-.center.width-100[![](figures/lec6/farm.jpg)]
-.italic.center[A mining farm.]
+.center.width-100[![](figures/lec8/gfs-read2.png)]
 
----
-
-class: middle
-
-## Extreme competition
-
-.center.width-100[![](figures/lec6/hashrate.png)]
-.italic.center[Global hash rate over time.]
+2) Master replies with chunk handle and locations of the replicas.
 
 ---
 
 class: middle
 
-## Energy sinkhole
+## Reads (3+4)
 
-.center.width-80[![](figures/lec6/news1.png)]
-.center.width-80[![](figures/lec6/news2.png)]
+.center.width-100[![](figures/lec8/gfs-read3.png)]
+
+3) The client caches this information using the file name and chunk index as the key.
+- Further reads of the same chunk requires no more client-master interaction, until the cached information expires.
+
+4) The client sends a request to one of the replicas, typically the closest.
 
 ---
 
 class: middle
 
-## Mining economics
+## Reads (5)
 
-.center.width-90[![](figures/lec6/economics.png)]
+.center.width-100[![](figures/lec8/gfs-read4.png)]
 
-See also the [Bitcoin Mining Profit Calculator](https://jblevins.org/btcmpc/).
-
----
-
-class: center, black-slide, middle
-
-<iframe width="640" height="400" src="https://www.youtube.com/embed/tt0idBrjpbk?cc_load_policy=1&hl=en&version=3" frameborder="0" allowfullscreen></iframe>
+5) The contacted chunkserver replies with the data.
 
 ---
 
-class: center, black-slide, middle
+class: middle
 
-<iframe width="640" height="400" src="https://www.youtube.com/embed/fgrD0Bse70A?cc_load_policy=1&hl=en&version=3" frameborder="0" allowfullscreen></iframe>
+## Leases
 
----
-
-# Other cryptocurrencies
-
-BTC is only one of many cryptocurrencies. Popular cryptocurrencies include:
-- ETH
-- XRP
-- LTC
-
-.center.width-90[![](figures/lec6/top100.png)]
+- A **mutation** is an operation that changes the content or metadata of a chunk (e.g., `write` and `append`).
+- Each mutation is performed at all the chunk's replicas.
+- **Leases** are used to maintain a consistent mutation order across replicas.
+    - Master grants a chunk lease to one of the replicas, called the *primary*.
+    - Leases are renewed using the periodic heartbeat messages between master and chunkservers.
+- The primary picks a **serial order** for all mutations to the chunk.
+    - All replicas follow this order when applying mutations.
+- Leases and serial order at the primary define a *global ordering* of the operations on a chunk.
 
 ---
 
-# Applications
+class: middle
 
-A blockchain is nothing else than a continuously growing list of records.
-- It is secure by design, with high Byzantine fault tolerance.
-- Blockchains can therefore be used to store any kind sensitive information that should not be altered.
+## Writes (1+2)
 
-.center.width-80[![](figures/lec6/apps.jpg)]
+.center.width-40[![](figures/lec8/gfs-write12.png)]
+
+1) The GFS client asks master for the primary and the secondary replicas for each chunk.
+
+2) Master replies with the locations of the primary and secondary replicas. This information is cached.
+
+---
+
+class: middle
+
+## Writes (3)
+
+.center.width-40[![](figures/lec8/gfs-write3.png)]
+
+3) The client pushes the data to all replicas.
+- Each chunkserver stores the data in an internal buffer.
+- Each chunkserver sends back an acknowledgement to the client once the data is received.
+- Data flow is decoupled control flow.
+
+---
+
+class: middle
+
+## Writes (4)
+
+.center.width-40[![](figures/lec8/gfs-write4.png)]
+
+4) Once all replicas have acknowledged, a **write request** is sent to the primary.
+- This request identifies the data pushed earlier.
+- The primary assigns consecutive serial numbers to all the mutations it receives, possibly from multiple clients.
+    - This provides *ordering* and *consistency*.
+- The primary applies the mutations, in the chosen order, to its local state.
+
+---
+
+class: middle
+
+## Writes (5)
+
+.center.width-40[![](figures/lec8/gfs-write5.png)]
+
+5) The primary forwards the write request to all secondary replicas.
+- Mutations are applied locally in the serial order decided by the primary.
+
+---
+
+class: middle
+
+## Writes (6+7)
+
+.center.width-40[![](figures/lec8/gfs-write67.png)]
+
+6) The secondaries all reply to the primary upon completion of the operation.
+
+7) The primary replies to the client.
+- Errors may be reported to the client.
+    - Upon errors, the client request is considered to have failed.
+    - The modified region is left in an **inconsistent state**.
+    - The client handles errors by retrying the failed mutation.
+
+---
+
+class: middle
+
+## Appends
+
+- Google uses large files as **queues** between multiple *producers* and *consumers*.
+- Same control flow as for writes, except that:
+    - Client pushes data to replicas of *last chunk* of file.
+    - Client send an append request to the primary.
+    - The request fits in current last chunk:
+        - Primary appends data to own replica.
+        - Primary tells secondaries to do same at same byte offset in theirs.
+        - Primary replies with success to client, specifying the offset the data was written.
+    - When the data does not fit in last chunk:
+        - Primary fills current chunk with padding.
+        - Primary tells secondaries to do the same.
+        - Primary replies to client to *retry on next chunk*.
+- If a record append fails at any replica, the client has to retry the operation.
+    - Replicas of same chunk may not be bytewise identical!
+
+---
+
+# Consistency model
+
+- Changes to metadata are always *atomic*.
+    - Guaranteed by having a single master server.
+- Mutations are *ordered* as chosen by a primary node.
+    - All replicas will be **consistent** if they all successfully  perform mutations in the same order.
+    - Multiple writes from the same client may be interleaved or overwritten by concurrent operations from other clients.
+        - i.e., a file region is *defined* only if client see mutations in entirety, it is **undefined** otherwise. However, the file region remains consistent.
+- Record append completes *at least once*, at offset of GFS's choosing.
+    - There might be duplicate entries.
+- Failures can cause **inconsistency**.
+
+.center.width-60[![](figures/lec8/gfs-consistency.png)]
+
+---
+
+# Replica placement
+
+- Policy is to maximize:
+    - data **reliability** and *availability*,
+    - network bandwidth utilization.
+- Chunks are created initially empty.
+    - Preferably create chunks at under-utilized chunkservers, spread across different racks.
+    - Limit number of recent creations on each chunk server.
+- Re-replication.
+    - Started once the available replicas fall below a user-defined threshold.
+    - Master instructs chunkserver to copy chunk data directly from existing valid replica.
+    - Number of active clone operations/bandwidth is limited.
+- Re-balancing
+    - Changes in replica distribution for better load balancing.
+    - New chunk servers are gradually filled.
+
+???
+
+Can be formulated as an optimization problem (e.g. a linear program).
+
+---
+
+# Garbage collection
+
+How can a file be **deleted** from the cluster?
+- Deletion is logged by master.
+- The file is renamed to a hidden file and the deletion timestamp is kept.
+- Periodic scan of the master's file system namespace.
+    - Hidden files older than 3 days are deleted from master's memory.
+    - I.e., there is no further connection between a file and its chunks.
+- Periodic scan of the master's chunk namespace.
+    - Orphaned chunks (not reachable from any file) are identified and their metadata is deleted.
+- Hearbeat messages are used to synchronize deletion between master and chunkservers.
+
+---
+
+# Stale replica detection
+
+Scenario: a chunkserver misses a mutation applied to a chunk (e.g., a chunk was appended).
+- Master maintains a **chunk version number** to distinguish up-to-date and stale replicas.
+- Before an operation on a chunk, master ensures that the version number advances.
+    - Each time master grants new lease, the version is incremented and informed to all replicas.
+- Stale replicas are removed in the regular garbage collection cycle.
+
+---
+
+# Operation log
+
+- The **operation log** is a persistent historical record of critical changes on metadata.
+- Critical to the *recovery* of the system, upon restart of master.
+    - Master recovers its file system state by replaying the operation log.
+    - Master periodically checkpoints its state to minimize startup time.
+- Changes to metadata are only made visible to the clients **after** they have been written to the operation log.
+- The operation log is *replicated* on multiple remote machines.
+    - Before responding to a client operation, the log record must have been flushed locally and remotely.
+- Serve as a **logical timeline** that defines the order of concurrent operations.
+
+---
+
+# Chunk locations
+
+- Master does not keep a persistent record of chunk replica locations.
+- Instead, it **polls** chunkservers about their chunks at startup.
+- Master keeps up to date through *hearbeat* messages.
+- A chunkserver has the **final word** over what chunks it stores.
+
+.exercice[What does this design decision simplify?]
+
+---
+
+# What if master fails?
+
+- ... and does not recover?
+- This represents a **single point of failure** of system.
+- Solution:
+    - Maintain shadow *read-only* replicas of master.
+    - Use these replicas in case master fails.
+    - Eventually elect a new leader if master never recovers.
+
+---
+
+# What if a chunkserver fails?
+
+- Master notices missing hearbeats.
+- Master decrements count of replicas for all chunks on dead chunkserver.
+- Master re-replicates chunks missing replicas.
+    - Highest priority for chunks missing greatest number of replicas.
+
+---
+
+# Data corruption
+
+- Data corruption or loss can occur at any time.
+- Chunkservers use **checksums** to detect corruption of stored data.
+    - Alternative: compare replicas across chunk servers.
+- A chunk is broken into 64KB blocks, each has a 32bit checksum.
+    - These are kept in memory and stored persistently.
+- Read requests: the chunkserver *verifies the checksum* of the data blocks that overlap with the read range.
+    - Corrupted data are not sent to the clients.
+
+.exercice[What if a read request fails because of corrupted data?]
+
+---
+
+# Performance
+
+## Reads
+
+.center.width-60[![](figures/lec8/perf-read.png)]
+
+???
+
+- Micro-benchmarks to illustrate the bottlenecks inherent in GFS.
+- One master, two master replicas, 16 chunkservers and 16 clients.
+
+- Reads: random 4MB regions from a 320GB file set.
+- Efficiency degrades when the probability of multiple reads from the same chunkserver increases.
+
+---
+
+class: middle
+
+## Writes
+
+.center.width-60[![](figures/lec8/perf-write.png)]
+
+???
+
+- The network architecture does not interact very well with the pipelining scheme used for pushing data.
+- Again, efficiency degrades when the probability of writes on the same chunkservers increases.
+
+---
+
+class: middle
+
+## Appends
+
+.center.width-60[![](figures/lec8/perf-append.png)]
+
+???
+
+- Limit independent of the number of clients. It is limited by the network bandwidth only.
+- Performance degrades due to congestion.
+- A client concurrently writes to M shared files simultaneously: a client can make progress on writing one file while the chunkservers for another file are busy.
 
 ---
 
 # Summary
 
-- The **blockchain** is a linked list with hash pointers.
-- It can be used for implementing *a ledger* that stores sensitive information that should not be tampered with.
-- Decentralization requires **consensus**.
-- In Bitcoin, consensus is achieved by *proof-of-work*, which provides high Byzantine fault tolerance.
+- GFS has been used actively by Google to support search service and other applications.
+    - Availability and recoverability on cheap hardware.
+    - High throughput by decoupling control and data.
+    - Supports massive data sets and concurrent appends.
+- Semantics not transparent to applications.
+    - Must verify file contents to avoid inconsistent regions, repeated appends (at-least-once semantics).
+- Performance not good for all applications.
+- Assumes read-once, write-once workload (no client caching!)
+- Replaced in 2010 by Colossus
+    - Eliminate master node as single point of failure  
+    - Targets latency problems due to more latency sensitive applications
+    - Reduce block size to be between 1~8 MB
+    - Few public details.
+
+---
+
+class: middle
+
+# HDFS
+
+---
+
+# HDFS
+
+- Hadoop Distributed File System (HDFS) is an *open source* distributed file system.
+- HDFS shares the same goals as GFS.
+- HDFS's design is **strongly** inspired from GFS.
+- HDFS uses a distributed cache.
+- No leases (client decides where to write).
+- Used by Facebook, Yahoo, IBM, etc.
+
+---
+
+class: middle
+
+## HDFS in one figure
+
+.center.width-90[![](figures/lec8/hdfs-vs-gfs.png)]
 
 ---
 
@@ -832,5 +625,6 @@ The end.
 
 # References
 
-- Nakamoto, Satoshi. "Bitcoin: A peer-to-peer electronic cash system." (2008).
-- Narayanan, Arvind, et al. Bitcoin and cryptocurrency technologies: a comprehensive introduction. Princeton University Press, 2016.
+- Ghemawat, Sanjay, Howard Gobioff, and Shun-Tak Leung. "The Google file system." ACM SIGOPS operating systems review. Vol. 37. No. 5. ACM, 2003.
+- Shvachko, Konstantin, et al. "The hadoop distributed file system." Mass storage systems and technologies (MSST), 2010 IEEE 26th symposium on. IEEE, 2010.
+- Claudia Hauff. "Big Data Processing, 2014/15. Lecture 5: GFS and HDFS".

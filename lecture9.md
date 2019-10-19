@@ -1,8 +1,8 @@
 class: middle, center, title-slide
 
-# Large-Scale Data Systems
+# Large-scale Data Systems
 
-Lecture 9: Distributed Hash Tables
+Lecture 9: Blockchain
 
 <br><br>
 Prof. Gilles Louppe<br>
@@ -12,659 +12,814 @@ Prof. Gilles Louppe<br>
 
 # Today
 
-How to design a large-scale distributed system similar to a hash table?
+.grid[
+.kol-2-3[
+Blockchain:
+- Hash functions and data structures
+- Digital signatures
+- Simple (fictitious) cryptocurrencies
+- Consensus in the blockchain
+- Bitcoin and friends
+]
+.kol-1-3[
+.width-100[![](figures/lec6/book.jpg)]
+]
+]
 
-- Chord
-- Kademlia
+Most of today's lecture is based on "Bitcoin and cryptocurrency technologies: A comprehensive introduction" by Narayanan et al.
 
 ---
 
 class: middle, center, black-slide
 
-.width-80[![](figures/lec9/iceberg.png)]
-
----
-
-# Hash tables
-
-A **hash table** is a data structure that implements an associative array abstract data type, i.e. a structure than can map keys to values.
-- It uses a *hash function* to compute an index into array of buckets or slots, from which the desired value can be found.
-- Efficient and scalable: $\mathcal{O}(1)$ look-up and store operations (on a single machine).
-
-.center.width-60[![](figures/lec9/hash-table.svg)]
-
----
-
-# Distributed hash tables
-
-A **distributed hash table** (DHT) is a class of decentralized distributed systems that provide a lookup service similar to a hash table.
-- Extends upon multiple machines in the case when the data is so large we cannot store it on a single machine.
-- Robust to *faults*.
+.width-80[![](figures/lec6/iceberg.png)]
 
 ---
 
 class: middle
 
-## Interface
-
-- $\text{put}(k, v)$
-- $\text{get}(k)$
-
-## Properties
-
-- When $\text{put}(k, v)$ is completed, $k$ and $v$ are reliably stored on the DHT.
-- If $k$ is stored on the DHT, a process will eventually find a node which stores $k$.
+# Hash functions and data structures
 
 ---
 
-class: middle
+# Hash functions
 
-# Chord
+A **hash function** is a mathematical function $H$ with the following properties:
+- Its input can be any string of any size.
+- It produces a fixed-size output (e.g. 256 bits).
+- It is efficiently computable.
+    - E.g., computing the hash of an $n$-bit string should be $O(n)$.
 
----
-
-# Chord
-
-Chord is a protocol and algorithm for a peer-to-peer distributed hash table.
-- It organizes the participating nodes in an **overlay network**, where each node is responsible for a set of keys.
-- Keys are defined as $m$-bit identifiers, where $m$ is a predefined system parameter.
-- The overlay network is arranged in a **identifier circle** ranging from $0$ to $2^m - 1$.
-    - A *node identifier* is chosen by hashing the node IP address.
-    - A *key identifier* is chosen by hashing the key.
-- Based on **consistent hashing** with SHA-1 hash function.
-- Supports a single operation: $\text{lookup}(k)$.
-    - Returns the host which holds the data associated with the key.
+## Security properties
+- Collision resistance
+- Hiding
+- Puzzle-friendliness
 
 ---
 
-# Consistent hashing
+# Collision resistance
 
-## Traditional hashing
-
-- Set of $n$ bins.
-- Key $k$ is assigned to a particular bin.
-- If $n$ changes, all items need to be rehashed.
-    - E.g. when `bin_id = hash(key) % num_bins`.
-
-## Consistent hashing
-
-- Evenly distributes $x$ objects over $n$ bins.
-- When $n$ changes:
-  - Only $\mathcal{O}(\frac{x}{n})$ objects need to be rehashed.
-  - Uses a deterministic hash function, independent of $n$.
-
----
-
-class:  middle
-
-Consistent hashing in Chord assigns keys to nodes as follows:
-
-- Key $k$ is assigned to the first node whose identifier is equal to or follows $k$ in the identifier space.
-    - i.e., the first node on the identifier ring starting from $k$.
-- This node is called the *successor node* of $k$, denoted $\text{successor}(k)$.
-- Enable **minimal disruption**.
-
----
-
-class: middle
-
-To maintain the consistent (hashing) mapping, let us consider a node $n$ which
-- joins: some of the keys assigned to $\text{successor}(n)$ are now assigned to $n$.
-    - Which? $\text{predecessor}(n) < k \leq n$
-- leaves: All of $n$'s assigned keys are assigned to $\text{successor}(n)$.
-
-.center.width-80[![](figures/lec9/dht-chord.png)]
-
----
-
-# Routing
-
-The core usage of the Chord protocol is to query a key from a client (generally a node as well), i.e. to find $\text{successor}(k)$.
-
-## Basic query
-
-- Any node $n$ stores its immediate successor $\text{successor}(n)$, and no other information.
-- If the key cannot be found locally, then the query is passed to the node's successor.
-- Scalable, but $\mathcal{O}(n)$ operations are required.
-    - **Unacceptable** in  large systems!
-
----
-
-class: middle
-
-## Finger table
-
-In Chord, in addition to $\text{successor}$ and $\text{predecessor}$ pointers, each node maintains a finger table to accelerate lookups.
-- As before, let $m$ be the number of bits in the identifier.
-- Every node $n$ maintains a routing (finger) table with at most $m$ entries.
-- Entry $i$ in the finger table of node $n$:
-  - First node $s$ that succeeds $n$ by at least $2^{i - 1}$ on the identifier circle.
-  - Therefore, $s = \text{successor}((n + 2^{i-1})\text{~}\textrm{mod}\text{~}2^m)$
+A hash function $H$ is said to be **collision resistant** if it is infeasible/difficult to find two values $x$ and $y$ such that $x \neq y$ yet $H(x)=H(y)$.
 
 <br>
-.center.width-60[![](figures/lec9/chord-variable.png)]
+.center.width-80[![](figures/lec6/collision.png)]
 
 ---
 
 class: middle
 
-## Example
+.center[Collisions do exist. But can anyone find them?]
+<br>
 
-- $m = 4$ bits $\rightarrow$ max 4 entries in the table.
-- $i$-th entry in finger table: $s = \text{successor}((n + 2^{i - 1})\text{~}\mathrm{mod}\text{~}2^m)$
-
-.center.width-40[![](figures/lec9/chord-clean.png)]
+.center.width-80[![](figures/lec6/collision2.png)]
 
 ---
 
 class: middle
 
-## Example: first entry
+How to find a collision:
+- Pick $2^{256}+1$ distinct values and compute the hashes of each of them.
+- At least one pair of inputs must collide!
 
-- $n=4$, $i = 1$
-- $s = \text{successor}((n + 2^{i-1}) \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(5) = 5$
+This works no matter the hash function $H$. But it takes too long to matter!
 
-.center.width-80[![](figures/lec9/chord-finger-1.png)]
+---
+
+# Hiding
+
+A hash function $H$ is said to be **hiding** if when a secret value $r$ is chosen from a probability distribution that has high entropy, then given $H(r || x)$, it is infeasible to find $x$.
 
 ---
 
 class: middle
 
-## Example: second entry
+## Application: Commitments
 
-- $n=4$, $i = 2$
-- $s = \text{successor}((n + 2^{i-1}) \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(6) = 8$
-
-.center.width-80[![](figures/lec9/chord-finger-2.png)]
-
----
-
-class: middle
-
-## Example: third entry
-
-- $n=4$, $i = 3$
-- $s = \text{successor}((n + 2^{i-1}) \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(8) = 8$
-
-.center.width-80[![](figures/lec9/chord-finger-3.png)]
+A commitment is the digital analog of taking a value, sealing it in an envelope, and putting that envelope out on the table where everyone can see it.
+- Commit to value (the content of the envelope).
+- Reveal it later (open the envelope).
 
 ---
 
 class: middle
 
-## Example: fourth entry
+## Commitment scheme
+- $\text{commit}(\text{msg}, \text{key}) := (H(\text{msg} || \text{key}), H(\text{key}))$:<br> The commit function takes a message and a (secret) key as input and returns a commitment pair $\text{com}$.
+- $\text{verify}(\text{com}, \text{key}, \text{msg})$: The verify function takes a commitment, a key and a message as inputs. It returns true iff $\text{com} = \text{commit}(\text{msg}, \text{key})$.
 
-- $n=4$, $i = 4$
-- $s = \text{successor}((n + 2^{i-1}) \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(12) = 14$
+## Security properties
+- Hiding: given $\text{com} := (H(\text{msg} || \text{key}), H(\text{key}))$, it is infeasible to find $\text{msg}$.
+- Binding: Infeasible to find $\text{msg} \neq \text{msg}'$ such that $H(\text{msg} || \text{key}) = H(\text{msg}' || \text{key})$ is true, nor to change the key.
 
-.center.width-80[![](figures/lec9/chord-finger-4.png)]
+---
+
+
+# Puzzle-friendliness
+
+A hash function $H$ is said to be **puzzle friendly** if for every possible $n$-bit output value $y$, if $k$ is chosen from a distribution with high entropy and made public, then it remains infeasible to find $x$ such that $y=H(k || x)$ in time significantly less than $2^n$.
 
 ---
 
 class: middle
 
-## Improved lookup
+## Application: Search puzzle
 
-A lookup for $\text{successor}(k)$ now works as follows:
-- if $k$ falls between $n$ and $\text{successor}(n)$, return $\text{successor}(n)$.
-- otherwise, the lookup is forwarded at $n'$, where $n'$ is the node in the finger table that most immediately precedes $k$.
-- Since each node has finger entries at power of two intervals around the identifier circle, each node can forward a query at least halfway along the remaining distance between the node and the target key.
-- $\mathcal{O}(\log N)$ nodes need to be contacted.
+Given a puzzle ID $i$ and a target set $Y$, try to find a solution $x$ such that $H(i || x) \in Y$.
+
+- Puzzle-friendliness implies that no solving strategy is much better than trying random values of $x$.
+- Later, we will see that *mining* is a computational puzzle.
+
+---
+
+# SHA-256 hash function
+
+<br><br>
+.center.width-100[![](figures/lec6/sha256.png)]
+
+SHA-256 uses the Merkle–Damgård construction to turn a fixed-length collision resistant compression function $c$ into a hash function that accepts arbitrary-length inputs.
+
+---
+
+# Hash pointers
+
+A **hash pointer** is a pointer to where some information is stored, together with a cryptographic hash of this information. A hash pointer can be used for:
+- retrieving the information associated to the pointer,
+- verifying that the information has not changed.
+
+<br>
+.center.width-40[![](figures/lec6/hash-pointer.png)]
+
+---
+
+class: middle, center, red-slide
+
+.bold[Key idea]: build data structures with hash pointers
+
+---
+
+# Blockchain
+
+A **blockchain** is a linked list that makes use of hash pointers.
+- In a regular linked list, each block has data as well as a pointer to the previous block in the list.
+- In a blockchain, the previous-block pointers are replaced by hash pointers.
+
+.center.width-100[![](figures/lec6/hash-chain.png)]
 
 ---
 
 class: middle
 
-```
-// ask node n to find the successor of id
-n.find_successor(id)
-  if (id ∈ (n, successor])
-    return successor;
-  else
-    // forward the query around the circle
-    n0 = successor.closest_preceding_node(id);
-    return n0.find_successor(id);
-```
+.center.width-100[![](figures/lec6/hash-chain-tampered.png)]
 
-```
-// search the local table for the highest predecessor of id
-n.closest_preceding_node(id)
-  for i = m downto 1
-    if (finger[i]∈(n,id))
-      return finger[i];
-  return n;
-```
+## Tamper-evident log
+
+- If an adversary modifies data anywhere in the blockchain, it will result in the hash pointer in the following block being incorrect.
+- If we stored the head of the list, then even if an adversary modifies all pointers to be consistent with modified data, the head pointer will be incorrect and the change would be detected.
+
+---
+
+# Merkle tree
+
+A **merkle tree** is a binary tree that makes use of hash pointers.
+
+.center.width-100[![](figures/lec6/merkle-tree.png)]
 
 ---
 
 class: middle
 
-## Example: finding $\text{successor}(k=3)$ from $\text{node}\_4$
+.center.width-40[![](figures/lec6/merkle-membership.png)]
 
-1. $\text{node}\_4$ checks if $k$ is in the interval (4, 5].
-2. No, $\text{node}\_4$ checks its finger table (starting from the last entry, i.e., $i = m$).
-   1. Is $\text{node}\_{14}$ in the interval (4, 4)? *Yes!*
-3. $\text{node}\_{14}$ checks if $k$ is in the interval (14, 0].
-4. No, $\text{node}\_{14}$ checks its finger table for closest preceding node.
-   1. Return $\text{node}\_{0}$.
-5. $\text{node}\_{0}$ checks if $k$ is in the interval (0, 4]. *Yes!*
+## Proof of membership
 
-$\rightarrow$ Node 0 is the preceding node of $k = 4$. Therefore $\text{successor}(k=3)=\text{node}\_0.\text{successor}=4$.
-
-Of course, one could implement a mechanism that prevents $\text{node}\_{4}$ from looking up its own preceding node in the network.
-
----
-
-# Join
-
-We must ensure the network remains consistent when a node $n$ joins by connecting to a node $n^\prime$. This is performed in three steps:
-1. Initialize the successor of $n$.
-2. Update the fingers and predecessors of existing nodes to reflect the addition of $n$.
-3. Transfer the keys and their corresponding values to $n$.
+Proving that a data block is included in the tree only requires showing the blocks in the path from that data block to the root. Hence $O(\log N)$.
 
 ---
 
 class: middle
 
-## Initializing $n$'s successor
+# Digital signatures
 
-$n$ learns its successor by asking $n^\prime$ to look them up.
+---
 
-```
-// join a Chord ring containing node n'.
-n.join(n')
-  predecessor = nil;
-  successor = n'.find_successor(n);
-```
+# Digital signatures
+
+Digital signatures is the second cryptographic primitive we will need for implementing cryptocurrencies.
+
+A **digital signature** is the digital analog to a handwritten signature on paper:
+- Only you can make your signature, but anyone can verify that it is valid.
+- Signatures are tied to a particular document. They cannot be cut-and-pasted to another document to indicate your agreement or endorsement.
+
+Bitcoin makes use of the *Elliptic Curve Digital Signature Algorithm* (ECDSA) for digital signatures.
 
 ---
 
 class: middle
 
-## Periodic consistency check
+## API for digital signatures
 
-```
-// called periodically. n asks the successor
-// about its predecessor, verifies if n's immediate
-// successor is consistent, and tells the successor about n
-n.stabilize()
-  x = successor.predecessor;
-  if (x∈(n, successor))
-    successor = x;
-  successor.notify(n);
-
-// n' thinks it might be our predecessor.
-n.notify(n')
-  if (predecessor is nil or n'∈(predecessor, n))
-    predecessor = n';
-
-// called periodically. refreshes finger table entries.
-// next stores the index of the finger to fix
-n.fix_fingers()
-  next = next + 1;
-  if (next > m)
-    next = 1;
-  finger[next] = find_successor(n+2^{next-1});
-```
+- $(\text{sk}, \text{pk}) := \text{generateKeys}(\text{keysize})$
+    - $\text{sk}$: secret signing key
+    - $\text{pk}$: public verification key
+- $\text{sig} := \text{sign}(\text{sk}, \text{msg})$
+- $\text{isValid} := \text{verify}(\text{pk}, \text{msg}, \text{sig})$
 
 ---
 
 class: middle
 
-## Transferring keys
+## Requirements
 
-- $n$ can become the successor only for keys that were previously the responsibility of the node immediately following $n$.
-- $n$ only needs to contact $\text{successor}(n)$ to transfer responsibility of all relevant keys.
+- Valid signatures must verify.
+- Signatures are existentially unforgeable.
+
+<br>
+.center.width-90[![](figures/lec6/forge-game.png)]
 
 ---
 
-# Fault-tolerance
+class: middle
 
-## Failures
+# Simple (fictitious) cryptocurrencies
 
-- Since the successor (or predecessor) of a node may disappear from the network (because of failure or departure), each node records a whole segment of the circle adjacent to it, i.e., the $r$ nodes following it.
-- This successor list results in a high probability that a node is able to correctly locate its successor (or predecessor), even if the network in question suffers from a high failure rate.
+---
+
+# Goofycoin
+
+## Rule 1: a designated entity (Goofy) can create new coins
+
+To create a coin, Goofy generates *a unique coin ID* along with the *statement* `"CreateCoin [uniqueCoinID]"`.
+- Goofy computes the **digital signature** of this string with his secret signing key.
+- The string, together with Goofy's signature, is a coin.
+- Anyone can verify that the coin contains Goofy's valid signature of the `CreateCoin` statement and is therefore a valid coin.
 
 
-## Replication
+.grid[
+.kol-3-4[<br><br>.center.width-50[![](figures/lec6/goofy-1.png)]]
+.kol-1-4.width-80[![](figures/lec6/goofy.png)]
+]
 
-- Use the same successor-list to replicate the data on the segment!
+???
+
+Same as for a bank or a government that decide to print money at will.
+
+Verification of banknotes  can be done by anyone.
+
+---
+
+class: middle
+
+.center.width-45[![](figures/lec6/goofy-2.png)]
+
+## Rule 2: Whoever owns a coin can transfer it to someone.
+
+- Let's say Goofy wants to transfer a coin he created to Alice.
+- To do this, Goofy creates a new statement `"Pay this to Alice"`, where
+    - `"this"` is a hash pointer that references the coin in question,
+    - Alice's identity is defined by her public signing key.
+- Alice can prove to anyone that she owns the coin because she can present the data structure with Goofy's valid signature.
+
+---
+
+class: middle, center
+
+.center.width-50[![](figures/lec6/goofy-3.png)]
+
+The recipient can pass on the coin again.
+
+---
+
+class: middle
+
+.center.width-80[![](figures/lec6/goofy-4.png)]
+
+## Double-spending attack
+
+- Let's say Alice passed her coin on to Bob by sending her signed statement, but didn't tell anyone else.
+- She could create another signed statement that pays the same coin to Chuck.
+- Both Bob and Chuck would have valid-looking claims to be the owner of this coin.
+
+Goofycoin does not solve the *double-spending attack* problem. For this reason, it is **not secure**.
+
+
+---
+
+# Scroogecoin
+
+A *designated and trusted entity* (Scrooge McDuck) publishes an **append-only ledger** containing the history of all transactions.
+- Append-only ensures that any data written to this ledger will remain forever in the ledger.
+- Therefore, this can be used to prevent double spending by requiring that all transactions are written in the ledger before they are accepted.
+
+.center.width-40[![](figures/lec6/picsou.png)]
+
+---
+
+class: middle
+
+.center.width-90[![](figures/lec6/scrooge-chain.png)]
+
+To implement the append-only ledger, Scrooge makes use of a **blockchain**, which he will digitally sign.
+- The blockchain is a series of data blocks, each with one or more transaction(s) in it.
+- Each block has the IDs of the transactions, the transaction's contents, and a hash pointer to the previous block.
+- Scrooge digitally signs the final hash pointer, which binds all the data in this entire structure, and he publishes the signature along with the blockchain.
+
+---
+
+class: middle
+
+.center.width-100[![](figures/lec6/btc-chain.png)]
+
+In Bitcoin, the blockchain contains two different hash structures.
+- The first is a *hash chain of blocks* that links the different blocks to one another.
+- The second is internal to each block and is a *Merkle tree of transactions* within the blocks.
+
+---
+
+class: middle
+
+A transaction only counts if it is in the block chain **signed by Scrooge**.
+- Anybody can verify a transaction was endorsed by Scrooge by checking Scrooge's signature on the block that records the transaction.
+- Scrooge makes sure that he does not endorse a transaction that attempts to double spend an already spent coin.
+- If Scrooge tries to add or remove a transaction, or to change an existing transaction, it will affect all following blocks published by Scrooge.
+    - As long as the latest hash pointer published by Scrooge is monitored, the change will be obvious and easy to catch.
+
+---
+
+class: middle
+
+## Coin creation
+
+- Same as for Goofycoin, but we extend the semantics to allow for multiple coins to be created per transaction.
+- Coins are referred to by a transaction ID and a coin's serial number in that transaction.
+
+<br>
+.center.width-70[![](figures/lec6/scrooge-create.png)]
+
+---
+
+class: middle
+
+## Payments
+
+A transaction consumes (and destroys) some coins and creates new coins of the same total value.
+
+.grid[
+.kol-1-2[
+A transaction is *valid* if:
+- The consumed coins are valid.
+- The consumed coins have not already been consumed.
+- The total value out in the transaction is to equal to the total value in.
+- The transaction is validly signed by all the owners of the consumed coins in the transaction.
+]
+.kol-1-2[
+.center.width-100[![](figures/lec6/scrooge-pay.png)]
+]
+]
+
+---
+
+class: middle
+
+## Immutable coins
+
+Coins cannot be transferred, subdivided or combined.
+
+But we can obtain the same effect by using transactions. E.g., to subdivide:
+- create a new transaction;
+- consume your coins;
+- pay out two new coins (of half the value of the original coin) to yourself.
+
+---
+
+class: middle
+
+.grid[
+.kol-2-3[
+Scoorge cannot create fake transactions, because he cannot forge other people's signatures.
+
+However,
+- he could stop endorsing transactions from some users, denying them service and making their coins unspendable;
+- he could refuse to publish transactions unless they transfer some mandated transaction fee to him.
+- he can create as many coins for himself as he wants.
+
+Can the system operate **without any central, trusted party**?
+]
+.kol-1-3[<br>.center.width-80[![](figures/lec6/picsou2.gif)]
+.caption[Do not worry.<br> I am honest.]]
+]
+
+---
+
+class: middle
+
+# Consensus in the blockchain
+
+---
+
+# Decentralization
+
+We want a *decentralized* cryptocurrency system without any central (supposedly) trusted party.
+
+## Solution
+- Implement the currency protocol on top of a **peer-to-peer** network of nodes.
+- Each node maintains its own copy of the ledger.
+
+<br>
+.center.width-70[![](figures/lec6/p2p.png)]
+
+---
+
+class: middle
+
+.center.width-100[![](figures/lec6/p2p-broadcast.png)]
+
+When Alice wants to pay Bob, she *broadcasts* the transaction to all nodes in the network. Each node updates its ledger accordingly.
+
+Note that Bob's computer is not (necessarily) in the picture.
+
+---
+
+class: middle
+
+- Who maintains the ledger?
+- Who has authority over which transactions are valid?
+- Who creates new coins?
+- Who determines how the rules of the system change?
+- How do coins acquire exchange values?
+
+---
+
+# Consensus
+
+For this peer-to-peer system to work:
+- All nodes must have the exact same copy of the ledger.
+- Therefore, they must agree on the transactions that are added in the ledger, and in which order.
+
+$\Rightarrow$ They must reach **consensus**.
+
+---
+
+class: middle
+
+## How consensus could work
+
+At any given time:
+- All nodes have a blockchain consisting of a sequence of blocks, each containing a list of transactions they have reached consensus on.
+- Each node has a set of outstanding transactions it has heard about.
+
+At regular intervals, every node in the system proposes its own outstanding transaction pool to be included in the next block, using some consensus protocol.
+
+<br>
+.center.width-80[![](figures/lec6/consensus.png)]
+
+---
+
+class: middle
+
+## Consensus is hard
+
+- Nodes may crash
+- Nodes may be malicious
+- Network is highly imperfect
+    - Not all pairs of nodes connected
+    - Faults in the network
+    - Latency (no notion of global time)
+
+---
+
+class: middle
+
+Why not simply use a **Byzantine fault-tolerant** variant of *Paxos*?
+- It would never produce inconsistent results.
+- However
+    - there are certain (rare) conditions in which the protocol may fail to make any progress,
+    - no solution exists if less than $\tfrac{2}{3}$ of the nodes are honest.
+
+---
+
+class: middle
+
+## Additional constraints
+- *Pseudonymity*: we do not want nodes to have an identity.
+- *Sybil attacks*: we do not want an adversary to be able to spawn many nodes (e.g., a majority) and take control of the system.
+
+???
+
+Draw diagram of a Sybil attack.
+
+---
+
+# Implicit consensus
+
+Assume the ability to select a random node in manner that is not vulnerable to Sybil attacks, such that at least 50% of the time an honest node is picked.
+
+## Consensus algorithm
+
+1. New transactions are *broadcast* to all nodes.
+2. Each node collects new transactions into a block.
+3. In each round, a **random node** gets to broadcast its block.
+4. Other nodes accept the block only if all transactions in it are valid (unspent, valid signatures).
+5. Nodes express their acceptance of the block by including its hash in the next block they create.
+
+<br><br><br>
+<span class="Q">[Q]</span> To what basic abstraction does random selection is an implementation of?
+
+???
+
+Random selection is a leader detector.
+
+---
+
+class: middle
+
+.center.width-80[![](figures/lec6/double-spend-transaction.png)]
+
+Alice adds an item to her shopping cart on Bob's website. The server requests payment.
+- Alice creates a transaction from her address to Bob's and broadcast it to the network.
+- An honest node creates the next block and includes this transaction in that block.
+- On seeing the transaction included in the blockchain, Bob concludes that Alice has paid him and send the purchased item to Alice.
+
+---
+
+class: middle
+
+.center.width-80[![](figures/lec6/double-spend-attack.png)]
+
+## Double-spend attack
+
+- Assume the next random node happens to be controlled by Alice.
+- Since Alice gets to propose the block, she could propose one that ignores the block that contains the payment to Bob.
+- Worse, she could make a transaction that transfers the same coin to an address she controls.
+- Since the two transactions spend the same coins, only of them will be included in the blockchain.
+
+---
+
+class: middle
+
+The double-spend attack success will depend on which block will ultimately end up on the long-term consensus chain.
+
+## Policy upon forks
+
+- Honest nodes follow the policy that **extends the longest valid branch**.
+- In step 4 of implicit consensus, if an honest node discovers that the new block belongs to a longer branch than what it thought was part of the longest branch, then the node locally *reorganizes* its chain.
+
+???
+
+Alice's double-spend attempt:
+- The node that chooses the next block may decide to build on either of two blocks.
+- This choice will largely determine whether the double-spend attack succeeds.
+
+---
+
+class: middle
+
+.center.width-80[![](figures/lec6/double-spend-bob.png)]
+
+Bob the merchant's point of view:
+- Double-spend probability **decreases exponentially** with the number of confirmations.
+- Common heuristic: wait for 6 confirmations before validating the transaction.
+
+---
+
+class: middle
+
+## Recap
+
+- Protection against invalid transactions is cryptographic, but enforced by consensus.
+- Protection against double-spending is purely by consensus.
+- We are never 100% certain that a transaction is part of the consensus branch. **The guarantee is probabilistic**.
+    - Even with 1% of the total hashing power, Alice would have a hard time cheating on Bob.
+    - The probability of mining six blocks in a row is $0.01^6 = 10^{-12}$.
+
+---
+
+# Incentives
+
+- Assuming node honesty is problematic.
+- Instead, can we build **incentives** for nodes to behave honestly?
+
+<br><br><br><br>
+.center.width-100[![](figures/lec6/incentives.png)]
+
+---
+
+class: middle
+
+## Incentive 1: block reward
+
+- The creator of a block gets to
+    - include a special coin-creation transaction in the block
+    - choose the recipient address of this transaction.
+- The value is fixed: currently 12.5 coins, but halves every 210000 blocks (~ every 4 years).
+- The block creator gets to collect the reward only if the blocks end up on the long-term consensus branch.
+
+---
+
+class: middle
+
+.center.width-70[![](figures/lec6/supply.png)]
+
+Total supply of coins with time. The block reward is cut in half every 4 years, limiting the total supply to 21 millions.
+
+???
+
+Geometric series.
+Analogy with the arrow story.
+
+---
+
+class: middle
+
+## Incentive 2: transaction fees
+
+- The creator of a transaction can choose to make the output value less than input value.
+- The remainder is a transaction fee and goes to the block creator.
+- Purely voluntary.
+
+---
+
+# Proof of work
+
+How does one select a node at random without being vulnerable to Sybil attacks?
+- Approximate the selection of a random node by instead selecting nodes in proportion to a resource that (we hope) nobody can monopolize.
+    - in proportion to computer power: **proof of work** (PoW)
+    - in proportion to currency ownership: *proof of stake* (PoS)
+
+How does one select nodes in proportion to their computing power?
+- Allow nodes to compete with one another by using their computing power.
+- This results in nodes being picked in proportion to that capacity.
+
+---
+
+class: middle
+
+## PoW with hash puzzles
+
+.center.width-100[![](figures/lec6/puzzle.png)]
+
+To create a block, find a $\text{nonce}$ such that
+$$H(\text{nonce} || \text{previous hash} || \text{tx}\_1 || \text{tx}\_2 || ...) < T$$
+for some target $T \ll 2^{256} \approx 10^{77}$.
+- If the hash function $H$ is secure, the only way to succeed is to try enough nonces until getting lucky.
+- Node creators are called *miners*.
+
+---
+
+class: middle
+
+## Property 1: difficult to compute
+
+- As of 2018, the expected number of hashes to mine a block is $3 \times 10^{22}$.
+- Only some nodes bother to compete.
+
+---
+
+class: middle
+
+## Property 2: parameterizable cost
+
+- The target $T$ is adjusted periodically as a function of how much hashing power has been deployed in the system by the miners.
+- The goal is to maintain an average time of 10 minutes between blocks.
+
+---
+
+class: middle
+
+## Property 3: trivial to verify
+
+- The $\text{nonce}$ must be published as part of the block.
+- Hence, anyone can verify that
+$$H(\text{nonce} || \text{previous hash} || \text{tx}\_1 || \text{tx}\_2 || ...) < T$$
+
+---
+
+# 51% attack
+
+- The whole system relies on the assumption that a majority of miners, weighted by hash power, follow the protocol.
+- Therefore, the protocol is vulnerable to attackers that would detain 51% or more of the total hashing power.
+
+
+---
+
+class: middle
+
+# Bitcoin and friends
+
+---
+
+# Bitcoin
+
+- The cryptocurrency protocol presented so far corresponds to the general protocol used for **Bitcoin** (BTC).
+- Bitcoin was invented by an unknown person (or group of people) using the name of Satoshi Nakamoto.
+- It was released as an *open source software* in 2009.
+- Its main goal is to establish a decentralized digital currency that is not tied to a bank or government.
+- The estimated number of unique users is 3-6 million.
+
+<br><br>
+.center.width-20[![](figures/lec6/btc.png)]
+
+---
+
+class: middle
+
+## Trading
+
+- Bitcoin can be used to buy or sell goods.
+- Bitcoin can be bought and sold like any other currency.
+- Bitcoin ATMs even exist in some countries!
+
+.center.width-50[![](figures/lec6/atm.jpg)]
+
+---
+
+class: middle
+
+## Volatility
+
+.center.width-100[![](figures/lec6/volatility.png)]
+
+As any currency, BTC can be exchanged for other currencies (e.g. USD or EUR).
+- The current exchange rate (November 1, 2018) is 1 BTC = 6358 USD.
+- The price is highly volatile and subject to speculation.
+
+---
+
+class: middle
+
+## Mining as a business
+
+.center.width-100[![](figures/lec6/farm.jpg)]
+.italic.center[A mining farm.]
+
+---
+
+class: middle
+
+## Extreme competition
+
+.center.width-100[![](figures/lec6/hashrate.png)]
+.italic.center[Global hash rate over time.]
+
+---
+
+class: middle
+
+## Energy sinkhole
+
+.center.width-80[![](figures/lec6/news1.png)]
+.center.width-80[![](figures/lec6/news2.png)]
+
+---
+
+class: middle
+
+## Mining economics
+
+.center.width-90[![](figures/lec6/economics.png)]
+
+See also the [Bitcoin Mining Profit Calculator](https://jblevins.org/btcmpc/).
+
+---
+
+class: center, black-slide, middle
+
+<iframe width="640" height="400" src="https://www.youtube.com/embed/tt0idBrjpbk?cc_load_policy=1&hl=en&version=3" frameborder="0" allowfullscreen></iframe>
+
+---
+
+class: center, black-slide, middle
+
+<iframe width="640" height="400" src="https://www.youtube.com/embed/fgrD0Bse70A?cc_load_policy=1&hl=en&version=3" frameborder="0" allowfullscreen></iframe>
+
+---
+
+# Other cryptocurrencies
+
+BTC is only one of many cryptocurrencies. Popular cryptocurrencies include:
+- ETH
+- XRP
+- LTC
+
+.center.width-90[![](figures/lec6/top100.png)]
+
+---
+
+# Applications
+
+A blockchain is nothing else than a continuously growing list of records.
+- It is secure by design, with high Byzantine fault tolerance.
+- Blockchains can therefore be used to store any kind sensitive information that should not be altered.
+
+.center.width-80[![](figures/lec6/apps.jpg)]
 
 ---
 
 # Summary
 
-- Fast lookup $\mathcal{O}(\log N)$, small routing table $\mathcal{O}(\log N)$.
-- Handling failures and addressing replication (load balance) using same mechanism (successor list).
-- Relatively small join/leave cost.
-- Iterative lookup process.
-- Timeouts to detect failures.
-- No guarantees (with high probability ...).
-- Routing tables must be correct.
-
----
-
-class: middle
-
-# Kademlia
-
----
-
-# Kademlia
-
-Kademlia is a peer-to-peer hash table with **provable** consistency and performance in a fault-prone environment.
-
-- Configuration information spreads automatically as a side-effect of key look-ups (gossiping).
-- Nodes have enough knowledge and flexibility to route queries through low-latency paths.
-- Asynchronous queries to avoid timeout delays from failed nodes.
-- Minimizes the number of configuration messages (guarantee).
-- 160-bit identifiers (e.g., using SHA-1 or some other hash function, implementation specific).
-- Key-Value pairs are stored on nodes based on *closeness* in the identifier space.
-- Identifier based *routing* algorithm by imposing a *hierarchy* (virtual overlay network).
-
----
-
-# System description
-
-Nodes are structured in an overlay network where they correspond
-to the leaves of an (unbalanced) binary  tree, with each node's position determined by the shortest unique prefix of its identifier.
-- Node identifiers are chosen at random in the identifier space.
-- Kamdelia ensures that every node knows at least one other node in every sub-tree. This guarantees that any node can locate any other node given its identifier.
-
-.center.width-60[![](figures/lec9/kademlia-subtrees.png)]
-
----
-
-class: middle
-
-## Node distance
-
-The distance between two identifiers is defined as $$d(x, y) = x \oplus y.$$
-- XOR is a valid, albeit non-Euclidean metric.
-- XOR captures the notion of distance between two identifiers: in a fully-populated binary tree of 160-bit IDs, it is the height of the smallest subtree containing them both.
-- XOR is symmetric.
-- XOR is unidirectional.
-
-???
-
-unidirectional: for any x and distance delta>0, there is exactly one y such that d(x,y)=delta.
-
----
-
-class: middle
-
-## Node state
-
-- For every prefix $0 < i < 160$, every node keeps a list, called a **k-bucket**,  of (IP address, Port, ID) for nodes of distance between $2^i$ and $2^{i+1}$ of itself.
-- Every k-bucket is sorted by time last seen (least recently seen first).
-- When a node receives a message, it updates the corresponding k-bucket for the sender's identifier. If the sender already exists, it is moved to the tail of the list.
-  - **Important**: If the k-bucket is full, the node pings the **least recently** seen node and checks if it is still available.
-        - Only if the node is **not available** it will replace it.
-        - If available, the node is pushed back at the end of the bucket.
-  - Policy of replacement only when a nodes leaves the network $\rightarrow$ prevents Denial of Service (DoS) attacks (e.g., flushing routing tables).
-
-???
-
-R: check ordering of the k-bucket entries.
-
----
-
-class: middle
-
-## k-bucket
-
-.center.width-80[![k-bucket](figures/lec9/k-bucket.png)]
-
----
-
-# Interface
-
-Kademlia provides four remote procedure calls (RPCs):
-
-- `PING(id)` returns (IP, Port, ID)
-  - Probes the node to check whether it is still online.
-- `STORE(key, value)`
-- `FIND_NODE(id)` returns (IP, Port, ID) for the $k$ nodes it knows about closest to ID.
-- `FIND_VALUE(key)` returns (IP, Port, ID) for the $k$ nodes it knows about closest to ID, or the value if it maintains the key.
-
----
-
-class: middle
-
-## Node lookup
-
-The most important procedure a Kademlia participant must perform is locating the $k$ closest nodes to some given identifier.
-
-- Kademlia achieves this by performing a recursive  lookup procedure.
-- The initiator issues asynchronous `FIND_NODE` requests to $\alpha$ (system parameter) nodes from its closest non-empty k-bucket.
-  - Parallel search with the cost of increased network traffic.
-  - Nodes return the $k$ closest nodes to the query ID.
-  - Repeat and select the $\alpha$ nodes from the new set of nodes.
-  - Terminate when set doesn't change.
-  - **Possible optimization**: choose $\alpha$ nodes with lowest latency.
-
----
-
-class: middle, center
-
-.width-80[![](figures/lec9/kademlia-lookup.png)]
-
----
-
-class: middle
-
-## Storing data
-
-Using the lookup procedure, *storing* and making data *persistent* is trivial.
-
-$\rightarrow$ Send a `STORE` RPC to the $k$ closest nodes identified by the lookup procedure.
-
-- To ensure persistence in the presence of *node failures*, every node periodically republishes the key-value pair to the $k$ closest nodes.
-- Updating scheme can be implemented. For example: delete data after 24 hours after publication to limit stale information.
-
----
-
-class: middle
-
-## Retrieving data
-
-1. Find $k$ closest nodes of the specified identifier using `FIND_VALUE(id)`.
-2. Halt procedure immediately whenever the set of closest nodes doesn't change or a value is returned.
-
-$\rightarrow$ For caching purposes, once a lookup succeeds, the requesting node stores the key-value pair at the *closest node to the key that did not return the value*.
-
-Because of the *unidirectionality* of the topology (requests will usually follow the same path), future searches for the same key are likely to hit cached entries before querying the closest node.
-
-$\rightarrow$ Induces problem with popular nodes: *over-caching*.
-
-**Solution**: Set expiration time *inversely proportional* to the distance between the true identifier and the current node identifier.
-
----
-
-class: middle
-
-## Join
-
-Straightforward approach compared to other implementations.
-
-1. Node $n$ initializes it's k-bucket (empty).
-2. A node $n$ connects to an already participating node $j$.
-3. Node $n$ then performs a *node-lookup* for its own identifier.
-   - Yielding the $k$ closest nodes.
-   - By doing so $n$ inserts itself in other nodes $k$-buckets.
-
-**Note**: The new node should store keys which are the closest to its own identifier by obtaining the $k$-closest nodes.
-
-
----
-
-class: middle
-
-## Leave and failures
-
-Leaving is very simple as well. Just disconnect.
-- Failure handling is *implicit* in Kademlia due to *data persistence*.
-- No special actions required by other nodes (failed node will just be removed from the k-bucket).
-
----
-
-# Routing table
-
-The routing table is an (unbalanced) binary tree whose leaves are $k$-buckets.
-- Every $k$-bucket contains some nodes with a common prefix.
-- The shared prefix is the $k$-buckets position in the binary tree.
-- Thus, a $k$-buckets covers some range of the 160 bit identifier space.
-- All $k$-buckets cover the *complete* identifier space with *no* overlap.
-
----
-
-class: middle
-
-## Dynamic construction of the routing table
-
-- Nodes in the routing table are allocated dynamically as needed.
-- A bucket is split whenever the $k$-bucket is *full* and the range *includes* the node's own *identifier*.
-
-.center.width-70[![](figures/lec9/k-bucket.png)]
-
----
-
-class: middle
-
-## Example
-
-- $k$ = 2
-- $\alpha = 1$ (no asynchronous requests, also no asynchronous pings)
-- Node identifier (000000) is *not* in the routing table
-
-.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-1.svg)]
-
----
-
-class: middle, center
-count: false
-
-Node `000111` is involved with an RPC request, what happens?
-
-.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-2.svg)]
-
----
-
-class: middle
-count: false
-
-.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-3.svg)]
-
----
-
-class: middle
-count: false
-
-.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-4.svg)]
-
----
-
-class: middle
-count: false
-
-.center.width-80[![Kademlia Routing 1](figures/lec9/kademlia-routing-5.svg)]
-
----
-
-class: middle
-count: false
-
-.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-6.svg)]
-
----
-
-class: middle
-count: false
-
-.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-7.svg)]
-
----
-
-class: middle, center
-count: false
-
-A new node `011000` is involved with a RPC message.
-
-.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-8.svg)]
-
----
-
-class: middle
-count: false
-
-.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-9.svg)]
-
----
-
-class: middle
-count: false
-
-.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-10.svg)]
-
----
-
-class: middle
-count: false
-
-.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-11.svg)]
-
----
-
-class: middle
-count: false
-
-.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-12.svg)]
-
----
-
-class: middle
-count: false
-
-.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-13.svg)]
-
----
-
-class: middle
-count: false
-
-.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-14.svg)]
-
----
-
-class: middle
-count: false
-
-.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-15.svg)]
-
----
-
-class: middle
-count: false
-
-.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-16.svg)]
-
----
-
-class: middle
-count: false
-
-.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-17.svg)]
-
----
-
-# Summary
-
-- Efficient, guaranteed look-ups $\mathcal{O}(\text{log} N)$
-- XOR-based metric topology (provable consistency and performance).
-- Possibly latency minimizing (by always picking the lowest latency note when selecting $\alpha$ nodes).
-- Lookup is iterative, but concurrent ($\alpha$).
-- Kademlia protocol implicitly enables data persistence and recovery, no special failure mechanisms requires.
-- Flexible routing table robust against DoS (route table flushing).
+- The **blockchain** is a linked list with hash pointers.
+- It can be used for implementing *a ledger* that stores sensitive information that should not be tampered with.
+- Decentralization requires **consensus**.
+- In Bitcoin, consensus is achieved by *proof-of-work*, which provides high Byzantine fault tolerance.
 
 ---
 
@@ -677,5 +832,5 @@ The end.
 
 # References
 
-- Stoica, I., Morris, R., Karger, D., Kaashoek, M. F., & Balakrishnan, H. (2001). Chord: A scalable peer-to-peer lookup service for internet applications. ACM SIGCOMM Computer Communication Review, 31(4), 149-160.
-- Maymounkov, P., & Mazieres, D. (2002, March). Kademlia: A peer-to-peer information system based on the xor metric. In International Workshop on Peer-to-Peer Systems (pp. 53-65). Springer, Berlin, Heidelberg.
+- Nakamoto, Satoshi. "Bitcoin: A peer-to-peer electronic cash system." (2008).
+- Narayanan, Arvind, et al. Bitcoin and cryptocurrency technologies: a comprehensive introduction. Princeton University Press, 2016.

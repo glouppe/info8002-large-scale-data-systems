@@ -1,768 +1,670 @@
 class: middle, center, title-slide
 
-# Large-scale Data Systems
+# Large-Scale Data Systems
 
-Lecture 7: Cloud computing
+Lecture 7: Distributed Hash Tables
 
 <br><br>
 Prof. Gilles Louppe<br>
 [g.louppe@uliege.be](g.louppe@uliege.be)
 
-???
-
-R: add pointers for tutorials on Spark
-
-R: talk about amazon s3/lambda?
-
-R: universal scalability law https://twitter.com/tacertain/status/1166039932386676737?s=03 (formalize scalability)
-
 ---
 
 # Today
 
-.center[![](figures/lec7/google-datacenter.jpg)]
+How to design a large-scale distributed system similar to a hash table?
 
-How do we program this thing?
-- MapReduce
-- Spark
+- Chord
+- Kademlia
 
 ---
 
 class: middle, center, black-slide
 
-.width-80[![](figures/lec7/iceberg.png)]
-
-???
-
-Cloud computing: high-level computing abstractions that make it possible to not worry about the messy stuff below, while offering efficient services at the application level.
-
-Comment on the fact that data systems are likely to be obsolete within before they graduated.
+.width-80[![](figures/lec9/iceberg.png)]
 
 ---
 
-# Dealing with lots of data
+# Hash tables
 
-- Example:
-    - $130$+ trillion web pages $\times$ $50\text{KB} = 6.5$ exabytes.
-    - ~$6500000$ hard drives ($1\text{TB}$) just to store the web.
-- Assuming a data transfer rate of $200\text{MB}/s$, it would require $1000$+ years for a single computer to read the web!
-    - And even more to make any useful usage of this data.
-- Solution: **spread** the work over *many* machines.
+A **hash table** is a data structure that implements an associative array abstract data type, i.e. a structure than can map keys to values.
+- It uses a *hash function* to compute an index into array of buckets or slots, from which the desired value can be found.
+- Efficient and scalable: $\mathcal{O}(1)$ look-up and store operations (on a single machine).
+
+.center.width-60[![](figures/lec9/hash-table.svg)]
 
 ---
 
-# Traditional network programming
+# Distributed hash tables
 
-- Message-passing between nodes (MPI, RPC, etc).
-- **Really hard** to do at scale (for 1000s of nodes):
-    - How to *split* problem across nodes?
-        - Important to consider network and data locality.
-    - How to deal with *failures*?
-        - a 10000-node clusters sees 10 faults/day.
-    - Even without failure: *stragglers*.
-        - Some nodes might be much slower than others.
+A **distributed hash table** (DHT) is a class of decentralized distributed systems that provide a lookup service similar to a hash table.
+- Extends upon multiple machines in the case when the data is so large we cannot store it on a single machine.
+- Robust to *faults*.
 
 ---
 
 class: middle
 
-.center[![](figures/lec7/trends.png)]
+## Interface
 
-.center.italic[Almost nobody does message-passing anymore!$^*$]
+- $\text{put}(k, v)$
+- $\text{get}(k)$
 
-.footnote[\*: except in niches, like scientific computing.]
+## Properties
 
----
-
-# Data-parallel models
-
-- **Restrict** and **simplify** the programming interface so that the system can *do more automatically*.
-- "Here is an operation, run it on all of the data".
-    - I do not care *where* it runs (you schedule that).
-    - In fact, feel free to run it *twice* on different nodes if that can help.
-
----
-
-# History
-
-<br><br>
-.center.width-100[![](figures/lec7/history.png)]
-
-???
-
-Should now be updated with technologies such as Dask, Tensorflow, etc.
+- When $\text{put}(k, v)$ is completed, $k$ and $v$ are reliably stored on the DHT.
+- If $k$ is stored on the DHT, a process will eventually find a node which stores $k$.
 
 ---
 
 class: middle
 
-# MapReduce
+# Chord
 
 ---
 
-# What is MapReduce?
+# Chord
 
-**MapReduce** is a *parallel programming* model for processing distributed data on a cluster.
-
-It comes with a simple *high-level* API limited two operations: **map** and **reduce**, as inspired by Lisp primitives:
-- `map`: apply function to each value in a set.
-    - `(map 'length '(() (a) (a b) (a b c)))` $\rightarrow$ `(0 1 2 3)`
-- `reduce`: combines all the values using a binary function.
-    - `(reduce #'+ '(1 2 3 4 5))` $\rightarrow$ `15`
-
----
-
-class: middle
-
-- MapReduce is best suited for *embarrassingly parallel* tasks.
-    - When processing can be broken into parts of equal size.
-    - When processes can concurrently work on these parts.
-- This abstraction makes it possible to not worry about handling
-    - parallelization
-    - data distribution
-    - load balancing
-    - fault tolerance
+Chord is a protocol and algorithm for a peer-to-peer distributed hash table.
+- It organizes the participating nodes in an **overlay network**, where each node is responsible for a set of keys.
+- Keys are defined as $m$-bit identifiers, where $m$ is a predefined system parameter.
+- The overlay network is arranged in a **identifier circle** ranging from $0$ to $2^m - 1$.
+    - A *node identifier* is chosen by hashing the node IP address.
+    - A *key identifier* is chosen by hashing the key.
+- Based on **consistent hashing** with SHA-1 hash function.
+- Supports a single operation: $\text{lookup}(k)$.
+    - Returns the host which holds the data associated with the key.
 
 ---
 
-# Programming model
+# Consistent hashing
 
-- **Map**: input key/value pairs $\rightarrow$ intermediate key/value pairs
-    - User function gets called for each input key/value pair.
-    - Produces a set of intermediate key/value pairs.
-- **Reduce**: intermediate key/value pairs $\rightarrow$  result files
-    - Combine all intermediate values for a particular key through a user-defined function.
-    - Produces a set of merged output values.
+## Traditional hashing
+
+- Set of $n$ bins.
+- Key $k$ is assigned to a particular bin.
+- If $n$ changes, all items need to be rehashed.
+    - E.g. when `bin_id = hash(key) % num_bins`.
+
+## Consistent hashing
+
+- Evenly distributes $x$ objects over $n$ bins.
+- When $n$ changes:
+  - Only $\mathcal{O}(\frac{x}{n})$ objects need to be rehashed.
+  - Uses a deterministic hash function, independent of $n$.
 
 ---
 
-# Under the hood
+class:  middle
 
-## Map worker
+Consistent hashing in Chord assigns keys to nodes as follows:
 
-- Map:
-    - Map calls are distributed across machines by automatically **partitioning** the input data into $M$ *shards*.
-    - Parse the input shards into input key/value pairs.
-    - Process each input pair through a user-defined `map` function to produce a set of intermediate key/value pairs.
-    - Write the result to an intermediate file.
-- Partition:
-    - Assign an intermediate result to one of $R$ reduce tasks based on a partitioning function.
-        - Both $R$ and the partitioning function are user defined.
+- Key $k$ is assigned to the first node whose identifier is equal to or follows $k$ in the identifier space.
+    - i.e., the first node on the identifier ring starting from $k$.
+- This node is called the *successor node* of $k$, denoted $\text{successor}(k)$.
+- Enable **minimal disruption**.
 
 ---
 
 class: middle
 
-## Reduce worker
+To maintain the consistent (hashing) mapping, let us consider a node $n$ which
+- joins: some of the keys assigned to $\text{successor}(n)$ are now assigned to $n$.
+    - Which? $\text{predecessor}(n) < k \leq n$
+- leaves: All of $n$'s assigned keys are assigned to $\text{successor}(n)$.
 
-- Sort:
-    - Fetch the relevant partition of the output from all mappers.
-    - Sort by keys.
-        - Different mappers may have output the same key.
-- Reduce:
-    - Accept an intermediate key and a set of values for the key.
-    - For each unique key, combine all values through a user-defined `reduce` function to form a smaller set of values.
+.center.width-80[![](figures/lec9/dht-chord.png)]
+
+---
+
+# Routing
+
+The core usage of the Chord protocol is to query a key from a client (generally a node as well), i.e. to find $\text{successor}(k)$.
+
+## Basic query
+
+- Any node $n$ stores its immediate successor $\text{successor}(n)$, and no other information.
+- If the key cannot be found locally, then the query is passed to the node's successor.
+- Scalable, but $\mathcal{O}(n)$ operations are required.
+    - **Unacceptable** in  large systems!
 
 ---
 
 class: middle
 
-## Overview
-
-.center.width-100[![](figures/lec7/mr-full.png)]
-
----
-
-class: middle
-
-## Step 1: Split input files
-
-.center.width-100[![](figures/lec7/mr-shards.png)]
-
-- Break up the input data into $M$ shards (typically $64 \text{MB}$).
-
----
-
-class: middle
-
-## Step 2: Fork processes
-
-.center.width-80[![](figures/lec7/mr-forks.png)]
-
-- Start up many copies of the program on a cluster of machines.
-    - 1 master: scheduler and coordinator
-    - Lots of workers
-- Idle workers are assigned either:
-    - *map tasks*
-        - each works on a shard
-        - there are $M$ map tasks
-    - *reduce tasks*
-        - each works on intermediate files
-        - there are $R$ reduce tasks
-
----
-
-class: middle
-
-## Step 3: Map task
-
-.center.width-50[![](figures/lec7/mr-read.png)]
-
-- Read content of the input shard assigned to it.
-- Parse key/value pairs $(k,v)$ out of the input data.
-- Pass each pair to a **user-defined** `map` function.
-    - Produce (one or more) intermediate key/value pairs $(k',v')$.
-    - These are buffered in memory.
-
----
-
-class: middle
-
-## Step 4: Create intermediate files
-
-.center.width-70[![](figures/lec7/mr-if.png)]
-
-- Intermediate key/value pairs $(k',v')$ produced by the user's `map` function are periodically written to *local* disk.
-    - These files are partitioned into $R$ regions by a partitioning function, one for each reduce task.
-    - e.g., `hash(key) mod R`
-- Notify master when complete.
-    - Pass locations of intermediate data to the master.
-    - Master forwards these locations to the reduce workers.
-
-<span class="Q">[Q]</span> What is the purpose of the partitioning function?
-
----
-
-class: middle
-
-## Step 5: Sorting/Shuffling
-
-.center.width-60[![](figures/lec7/mr-reduce1.png)]
-
-- Reduce worker get notified by master about the location of the intermediate files
-associated to their partition.
-- RPC to read the data from the local disks for the map workers.
-- When the reduce worker reads intermediate data for its partition:
-    - it sorts the data by intermediate keys $k'$.
-    - all occurrences $v_i'$ associated to a same key are grouped together.
-
----
-
-class: middle
-
-## Step 6: Reduce tasks
-
-.center.width-60[![](figures/lec7/mr-reduce2.png)]
-
-- The sorting phase grouped data sharing a unique intermediate key.
-- The **user-defined** `reduce` function is given the key and the set of intermediate values for that key.
-    - $(k', (v_1', v_2', v_3', ...))$
-- The output of the `reduce` function is appended to an output file.
-
----
-
-class: middle
-
-## Step 7: Return to user
-
-- When all Map and Reduce tasks have completed, the master wakes up the user program.
-- The MapReduce call in the user program returns and the program can resume execution.
-    - The output of the operation is available in $R$ output files.
-
----
-
-class: middle
-
-## Example: Counting words
-
-.center.width-100[![](figures/lec7/mr-example.png)]
-
-.center[See also the [Hadoop tutorial](https://hadoop.apache.org/docs/stable/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html).]
-
----
-
-class: middle
-
-## Other examples
-
-- *Distributed grep*
-    - Search for words in lots of documents.
-    - Map: emit a line if it matches a given pattern. Produce $(file,line)$ pairs.
-    - Reduce: copy the intermediate data to the output.
-- *Count URL access frequency*
-    - Find the frequency of each URL in web logs.
-    - Map: process logs of web page access. Produce $(url,1)$ pairs.
-    - Reduce: add all values for the same URL.
-        - Is this efficient?
-- *Reverse web-link graph*
-    - Find where page links come from.
-    - Map: output $(target,source)$ pairs for each link $target$ in a web page $source$.
-    - Reduce: concatenate the list of all source URLs associated with a target.
-
----
-
-# Wide applicability
-
-.center.width-90[![](figures/lec7/mr-programs.png)]
-.center[Number of MapReduce programs in Google code source tree.]
-
----
-
-# Fault tolerance
-
-- Master *pings* each worker periodically.
-    - If no response is received within a certain delay, the worker is marked as **failed**.
-    - Map or Reduce tasks given to this worker are reset back to the initial state and rescheduled for other workers.
-    - Task completion is committed to master to keep track of history.
-
-<span class="Q">[Q]</span> What abstraction does this use?
-
-<span class="Q">[Q]</span> What if the master node fails? How would you fix that?
-
-???
-
-The master single-point of failure is fixed in Hadoop 2.0 ("high availability").
-
----
-
-# Redundant execution
-
-- Slow workers significantly **lengthen completion time**
-    - Because of other jobs consuming resources on machine
-    - Bad disks with soft errors transfer data very slowly
-    - Weird things: processor caches disabled (!!)
-- Solution: Near end of phase, spawn backup copies of tasks
-    - Whichever one finishes first "wins"
-- Effect: Dramatically shortens job completion time
-
----
-
-# Locality
-
-- Input and output files are stored on a distributed file system.
-    - e.g., GFS or HDFS.
-- Master tries to schedule Map workers near the data they are assigned to.
-    - e.g., on the same machine or in the same rack.
-- This results in thousands of machines reading input at local disk speed.
-    - Without this, rack switches limit read rate.
-
----
-
-.center.width-100[![](figures/lec7/mr-paper.png)]
-.caption[Google, 2004.]
-
----
-
-# Hadoop Ecosystem
+## Finger table
+
+In Chord, in addition to $\text{successor}$ and $\text{predecessor}$ pointers, each node maintains a finger table to accelerate lookups.
+- As before, let $m$ be the number of bits in the identifier.
+- Every node $n$ maintains a routing (finger) table with at most $m$ entries.
+- Entry $i$ in the finger table of node $n$:
+  - First node $s$ that succeeds $n$ by at least $2^{i - 1}$ on the identifier circle.
+  - Therefore, $s = \text{successor}((n + 2^{i-1})\text{~}\textrm{mod}\text{~}2^m)$
 
 <br>
-
-.center.width-100[![](figures/lec7/hadoop-eco.png)]
-
----
-
-class: middle
-
-- *Hadoop HDFS*: A distributed file system for reliably storing huge amounts of unstructured, semi-structured and structured data in the form of files.
-- **Hadoop MapReduce**: A distributed algorithm framework for the parallel processing of large datasets on *HDFS* filesystem. It runs on Hadoop cluster but also supports other database formats like *Cassandra* and *HBase*.
-- *Cassandra*: A key-value pair NoSQL database, with column family data representation and asynchronous masterless replication.
-    - Cassandra is built upon an architecture similar to a DHT.
-- *HBase*: A key-value pair NoSQL database, with column family data representation, with master-slave replication. It uses HDFS as underlying storage.
-- *Zookeeper*:  A distributed coordination service for distributed applications.
-    - It is based on a **Paxos algorithm** variant called Zab.
+.center.width-60[![](figures/lec9/chord-variable.png)]
 
 ---
 
 class: middle
 
-- *Pig*: Pig is a scripting interface over MapReduce for developers who prefer scripting interface over native Java MapReduce programming.
-- *Hive*:  Hive is a SQL interface over MapReduce for developers and analysts who prefer SQL interface over native Java MapReduce programming.
-- *Mahout*: A library of machine learning algorithms, implemented on top of MapReduce, for finding meaningful patterns in HDFS datasets.
-- *Yarn*: A system to schedule applications and services on an HDFS cluster and manage the cluster resources like memory and CPU.
-- *Flume*: A tool to collect, aggregate, reliably move and ingest large amounts of data into HDFS.
-- ... and many others!
+## Example
+
+- $m = 4$ bits $\rightarrow$ max 4 entries in the table.
+- $i$-th entry in finger table: $s = \text{successor}((n + 2^{i - 1})\text{~}\mathrm{mod}\text{~}2^m)$
+
+.center.width-40[![](figures/lec9/chord-clean.png)]
 
 ---
 
 class: middle
 
-# Spark
+## Example: first entry
 
----
+- $n=4$, $i = 1$
+- $s = \text{successor}((n + 2^{i-1}) \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(5) = 5$
 
-# MapReduce programmability
-
-- Most applications require multiple MR steps.
-    - Google indexing pipeline: 21 steps
-    - Analytics queries (e.g., count clicks and top-K): 2-5 steps
-    - Iterative algorithms (e.g., PageRank): 10s of steps
-- Multi-step jobs create **spaghetti** code
-    - 21 MR steps $\rightarrow$ 21 mapper + 21 reducer classes
-    - Lots of boilerplate code per step
-
-.center.width-70[![](figures/lec7/mr-chaining.png)]
-.caption[Chaining MapReduce jobs.]
-
----
-
-# Problems with MapReduce
-
-- Over time, MapReduce use cases showed two major limitations:
-    - not all algorithms are suited for MapReduce.
-        - e.g., a **linear dataflow** is forced.
-    - it is difficult to use for exploration and *interactive programming*.
-        - e.g., inside a notebook.
-    - there are significant performance bottlenecks in iterative algorithms that need to *reuse* intermediate results.
-        - e.g., saving intermediate results to stable storage (HDFS) is **very costly**.
-- That is, MapReduce does not compose so well for large applications.
-- For this reason, dozens of high level frameworks and specialized systems were developed.
-    - e.g., Pregel, Dremel, FI, Drill, GraphLab, Storm, Impala, etc.
-
-???
-
-Draw a diagram illustrating the issue with intermediate writes.
-
----
-
-# Spark
-
-.center.width-40[![](figures/lec7/spark-logo.png)]
-
-- Like Hadoop MapReduce, **Spark** is a framework for performing distributed computations.
-- Unlike various earlier specialized systems, the goal of Spark is to *generalize* MapReduce.
-- Two small additions are enough to achieve that goal:
-    - **fast data sharing**
-    - general **direct acyclic graphs** (DAGs).
-- Designed for data reuse and interactive programming.
-
----
-
-# Programmability
-
-.center.width-100[![](figures/lec7/spark-short.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
-
-.center[See also [Spark examples](https://spark.apache.org/examples.html)]
-
----
-
-# Performance
-
-Time for sorting $100\text{TB}$ of data:
-
-<br>
-.center.width-100[![](figures/lec7/spark-sort.png)]
-
-.footnote[Credits: [sortbenchmark.org](http://sortbenchmark.org/)]
-
----
-
-# RDD
-
-- Programs in Spark are written in terms of a **Resilient Distributed Dataset** (RDD) abstraction and operations on them.
-- An RDD is a **fault-tolerant** *read-only*, partitioned collection of records.
-    - Resilient: built for fault-tolerance (it can be recreated).
-    - Distributed: content is divided into atomic *partitions*, usually stored *in memory* and across multiple nodes.
-    - Dataset: collection of partitioned data with primitive values or values of values.
-- RDDs can only be created through deterministic operations on either:
-    - data in stable storage, or
-    - other RDDs.
+.center.width-80[![](figures/lec9/chord-finger-1.png)]
 
 ---
 
 class: middle
 
-.center.width-100[![](figures/lec7/rdd-1.png)]
+## Example: second entry
 
-.footnote[Credits: [Tony Duarte](https://www.slideshare.net/sparkInstructor/apache-spark-rdd-101)]
+- $n=4$, $i = 2$
+- $s = \text{successor}((n + 2^{i-1}) \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(6) = 8$
 
----
-
-class: middle
-
-## Operations on RDDs
-
-- *Transformations*: $f(\text{RDD}) \rightarrow \text{RDD'}$
-    - Coarse-grained operations only (à la pandas/numpy).
-        - It is not possible to write to a single specific location in an RDD.
-    - Lazy evaluation (not computed immediately).
-    - e.g., `map` or `filter`.
-- *Actions*: $f(\text{RDD}) \rightarrow v$
-    - Triggers computation.
-    - e.g., `count`.
-- The interface also offers explicit *persistence* mechanisms to indicate that an RDD will be reused in future operations.
-    - This allows for significant internal optimizations.
-
----
-
-# Workflow
-
-.center.width-100[![](figures/lec7/spark-operations.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
+.center.width-80[![](figures/lec9/chord-finger-2.png)]
 
 ---
 
 class: middle
 
-## Example: Log mining
+## Example: third entry
 
-Goal: Load error messages in memory, then interactively search for various patterns.
+- $n=4$, $i = 3$
+- $s = \text{successor}((n + 2^{i-1}) \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(8) = 8$
 
-.center.width-100[![](figures/lec7/spark-ex1.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
-
----
-
-class: middle
-count: false
-
-## Example: Log mining
-
-Goal: Load error messages in memory, then interactively search for various patterns.
-
-.center.width-100[![](figures/lec7/spark-ex2.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
-
----
-
-class: middle
-count: false
-
-## Example: Log mining
-
-Goal: Load error messages in memory, then interactively search for various patterns.
-
-.center.width-100[![](figures/lec7/spark-ex3.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
-
----
-
-class: middle
-count: false
-
-## Example: Log mining
-
-Goal: Load error messages in memory, then interactively search for various patterns.
-
-.center.width-100[![](figures/lec7/spark-ex4.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
-
----
-
-class: middle
-count: false
-
-## Example: Log mining
-
-Goal: Load error messages in memory, then interactively search for various patterns.
-
-.center.width-100[![](figures/lec7/spark-ex5.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
-
----
-
-class: middle
-count: false
-
-## Example: Log mining
-
-Goal: Load error messages in memory, then interactively search for various patterns.
-
-.center.width-100[![](figures/lec7/spark-ex6.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
-
----
-
-class: middle
-count: false
-
-## Example: Log mining
-
-Goal: Load error messages in memory, then interactively search for various patterns.
-
-.center.width-100[![](figures/lec7/spark-ex7.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
-
----
-
-class: middle
-count: false
-
-## Example: Log mining
-
-Goal: Load error messages in memory, then interactively search for various patterns.
-
-.center.width-100[![](figures/lec7/spark-ex8.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
-
----
-
-class: middle
-count: false
-
-## Example: Log mining
-
-Goal: Load error messages in memory, then interactively search for various patterns.
-
-.center.width-100[![](figures/lec7/spark-ex9.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
-
----
-
-# Rich, high-level API
-
-.grid.center[
-.kol-1-3[
-*`map`*<br>
-`filter`<br>
-`sort`<br>
-`groupBy`<br>
-`union`<br>
-`join`<br>
-...
-]
-.kol-1-3[
-*`reduce`*<br>
-`count`<br>
-`fold`<br>
-`reduceByKey`<br>
-`groupByKey`<br>
-`cogroup`<br>
-`zip`<br>
-...
-]
-.kol-1-3[
-`sample`<br>
-`take`<br>
-`first`<br>
-`partitionBy`<br>
-`mapWith`<br>
-`pipe`<br>
-`save`<br>
-...
-]
-]
-
----
-
-# Lineage
-
-- RDDs need not be materialized at all times.
-- Instead, an RDD internally stores *how it was derived* from other datasets (its **lineage**) to compute its partitions from data in stable storage.
-    - This derivation is expressed as coarse-grained transformations.
-- Therefore, a program cannot reference an RDD that it cannot reconstruct after a failure.
-
-.center.width-50[![](figures/lec7/lineage.png)]
+.center.width-80[![](figures/lec9/chord-finger-3.png)]
 
 ---
 
 class: middle
 
-`newRDD = myRDD.map(myfunc)`
+## Example: fourth entry
 
-.center.width-90[![](figures/lec7/rdd-2.png)]
+- $n=4$, $i = 4$
+- $s = \text{successor}((n + 2^{i-1}) \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(12) = 14$
 
-.footnote[Credits: [Tony Duarte](https://www.slideshare.net/sparkInstructor/apache-spark-rdd-101)]
-
----
-
-# Representing RDDs
-
-- RDDs are built around a **graph-based** representation (a DAG).
-- RDDs share a common interface:
-    - Lineage information:
-        - Set of *partitions*.
-        - List of *dependencies* on parents RDDs.
-        - Function to *compute* a partition (as an iterator) given its parents.
-    - Optimized execution (optional):
-        - *Preferred locations* for each partition.
-        - Partitioner (hash, range)
-
----
-
-# Dependencies
-
-.center.width-60[![](figures/lec7/spark-deps.png)]
-
-- *Narrow dependencies*: each partition of the parent RDD is used by at most one partition of the child RDD.
-    - Allow for pipelined execution on one node.
-    - Recovery after failure is more efficient with a narrow dependency, as only the lost parents partitions need to be recomputed.
-- *Wide dependencies*: multiple child partitions may depend on a parent partition.
-    - A child partition requires data from all its parents to be recomputed.
----
-
-# Execution process
-
-.center.width-100[![](figures/lec7/spark-execution-process.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
-
----
-
-# Job scheduler
-
-.center.width-50[![](figures/lec7/spark-stages.png)]
-
-- Whenever an *action* is called, the scheduler examines that RDD's lineage graph to build a **DAG of stages** to execute.
-- Each *stage* contains as many pipeline transformations with narrow dependencies as possible.
-- The boundaries of the stages are
-    - the shuffle operations required for wide dependencies, or
-    - already computed partitions that can short-circuit the computation of a parent RDD.
+.center.width-80[![](figures/lec9/chord-finger-4.png)]
 
 ---
 
 class: middle
 
-- The scheduler launches *tasks* to a lower-level scheduler to compute missing partitions from each stage until it has computed the target RDD.
-    - One task per partition.
-- Tasks are assigned to machines based on *data locality*.
+## Improved lookup
+
+A lookup for $\text{successor}(k)$ now works as follows:
+- if $k$ falls between $n$ and $\text{successor}(n)$, return $\text{successor}(n)$.
+- otherwise, the lookup is forwarded at $n'$, where $n'$ is the node in the finger table that most immediately precedes $k$.
+- Since each node has finger entries at power of two intervals around the identifier circle, each node can forward a query at least halfway along the remaining distance between the node and the target key.
+- $\mathcal{O}(\log N)$ nodes need to be contacted.
 
 ---
 
-# Fault tolerance
+class: middle
 
-- If a task fails, it is rescheduled on another node, as long as its stage's parents are still available.
-- If some stages have become unavailable, all corresponding tasks are resubmit to compute the missing partitions in parallel.
+```
+// ask node n to find the successor of id
+n.find_successor(id)
+  if (id ∈ (n, successor])
+    return successor;
+  else
+    // forward the query around the circle
+    n0 = successor.closest_preceding_node(id);
+    return n0.find_successor(id);
+```
 
-<br>
-.center.width-70[![](figures/lec7/spark-failure.png)]
+```
+// search the local table for the highest predecessor of id
+n.closest_preceding_node(id)
+  for i = m downto 1
+    if (finger[i]∈(n,id))
+      return finger[i];
+  return n;
+```
 
 ---
 
-# Dataflow programming
+class: middle
 
-- Spark builds upon the **dataflow programming** paradigm.
-- Dataflow programming models a program as a *directed graph* of the data flowing between operations.
-- An operation runs as soon as all of its inputs become valid.
-- Dataflow languages are inherently parallel and work well in large, decentralized systems.
-- Modern examples:
-    - Scala
-    - Spark
-    - *Tensorflow*
+## Example: finding $\text{successor}(k=3)$ from $\text{node}\_4$
+
+1. $\text{node}\_4$ checks if $k$ is in the interval (4, 5].
+2. No, $\text{node}\_4$ checks its finger table (starting from the last entry, i.e., $i = m$).
+   1. Is $\text{node}\_{14}$ in the interval (4, 4)? *Yes!*
+3. $\text{node}\_{14}$ checks if $k$ is in the interval (14, 0].
+4. No, $\text{node}\_{14}$ checks its finger table for closest preceding node.
+   1. Return $\text{node}\_{0}$.
+5. $\text{node}\_{0}$ checks if $k$ is in the interval (0, 4]. *Yes!*
+
+$\rightarrow$ Node 0 is the preceding node of $k = 4$. Therefore $\text{successor}(k=3)=\text{node}\_0.\text{successor}=4$.
+
+Of course, one could implement a mechanism that prevents $\text{node}\_{4}$ from looking up its own preceding node in the network.
+
+---
+
+# Join
+
+We must ensure the network remains consistent when a node $n$ joins by connecting to a node $n^\prime$. This is performed in three steps:
+1. Initialize the successor of $n$.
+2. Update the fingers and predecessors of existing nodes to reflect the addition of $n$.
+3. Transfer the keys and their corresponding values to $n$.
+
+---
+
+class: middle
+
+## Initializing $n$'s successor
+
+$n$ learns its successor by asking $n^\prime$ to look them up.
+
+```
+// join a Chord ring containing node n'.
+n.join(n')
+  predecessor = nil;
+  successor = n'.find_successor(n);
+```
+
+---
+
+class: middle
+
+## Periodic consistency check
+
+```
+// called periodically. n asks the successor
+// about its predecessor, verifies if n's immediate
+// successor is consistent, and tells the successor about n
+n.stabilize()
+  x = successor.predecessor;
+  if (x∈(n, successor))
+    successor = x;
+  successor.notify(n);
+
+// n' thinks it might be our predecessor.
+n.notify(n')
+  if (predecessor is nil or n'∈(predecessor, n))
+    predecessor = n';
+
+// called periodically. refreshes finger table entries.
+// next stores the index of the finger to fix
+n.fix_fingers()
+  next = next + 1;
+  if (next > m)
+    next = 1;
+  finger[next] = find_successor(n+2^{next-1});
+```
+
+---
+
+class: middle
+
+## Transferring keys
+
+- $n$ can become the successor only for keys that were previously the responsibility of the node immediately following $n$.
+- $n$ only needs to contact $\text{successor}(n)$ to transfer responsibility of all relevant keys.
+
+---
+
+# Fault-tolerance
+
+## Failures
+
+- Since the successor (or predecessor) of a node may disappear from the network (because of failure or departure), each node records a whole segment of the circle adjacent to it, i.e., the $r$ nodes following it.
+- This successor list results in a high probability that a node is able to correctly locate its successor (or predecessor), even if the network in question suffers from a high failure rate.
+
+
+## Replication
+
+- Use the same successor-list to replicate the data on the segment!
 
 ---
 
 # Summary
 
-- High-level abstractions enable *cloud programming* over clusters.
-    - Without having to handle parallelization, data distribution, load balancing, fault tolerance, ...
-- **MapReduce** is a parallel programming model based on map and reduce operations.
-    - Best suited for embarrassingly parallel and linear tasks.
-    - Its simplicity is a disadvantage for complex iterative programs for interactive exploration.
-- **Spark** generalizes MapReduce by making use of:
-    - fast data sharing (data resides in memory)
-    - general direct acyclic graphs of operations.
+- Fast lookup $\mathcal{O}(\log N)$, small routing table $\mathcal{O}(\log N)$.
+- Handling failures and addressing replication (load balance) using same mechanism (successor list).
+- Relatively small join/leave cost.
+- Iterative lookup process.
+- Timeouts to detect failures.
+- No guarantees (with high probability ...).
+- Routing tables must be correct.
+
+---
+
+class: middle
+
+# Kademlia
+
+---
+
+# Kademlia
+
+Kademlia is a peer-to-peer hash table with **provable** consistency and performance in a fault-prone environment.
+
+- Configuration information spreads automatically as a side-effect of key look-ups (gossiping).
+- Nodes have enough knowledge and flexibility to route queries through low-latency paths.
+- Asynchronous queries to avoid timeout delays from failed nodes.
+- Minimizes the number of configuration messages (guarantee).
+- 160-bit identifiers (e.g., using SHA-1 or some other hash function, implementation specific).
+- Key-Value pairs are stored on nodes based on *closeness* in the identifier space.
+- Identifier based *routing* algorithm by imposing a *hierarchy* (virtual overlay network).
+
+---
+
+# System description
+
+Nodes are structured in an overlay network where they correspond
+to the leaves of an (unbalanced) binary  tree, with each node's position determined by the shortest unique prefix of its identifier.
+- Node identifiers are chosen at random in the identifier space.
+- Kamdelia ensures that every node knows at least one other node in every sub-tree. This guarantees that any node can locate any other node given its identifier.
+
+.center.width-60[![](figures/lec9/kademlia-subtrees.png)]
+
+---
+
+class: middle
+
+## Node distance
+
+The distance between two identifiers is defined as $$d(x, y) = x \oplus y.$$
+- XOR is a valid, albeit non-Euclidean metric.
+- XOR captures the notion of distance between two identifiers: in a fully-populated binary tree of 160-bit IDs, it is the height of the smallest subtree containing them both.
+- XOR is symmetric.
+- XOR is unidirectional.
+
+???
+
+unidirectional: for any x and distance delta>0, there is exactly one y such that d(x,y)=delta.
+
+---
+
+class: middle
+
+## Node state
+
+- For every prefix $0 < i < 160$, every node keeps a list, called a **k-bucket**,  of (IP address, Port, ID) for nodes of distance between $2^i$ and $2^{i+1}$ of itself.
+- Every k-bucket is sorted by time last seen (least recently seen first).
+- When a node receives a message, it updates the corresponding k-bucket for the sender's identifier. If the sender already exists, it is moved to the tail of the list.
+  - **Important**: If the k-bucket is full, the node pings the **least recently** seen node and checks if it is still available.
+        - Only if the node is **not available** it will replace it.
+        - If available, the node is pushed back at the end of the bucket.
+  - Policy of replacement only when a nodes leaves the network $\rightarrow$ prevents Denial of Service (DoS) attacks (e.g., flushing routing tables).
+
+???
+
+R: check ordering of the k-bucket entries.
+
+---
+
+class: middle
+
+## k-bucket
+
+.center.width-80[![k-bucket](figures/lec9/k-bucket.png)]
+
+---
+
+# Interface
+
+Kademlia provides four remote procedure calls (RPCs):
+
+- `PING(id)` returns (IP, Port, ID)
+  - Probes the node to check whether it is still online.
+- `STORE(key, value)`
+- `FIND_NODE(id)` returns (IP, Port, ID) for the $k$ nodes it knows about closest to ID.
+- `FIND_VALUE(key)` returns (IP, Port, ID) for the $k$ nodes it knows about closest to ID, or the value if it maintains the key.
+
+---
+
+class: middle
+
+## Node lookup
+
+The most important procedure a Kademlia participant must perform is locating the $k$ closest nodes to some given identifier.
+
+- Kademlia achieves this by performing a recursive  lookup procedure.
+- The initiator issues asynchronous `FIND_NODE` requests to $\alpha$ (system parameter) nodes from its closest non-empty k-bucket.
+  - Parallel search with the cost of increased network traffic.
+  - Nodes return the $k$ closest nodes to the query ID.
+  - Repeat and select the $\alpha$ nodes from the new set of nodes.
+  - Terminate when set doesn't change.
+  - **Possible optimization**: choose $\alpha$ nodes with lowest latency.
+
+---
+
+class: middle, center
+
+.width-80[![](figures/lec9/kademlia-lookup.png)]
+
+---
+
+class: middle
+
+## Storing data
+
+Using the lookup procedure, *storing* and making data *persistent* is trivial.
+
+$\rightarrow$ Send a `STORE` RPC to the $k$ closest nodes identified by the lookup procedure.
+
+- To ensure persistence in the presence of *node failures*, every node periodically republishes the key-value pair to the $k$ closest nodes.
+- Updating scheme can be implemented. For example: delete data after 24 hours after publication to limit stale information.
+
+---
+
+class: middle
+
+## Retrieving data
+
+1. Find $k$ closest nodes of the specified identifier using `FIND_VALUE(id)`.
+2. Halt procedure immediately whenever the set of closest nodes doesn't change or a value is returned.
+
+$\rightarrow$ For caching purposes, once a lookup succeeds, the requesting node stores the key-value pair at the *closest node to the key that did not return the value*.
+
+Because of the *unidirectionality* of the topology (requests will usually follow the same path), future searches for the same key are likely to hit cached entries before querying the closest node.
+
+$\rightarrow$ Induces problem with popular nodes: *over-caching*.
+
+**Solution**: Set expiration time *inversely proportional* to the distance between the true identifier and the current node identifier.
+
+---
+
+class: middle
+
+## Join
+
+Straightforward approach compared to other implementations.
+
+1. Node $n$ initializes it's k-bucket (empty).
+2. A node $n$ connects to an already participating node $j$.
+3. Node $n$ then performs a *node-lookup* for its own identifier.
+   - Yielding the $k$ closest nodes.
+   - By doing so $n$ inserts itself in other nodes $k$-buckets.
+
+**Note**: The new node should store keys which are the closest to its own identifier by obtaining the $k$-closest nodes.
+
+
+---
+
+class: middle
+
+## Leave and failures
+
+Leaving is very simple as well. Just disconnect.
+- Failure handling is *implicit* in Kademlia due to *data persistence*.
+- No special actions required by other nodes (failed node will just be removed from the k-bucket).
+
+---
+
+# Routing table
+
+The routing table is an (unbalanced) binary tree whose leaves are $k$-buckets.
+- Every $k$-bucket contains some nodes with a common prefix.
+- The shared prefix is the $k$-buckets position in the binary tree.
+- Thus, a $k$-buckets covers some range of the 160 bit identifier space.
+- All $k$-buckets cover the *complete* identifier space with *no* overlap.
+
+---
+
+class: middle
+
+## Dynamic construction of the routing table
+
+- Nodes in the routing table are allocated dynamically as needed.
+- A bucket is split whenever the $k$-bucket is *full* and the range *includes* the node's own *identifier*.
+
+.center.width-70[![](figures/lec9/k-bucket.png)]
+
+---
+
+class: middle
+
+## Example
+
+- $k$ = 2
+- $\alpha = 1$ (no asynchronous requests, also no asynchronous pings)
+- Node identifier (000000) is *not* in the routing table
+
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-1.svg)]
+
+---
+
+class: middle, center
+count: false
+
+Node `000111` is involved with an RPC request, what happens?
+
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-2.svg)]
+
+---
+
+class: middle
+count: false
+
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-3.svg)]
+
+---
+
+class: middle
+count: false
+
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-4.svg)]
+
+---
+
+class: middle
+count: false
+
+.center.width-80[![Kademlia Routing 1](figures/lec9/kademlia-routing-5.svg)]
+
+---
+
+class: middle
+count: false
+
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-6.svg)]
+
+---
+
+class: middle
+count: false
+
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-7.svg)]
+
+---
+
+class: middle, center
+count: false
+
+A new node `011000` is involved with a RPC message.
+
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-8.svg)]
+
+---
+
+class: middle
+count: false
+
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-9.svg)]
+
+---
+
+class: middle
+count: false
+
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-10.svg)]
+
+---
+
+class: middle
+count: false
+
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-11.svg)]
+
+---
+
+class: middle
+count: false
+
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-12.svg)]
+
+---
+
+class: middle
+count: false
+
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-13.svg)]
+
+---
+
+class: middle
+count: false
+
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-14.svg)]
+
+---
+
+class: middle
+count: false
+
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-15.svg)]
+
+---
+
+class: middle
+count: false
+
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-16.svg)]
+
+---
+
+class: middle
+count: false
+
+.center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-17.svg)]
+
+---
+
+# Summary
+
+- Efficient, guaranteed look-ups $\mathcal{O}(\text{log} N)$
+- XOR-based metric topology (provable consistency and performance).
+- Possibly latency minimizing (by always picking the lowest latency note when selecting $\alpha$ nodes).
+- Lookup is iterative, but concurrent ($\alpha$).
+- Kademlia protocol implicitly enables data persistence and recovery, no special failure mechanisms requires.
+- Flexible routing table robust against DoS (route table flushing).
 
 ---
 
@@ -775,6 +677,5 @@ The end.
 
 # References
 
-- Dean, Jeffrey, and Sanjay Ghemawat. "MapReduce: simplified data processing on large clusters." Communications of the ACM 51.1 (2008): 107-113.
-- Zaharia, Matei, et al. "Resilient distributed datasets: A fault-tolerant abstraction for in-memory cluster computing." Proceedings of the 9th USENIX conference on Networked Systems Design and Implementation. USENIX Association, 2012.
-- Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.
+- Stoica, I., Morris, R., Karger, D., Kaashoek, M. F., & Balakrishnan, H. (2001). Chord: A scalable peer-to-peer lookup service for internet applications. ACM SIGCOMM Computer Communication Review, 31(4), 149-160.
+- Maymounkov, P., & Mazieres, D. (2002, March). Kademlia: A peer-to-peer information system based on the xor metric. In International Workshop on Peer-to-Peer Systems (pp. 53-65). Springer, Berlin, Heidelberg.
