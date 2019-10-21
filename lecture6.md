@@ -44,7 +44,7 @@ class: middle
 
 - File systems determine **how** data is stored and retrieved.
 - *Distributed file systems* (DFS) manage the storage across a network of machines.
-    - Goal: single-system **illusion** for users.
+    - Goal: provide the **illusion** of a single-system for users.
     - Added complexity due to the network.
 - GFS and HDFS are examples of distributed file systems.
     - They represent *one* way (not the way) to design a distributed file system.
@@ -62,9 +62,9 @@ class: middle
 
 ## How would you design a DFS?
 
-We want *single-system illusion* for data storage.
-- Data is too large be stored in a single machine.
-- Hardware **will** fail.
+We want single-system illusion for data storage, but
+- data is too large be stored in a single machine;
+- hardware will eventually fail.
 ]
 .kol-1-2.center[
 .width-60[![](figures/lec8/google-first-server_a.jpg)]
@@ -138,9 +138,9 @@ class: middle, red-slide
 
 .bold[Disclaimer]
 
-GFS (and HDFS) are not a good fit for:
+GFS is not a good fit for:
 - Low latency data access (in the ms range).
-    - Solution: distributed databases, such as HBase.
+    - Solution: distributed databases.
 - Many small files.
 - Constantly changing data.
 
@@ -205,7 +205,7 @@ class: middle
 
 - Having a **single master** node vastly simplifies the system design.
 - Enable master to make sophisticated chunk placement and replication decisions, using *global knowledge*.
-- Its involvement in reads and writes should be minimized so to avoid that it becomes a bottleneck.
+- Its involvement in reads and writes should be minimized so as to avoid that it becomes a bottleneck.
     - Clients never read and write file data through master.
     - Instead, clients ask the master which chunkservers it should contact.
 
@@ -220,7 +220,7 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 # Chunks
 
 - Default size = 64MB.
-    - This a **key design parameter** in GFS!
+    - This a **key** design parameter in GFS!
 - Advantages of large (but not too large) chunk size:
     - **Reduced need** for client/master interaction.
         - 1 request per chunk suits the target workloads.
@@ -251,7 +251,7 @@ Design decisions:
 
 ---
 
-# Interface
+# API
 
 No file system interface at the operating-system level (e.g., under the VFS layer).
 - User-level API is provided instead.
@@ -267,7 +267,7 @@ Two special operations are supported:
 
 class: middle
 
-## Reads (1)
+## Read
 
 .center.width-100[![](figures/lec8/gfs-read1.png)]
 
@@ -277,8 +277,6 @@ class: middle
 
 class: middle
 
-## Reads (2)
-
 .center.width-100[![](figures/lec8/gfs-read2.png)]
 
 2) Master replies with chunk handle and locations of the replicas.
@@ -286,8 +284,6 @@ class: middle
 ---
 
 class: middle
-
-## Reads (3+4)
 
 .center.width-100[![](figures/lec8/gfs-read3.png)]
 
@@ -299,8 +295,6 @@ class: middle
 ---
 
 class: middle
-
-## Reads (5)
 
 .center.width-100[![](figures/lec8/gfs-read4.png)]
 
@@ -325,7 +319,7 @@ class: middle
 
 class: middle
 
-## Writes (1+2)
+## Write
 
 .center.width-40[![](figures/lec8/gfs-write12.png)]
 
@@ -337,8 +331,6 @@ class: middle
 
 class: middle
 
-## Writes (3)
-
 .center.width-40[![](figures/lec8/gfs-write3.png)]
 
 3) The client pushes the data to all replicas.
@@ -349,8 +341,6 @@ class: middle
 ---
 
 class: middle
-
-## Writes (4)
 
 .center.width-40[![](figures/lec8/gfs-write4.png)]
 
@@ -364,8 +354,6 @@ class: middle
 
 class: middle
 
-## Writes (5)
-
 .center.width-40[![](figures/lec8/gfs-write5.png)]
 
 5) The primary forwards the write request to all secondary replicas.
@@ -374,8 +362,6 @@ class: middle
 ---
 
 class: middle
-
-## Writes (6+7)
 
 .center.width-40[![](figures/lec8/gfs-write67.png)]
 
@@ -391,7 +377,7 @@ class: middle
 
 class: middle
 
-## Appends
+## Append
 
 - Google uses large files as **queues** between multiple *producers* and *consumers*.
 - Same control flow as for writes, except that:
