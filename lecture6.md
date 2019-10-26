@@ -8,10 +8,6 @@ Lecture 6: Distributed file systems
 Prof. Gilles Louppe<br>
 [g.louppe@uliege.be](g.louppe@uliege.be)
 
-???
-
-R: talk about amazon s3/lambda?
-
 ---
 
 # Today
@@ -21,7 +17,7 @@ R: talk about amazon s3/lambda?
     - Data replication
     - Reading and writing
     - Recovery from failure
-- Hadoop Distributed File System (HDFS)
+- Other distributed file systems
 
 <br>
 .center.width-70[![](figures/lec8/hadoop-hdfs.png)]
@@ -579,7 +575,7 @@ class: middle
 
 class: middle
 
-# HDFS
+# Other distributed file systems
 
 ---
 
@@ -599,6 +595,16 @@ class: middle
 ## HDFS in one figure
 
 .center.width-90[![](figures/lec8/hdfs-vs-gfs.png)]
+
+---
+
+# In the cloud
+
+.center[
+.width-45[![](figures/lec8/amazon-s3.png)]
+.width-45[![](figures/lec8/gcs.png)]
+.width-50[![](figures/lec8/microsoft-azure-500x500.png)]
+]
 
 ---
 

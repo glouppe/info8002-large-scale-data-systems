@@ -17,7 +17,7 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2019.
 | October 8 | Lecture 4: [Shared memory](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture4.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec4.pdf)] |
 | October 15 | Lecture 5: [Consensus](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture5.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec5.pdf)]<br>Exercise session 2 [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/ex2.pdf)]<br>Announcement of the project and reading assignment |
 | October 22 | Lecture 6: [Distributed file systems](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture6.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec6.pdf)]<br>Exercise session 3  |
-| November 5 | Lecture 7: Distributed hash tables<br>Exercise session 4 |
+| November 5 | Lecture 7: [Distributed hash tables](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture7.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec7.pdf)]<br>Exercise session 4 |
 | November 12 | Lecture 8: Distributed computing |
 | November 19 | _(no class)_ |
 | November 26 | Visit of NRB |
