@@ -28,7 +28,7 @@ class: middle, center, black-slide
 # Hash tables
 
 A **hash table** is a data structure that implements an associative array abstract data type, i.e. a structure than can map keys to values.
-- It uses a *hash function* to compute an index into array of buckets or slots, from which the desired value can be found.
+- It uses a *hash function* to compute an index into an array of buckets or slots, from which the desired value can be found.
 - Efficient and scalable: $\mathcal{O}(1)$ look-up and store operations (on a single machine).
 
 .center.width-60[![](figures/lec9/hash-table.svg)]
@@ -83,8 +83,12 @@ Chord is a protocol and algorithm for a peer-to-peer distributed hash table.
 
 - Set of $n$ bins.
 - Key $k$ is assigned to a particular bin.
-- If $n$ changes, all items need to be rehashed.
+- If $n$ changes, **all** items need to be rehashed.
     - E.g. when `bin_id = hash(key) % num_bins`.
+
+--
+
+count: false
 
 ## Consistent hashing
 
@@ -109,9 +113,9 @@ Consistent hashing in Chord assigns keys to nodes as follows:
 class: middle
 
 To maintain the consistent (hashing) mapping, let us consider a node $n$ which
-- joins: some of the keys assigned to $\text{successor}(n)$ are now assigned to $n$.
+1. joins: some of the keys assigned to $\text{successor}(n)$ are now assigned to $n$.
     - Which? $\text{predecessor}(n) < k \leq n$
-- leaves: All of $n$'s assigned keys are assigned to $\text{successor}(n)$.
+2. leaves: All of $n$'s assigned keys are assigned to $\text{successor}(n)$.
 
 .center.width-80[![](figures/lec9/dht-chord.png)]
 
@@ -128,6 +132,8 @@ The core usage of the Chord protocol is to query a key from a client (generally 
 - Scalable, but $\mathcal{O}(n)$ operations are required.
     - **Unacceptable** in  large systems!
 
+.exercice[How to make lookups faster?]
+
 ---
 
 class: middle
@@ -142,7 +148,7 @@ In Chord, in addition to $\text{successor}$ and $\text{predecessor}$ pointers, e
   - Therefore, $s = \text{successor}((n + 2^{i-1})\text{~}\textrm{mod}\text{~}2^m)$
 
 <br>
-.center.width-60[![](figures/lec9/chord-variable.png)]
+.center.width-70[![](figures/lec9/chord-variable.png)]
 
 ---
 
@@ -217,22 +223,22 @@ class: middle
 
 ```
 // ask node n to find the successor of id
-n.find_successor(id)
-  if (id ∈ (n, successor])
-    return successor;
-  else
+n.find_successor(id):
+  if (id ∈ (n, successor]):
+    return successor
+  else:
     // forward the query around the circle
-    n0 = successor.closest_preceding_node(id);
-    return n0.find_successor(id);
+    n0 = closest_preceding_node(id)
+    return n0.find_successor(id)
 ```
 
 ```
 // search the local table for the highest predecessor of id
-n.closest_preceding_node(id)
-  for i = m downto 1
-    if (finger[i]∈(n,id))
-      return finger[i];
-  return n;
+n.closest_preceding_node(id):
+  for i = m downto 1:
+    if (finger[i] ∈ (n, id)):
+      return finger[i]
+  return n
 ```
 
 ---
@@ -243,7 +249,7 @@ class: middle
 
 1. $\text{node}\_4$ checks if $k$ is in the interval (4, 5].
 2. No, $\text{node}\_4$ checks its finger table (starting from the last entry, i.e., $i = m$).
-   1. Is $\text{node}\_{14}$ in the interval (4, 4)? *Yes!*
+   1. Is $\text{node}\_{14}$ in the interval (4, 3)? *Yes!*
 3. $\text{node}\_{14}$ checks if $k$ is in the interval (14, 0].
 4. No, $\text{node}\_{14}$ checks its finger table for closest preceding node.
    1. Return $\text{node}\_{0}$.
@@ -272,9 +278,9 @@ $n$ learns its successor by asking $n^\prime$ to look them up.
 
 ```
 // join a Chord ring containing node n'.
-n.join(n')
-  predecessor = nil;
-  successor = n'.find_successor(n);
+n.join(n'):
+  predecessor = nil
+  successor = n'.find_successor(n)
 ```
 
 ---
@@ -287,24 +293,24 @@ class: middle
 // called periodically. n asks the successor
 // about its predecessor, verifies if n's immediate
 // successor is consistent, and tells the successor about n
-n.stabilize()
-  x = successor.predecessor;
-  if (x∈(n, successor))
-    successor = x;
-  successor.notify(n);
+n.stabilize():
+  x = successor.predecessor
+  if (x ∈ (n, successor)):
+    successor = x
+  successor.notify(n)
 
 // n' thinks it might be our predecessor.
-n.notify(n')
-  if (predecessor is nil or n'∈(predecessor, n))
-    predecessor = n';
+n.notify(n'):
+  if (predecessor is nil or n' ∈ (predecessor, n))
+    predecessor = n'
 
 // called periodically. refreshes finger table entries.
 // next stores the index of the finger to fix
-n.fix_fingers()
-  next = next + 1;
-  if (next > m)
-    next = 1;
-  finger[next] = find_successor(n+2^{next-1});
+n.fix_fingers():
+  next = next + 1
+  if (next > m):
+    next = 1
+  finger[next] = find_successor(n+2^{next-1})
 ```
 
 ---
@@ -395,7 +401,7 @@ class: middle
 
 ## Node state
 
-- For every prefix $0 < i < 160$, every node keeps a list, called a **k-bucket**,  of (IP address, Port, ID) for nodes of distance between $2^i$ and $2^{i+1}$ of itself.
+- For every prefix of size $0 \leq i < 160$, every node keeps a list, called a **k-bucket**,  of (IP address, Port, ID) for nodes of distance between $2^i$ and $2^{i+1}$ of itself.
 - Every k-bucket is sorted by time last seen (least recently seen first).
 - When a node receives a message, it updates the corresponding k-bucket for the sender's identifier. If the sender already exists, it is moved to the tail of the list.
   - **Important**: If the k-bucket is full, the node pings the **least recently** seen node and checks if it is still available.
@@ -403,17 +409,15 @@ class: middle
         - If available, the node is pushed back at the end of the bucket.
   - Policy of replacement only when a nodes leaves the network $\rightarrow$ prevents Denial of Service (DoS) attacks (e.g., flushing routing tables).
 
-???
-
-R: check ordering of the k-bucket entries.
-
 ---
 
 class: middle
 
 ## k-bucket
 
-.center.width-80[![k-bucket](figures/lec9/k-bucket.png)]
+<br>
+
+.center.width-100[![k-bucket](figures/lec9/k-bucket-2.png)]
 
 ---
 
@@ -535,7 +539,7 @@ class: middle
 
 - $k$ = 2
 - $\alpha = 1$ (no asynchronous requests, also no asynchronous pings)
-- Node identifier (000000) is *not* in the routing table
+- Node identifier (000000) is not in the routing table
 
 .center.width-60[![Kademlia Routing 1](figures/lec9/kademlia-routing-1.svg)]
 
