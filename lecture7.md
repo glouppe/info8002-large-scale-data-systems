@@ -8,6 +8,10 @@ Lecture 7: Distributed Hash Tables
 Prof. Gilles Louppe<br>
 [g.louppe@uliege.be](g.louppe@uliege.be)
 
+???
+
+R: in kademlia, why using the binary representation for structuring the topology? why not just integer and euclidean distance?
+
 ---
 
 # Today
