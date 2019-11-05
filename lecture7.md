@@ -134,6 +134,10 @@ The core usage of the Chord protocol is to query a key from a client (generally 
 
 .exercice[How to make lookups faster?]
 
+???
+
+Pause here
+
 ---
 
 class: middle
@@ -174,8 +178,8 @@ class: middle
 
 ???
 
-- Interval: [n -> successor(n))
-- Successor column should be `.node`
+- Interval: [`finger[i].start` -> `finger[i+1].start`)
+- Successor column should be `finger[i].node`, i.e. `successor(finger[i].start)`
 
 ---
 
@@ -430,6 +434,10 @@ class: middle
 <br>
 
 .center.width-100[![k-bucket](figures/lec9/k-bucket-2.png)]
+
+???
+
+Notice how this is similar to Chord's finger table.
 
 ---
 
