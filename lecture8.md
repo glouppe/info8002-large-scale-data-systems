@@ -2,767 +2,817 @@ class: middle, center, title-slide
 
 # Large-scale Data Systems
 
-Lecture 8: Cloud computing
+Lecture 8: Blockchain
 
 <br><br>
 Prof. Gilles Louppe<br>
 [g.louppe@uliege.be](g.louppe@uliege.be)
 
-???
-
-R: add pointers for tutorials on Spark
-
-R: talk about amazon s3/lambda?
-
-R: universal scalability law https://twitter.com/tacertain/status/1166039932386676737?s=03 (formalize scalability)
-
 ---
 
 # Today
 
-.center[![](figures/lec7/google-datacenter.jpg)]
+.grid[
+.kol-2-3[
+Blockchain:
+- Hash functions and data structures
+- Digital signatures
+- Simple (fictitious) cryptocurrencies
+- Consensus in the blockchain
+- Bitcoin and friends
+]
+.kol-1-3[
+.width-100[![](figures/lec6/book.jpg)]
+]
+]
 
-How do we program this thing?
-- MapReduce
-- Spark
-
----
-
-class: middle, center, black-slide
-
-.width-80[![](figures/lec7/iceberg.png)]
-
-???
-
-Cloud computing: high-level computing abstractions that make it possible to not worry about the messy stuff below, while offering efficient services at the application level.
-
-Comment on the fact that data systems are likely to be obsolete within before they graduated.
-
----
-
-# Dealing with lots of data
-
-- Example:
-    - $130$+ trillion web pages $\times$ $50\text{KB} = 6.5$ exabytes.
-    - ~$6500000$ hard drives ($1\text{TB}$) just to store the web.
-- Assuming a data transfer rate of $200\text{MB}/s$, it would require $1000$+ years for a single computer to read the web!
-    - And even more to make any useful usage of this data.
-- Solution: **spread** the work over *many* machines.
-
----
-
-# Traditional network programming
-
-- Message-passing between nodes (MPI, RPC, etc).
-- **Really hard** to do at scale (for 1000s of nodes):
-    - How to *split* problem across nodes?
-        - Important to consider network and data locality.
-    - How to deal with *failures*?
-        - a 10000-node clusters sees 10 faults/day.
-    - Even without failure: *stragglers*.
-        - Some nodes might be much slower than others.
+Most of today's lecture is based on "Bitcoin and cryptocurrency technologies: A comprehensive introduction" by Narayanan et al.
 
 ---
 
 class: middle
 
-.center[![](figures/lec7/trends.png)]
-
-.center.italic[Almost nobody does message-passing anymore!$^*$]
-
-.footnote[\*: except in niches, like scientific computing.]
+# Hash functions and data structures
 
 ---
 
-# Data-parallel models
+# Hash functions
 
-- **Restrict** and **simplify** the programming interface so that the system can *do more automatically*.
-- "Here is an operation, run it on all of the data".
-    - I do not care *where* it runs (you schedule that).
-    - In fact, feel free to run it *twice* on different nodes if that can help.
+A **hash function** is a mathematical function $H$ with the following properties:
+- Its input can be any string of any size.
+- It produces a fixed-size output (e.g. 256 bits).
+- It is efficiently computable.
+    - E.g., computing the hash of an $n$-bit string should be $O(n)$.
+
+## Security properties
+- Collision resistance
+- Hiding
+- Puzzle-friendliness
 
 ---
 
-# History
+# Collision resistance
+
+A hash function $H$ is said to be **collision resistant** if it is infeasible/difficult to find two values $x$ and $y$ such that $x \neq y$ yet $H(x)=H(y)$.
+
+<br>
+.center.width-80[![](figures/lec6/collision.png)]
+
+---
+
+class: middle
+
+.center[Collisions do exist. But can anyone find them?]
+<br>
+
+.center.width-80[![](figures/lec6/collision2.png)]
+
+---
+
+class: middle
+
+How to find a collision:
+- Pick $2^{256}+1$ distinct values and compute the hashes of each of them.
+- At least one pair of inputs must collide!
+
+This works no matter the hash function $H$. But it takes too long to matter!
+
+---
+
+# Hiding
+
+A hash function $H$ is said to be **hiding** if when a secret value $r$ is chosen from a probability distribution that has high entropy, then given $H(r || x)$, it is infeasible to find $x$.
+
+---
+
+class: middle
+
+## Application: Commitments
+
+A commitment is the digital analog of taking a value, sealing it in an envelope, and putting that envelope out on the table where everyone can see it.
+- Commit to value (the content of the envelope).
+- Reveal it later (open the envelope).
+
+---
+
+class: middle
+
+## Commitment scheme
+- $\text{commit}(\text{msg}, \text{key}) := (H(\text{msg} || \text{key}), H(\text{key}))$:<br> The commit function takes a message and a (secret) key as input and returns a commitment pair $\text{com}$.
+- $\text{verify}(\text{com}, \text{key}, \text{msg})$: The verify function takes a commitment, a key and a message as inputs. It returns true iff $\text{com} = \text{commit}(\text{msg}, \text{key})$.
+
+## Security properties
+- Hiding: given $\text{com} := (H(\text{msg} || \text{key}), H(\text{key}))$, it is infeasible to find $\text{msg}$.
+- Binding: Infeasible to find $\text{msg} \neq \text{msg}'$ such that $H(\text{msg} || \text{key}) = H(\text{msg}' || \text{key})$ is true, nor to change the key.
+
+---
+
+
+# Puzzle-friendliness
+
+A hash function $H$ is said to be **puzzle friendly** if for every possible $n$-bit output value $y$, if $k$ is chosen from a distribution with high entropy and made public, then it remains infeasible to find $x$ such that $y=H(k || x)$ in time significantly less than $2^n$.
+
+---
+
+class: middle
+
+## Application: Search puzzle
+
+Given a puzzle ID $i$ and a target set $Y$, try to find a solution $x$ such that $H(i || x) \in Y$.
+
+- Puzzle-friendliness implies that no solving strategy is much better than trying random values of $x$.
+- Later, we will see that *mining* is a computational puzzle.
+
+---
+
+# SHA-256 hash function
 
 <br><br>
-.center.width-100[![](figures/lec7/history.png)]
+.center.width-100[![](figures/lec6/sha256.png)]
+
+SHA-256 uses the Merkle–Damgård construction to turn a fixed-length collision resistant compression function $c$ into a hash function that accepts arbitrary-length inputs.
+
+---
+
+# Hash pointers
+
+A **hash pointer** is a pointer to where some information is stored, together with a cryptographic hash of this information. A hash pointer can be used for:
+- retrieving the information associated to the pointer,
+- verifying that the information has not changed.
+
+<br>
+.center.width-40[![](figures/lec6/hash-pointer.png)]
+
+---
+
+class: middle, center, red-slide
+
+.bold[Key idea]: build data structures with hash pointers
+
+---
+
+# Blockchain
+
+A **blockchain** is a linked list that makes use of hash pointers.
+- In a regular linked list, each block has data as well as a pointer to the previous block in the list.
+- In a blockchain, the previous-block pointers are replaced by hash pointers.
+
+.center.width-100[![](figures/lec6/hash-chain.png)]
+
+---
+
+class: middle
+
+.center.width-100[![](figures/lec6/hash-chain-tampered.png)]
+
+## Tamper-evident log
+
+- If an adversary modifies data anywhere in the blockchain, it will result in the hash pointer in the following block being incorrect.
+- If we stored the head of the list, then even if an adversary modifies all pointers to be consistent with modified data, the head pointer will be incorrect and the change would be detected.
+
+---
+
+# Merkle tree
+
+A **merkle tree** is a binary tree that makes use of hash pointers.
+
+.center.width-100[![](figures/lec6/merkle-tree.png)]
+
+---
+
+class: middle
+
+.center.width-40[![](figures/lec6/merkle-membership.png)]
+
+## Proof of membership
+
+Proving that a data block is included in the tree only requires showing the blocks in the path from that data block to the root. Hence $O(\log N)$.
+
+---
+
+class: middle
+
+# Digital signatures
+
+---
+
+# Digital signatures
+
+Digital signatures is the second cryptographic primitive we will need for implementing cryptocurrencies.
+
+A **digital signature** is the digital analog to a handwritten signature on paper:
+- Only you can make your signature, but anyone can verify that it is valid.
+- Signatures are tied to a particular document. They cannot be cut-and-pasted to another document to indicate your agreement or endorsement.
+
+Bitcoin makes use of the *Elliptic Curve Digital Signature Algorithm* (ECDSA) for digital signatures.
+
+---
+
+class: middle
+
+## API for digital signatures
+
+- $(\text{sk}, \text{pk}) := \text{generateKeys}(\text{keysize})$
+    - $\text{sk}$: secret signing key
+    - $\text{pk}$: public verification key
+- $\text{sig} := \text{sign}(\text{sk}, \text{msg})$
+- $\text{isValid} := \text{verify}(\text{pk}, \text{msg}, \text{sig})$
+
+---
+
+class: middle
+
+## Requirements
+
+- Valid signatures must verify.
+- Signatures are existentially unforgeable.
+
+<br>
+.center.width-90[![](figures/lec6/forge-game.png)]
+
+---
+
+class: middle
+
+# Simple (fictitious) cryptocurrencies
+
+---
+
+# Goofycoin
+
+## Rule 1: a designated entity (Goofy) can create new coins
+
+To create a coin, Goofy generates *a unique coin ID* along with the *statement* `"CreateCoin [uniqueCoinID]"`.
+- Goofy computes the **digital signature** of this string with his secret signing key.
+- The string, together with Goofy's signature, is a coin.
+- Anyone can verify that the coin contains Goofy's valid signature of the `CreateCoin` statement and is therefore a valid coin.
+
+
+.grid[
+.kol-3-4[<br><br>.center.width-50[![](figures/lec6/goofy-1.png)]]
+.kol-1-4.width-80[![](figures/lec6/goofy.png)]
+]
 
 ???
 
-Should now be updated with technologies such as Dask, Tensorflow, etc.
+Same as for a bank or a government that decide to print money at will.
+
+Verification of banknotes  can be done by anyone.
 
 ---
 
 class: middle
 
-# MapReduce
+.center.width-45[![](figures/lec6/goofy-2.png)]
+
+## Rule 2: Whoever owns a coin can transfer it to someone.
+
+- Let's say Goofy wants to transfer a coin he created to Alice.
+- To do this, Goofy creates a new statement `"Pay this to Alice"`, where
+    - `"this"` is a hash pointer that references the coin in question,
+    - Alice's identity is defined by her public signing key.
+- Alice can prove to anyone that she owns the coin because she can present the data structure with Goofy's valid signature.
 
 ---
 
-# What is MapReduce?
+class: middle, center
 
-**MapReduce** is a *parallel programming* model for processing distributed data on a cluster.
+.center.width-50[![](figures/lec6/goofy-3.png)]
 
-It comes with a simple *high-level* API limited two operations: **map** and **reduce**, as inspired by Lisp primitives:
-- `map`: apply function to each value in a set.
-    - `(map 'length '(() (a) (a b) (a b c)))` $\rightarrow$ `(0 1 2 3)`
-- `reduce`: combines all the values using a binary function.
-    - `(reduce #'+ '(1 2 3 4 5))` $\rightarrow$ `15`
-
----
-
-class: middle
-
-- MapReduce is best suited for *embarrassingly parallel* tasks.
-    - When processing can be broken into parts of equal size.
-    - When processes can concurrently work on these parts.
-- This abstraction makes it possible to not worry about handling
-    - parallelization
-    - data distribution
-    - load balancing
-    - fault tolerance
-
----
-
-# Programming model
-
-- **Map**: input key/value pairs $\rightarrow$ intermediate key/value pairs
-    - User function gets called for each input key/value pair.
-    - Produces a set of intermediate key/value pairs.
-- **Reduce**: intermediate key/value pairs $\rightarrow$  result files
-    - Combine all intermediate values for a particular key through a user-defined function.
-    - Produces a set of merged output values.
-
----
-
-# Under the hood
-
-## Map worker
-
-- Map:
-    - Map calls are distributed across machines by automatically **partitioning** the input data into $M$ *shards*.
-    - Parse the input shards into input key/value pairs.
-    - Process each input pair through a user-defined `map` function to produce a set of intermediate key/value pairs.
-    - Write the result to an intermediate file.
-- Partition:
-    - Assign an intermediate result to one of $R$ reduce tasks based on a partitioning function.
-        - Both $R$ and the partitioning function are user defined.
+The recipient can pass on the coin again.
 
 ---
 
 class: middle
 
-## Reduce worker
+.center.width-80[![](figures/lec6/goofy-4.png)]
 
-- Sort:
-    - Fetch the relevant partition of the output from all mappers.
-    - Sort by keys.
-        - Different mappers may have output the same key.
-- Reduce:
-    - Accept an intermediate key and a set of values for the key.
-    - For each unique key, combine all values through a user-defined `reduce` function to form a smaller set of values.
+## Double-spending attack
+
+- Let's say Alice passed her coin on to Bob by sending her signed statement, but didn't tell anyone else.
+- She could create another signed statement that pays the same coin to Chuck.
+- Both Bob and Chuck would have valid-looking claims to be the owner of this coin.
+
+Goofycoin does not solve the *double-spending attack* problem. For this reason, it is **not secure**.
+
+
+---
+
+# Scroogecoin
+
+A *designated and trusted entity* (Scrooge McDuck) publishes an **append-only ledger** containing the history of all transactions.
+- Append-only ensures that any data written to this ledger will remain forever in the ledger.
+- Therefore, this can be used to prevent double spending by requiring that all transactions are written in the ledger before they are accepted.
+
+.center.width-40[![](figures/lec6/picsou.png)]
 
 ---
 
 class: middle
 
-## Overview
+.center.width-90[![](figures/lec6/scrooge-chain.png)]
 
-.center.width-100[![](figures/lec7/mr-full.png)]
-
----
-
-class: middle
-
-## Step 1: Split input files
-
-.center.width-100[![](figures/lec7/mr-shards.png)]
-
-- Break up the input data into $M$ shards (typically $64 \text{MB}$).
+To implement the append-only ledger, Scrooge makes use of a **blockchain**, which he will digitally sign.
+- The blockchain is a series of data blocks, each with one or more transaction(s) in it.
+- Each block has the IDs of the transactions, the transaction's contents, and a hash pointer to the previous block.
+- Scrooge digitally signs the final hash pointer, which binds all the data in this entire structure, and he publishes the signature along with the blockchain.
 
 ---
 
 class: middle
 
-## Step 2: Fork processes
+.center.width-100[![](figures/lec6/btc-chain.png)]
 
-.center.width-80[![](figures/lec7/mr-forks.png)]
-
-- Start up many copies of the program on a cluster of machines.
-    - 1 master: scheduler and coordinator
-    - Lots of workers
-- Idle workers are assigned either:
-    - *map tasks*
-        - each works on a shard
-        - there are $M$ map tasks
-    - *reduce tasks*
-        - each works on intermediate files
-        - there are $R$ reduce tasks
+In Bitcoin, the blockchain contains two different hash structures.
+- The first is a *hash chain of blocks* that links the different blocks to one another.
+- The second is internal to each block and is a *Merkle tree of transactions* within the blocks.
 
 ---
 
 class: middle
 
-## Step 3: Map task
-
-.center.width-50[![](figures/lec7/mr-read.png)]
-
-- Read content of the input shard assigned to it.
-- Parse key/value pairs $(k,v)$ out of the input data.
-- Pass each pair to a **user-defined** `map` function.
-    - Produce (one or more) intermediate key/value pairs $(k',v')$.
-    - These are buffered in memory.
+A transaction only counts if it is in the block chain **signed by Scrooge**.
+- Anybody can verify a transaction was endorsed by Scrooge by checking Scrooge's signature on the block that records the transaction.
+- Scrooge makes sure that he does not endorse a transaction that attempts to double spend an already spent coin.
+- If Scrooge tries to add or remove a transaction, or to change an existing transaction, it will affect all following blocks published by Scrooge.
+    - As long as the latest hash pointer published by Scrooge is monitored, the change will be obvious and easy to catch.
 
 ---
 
 class: middle
 
-## Step 4: Create intermediate files
+## Coin creation
 
-.center.width-70[![](figures/lec7/mr-if.png)]
+- Same as for Goofycoin, but we extend the semantics to allow for multiple coins to be created per transaction.
+- Coins are referred to by a transaction ID and a coin's serial number in that transaction.
 
-- Intermediate key/value pairs $(k',v')$ produced by the user's `map` function are periodically written to *local* disk.
-    - These files are partitioned into $R$ regions by a partitioning function, one for each reduce task.
-    - e.g., `hash(key) mod R`
-- Notify master when complete.
-    - Pass locations of intermediate data to the master.
-    - Master forwards these locations to the reduce workers.
-
-<span class="Q">[Q]</span> What is the purpose of the partitioning function?
+<br>
+.center.width-70[![](figures/lec6/scrooge-create.png)]
 
 ---
 
 class: middle
 
-## Step 5: Sorting/Shuffling
+## Payments
 
-.center.width-60[![](figures/lec7/mr-reduce1.png)]
+A transaction consumes (and destroys) some coins and creates new coins of the same total value.
 
-- Reduce worker get notified by master about the location of the intermediate files
-associated to their partition.
-- RPC to read the data from the local disks for the map workers.
-- When the reduce worker reads intermediate data for its partition:
-    - it sorts the data by intermediate keys $k'$.
-    - all occurrences $v_i'$ associated to a same key are grouped together.
-
----
-
-class: middle
-
-## Step 6: Reduce tasks
-
-.center.width-60[![](figures/lec7/mr-reduce2.png)]
-
-- The sorting phase grouped data sharing a unique intermediate key.
-- The **user-defined** `reduce` function is given the key and the set of intermediate values for that key.
-    - $(k', (v_1', v_2', v_3', ...))$
-- The output of the `reduce` function is appended to an output file.
+.grid[
+.kol-1-2[
+A transaction is *valid* if:
+- The consumed coins are valid.
+- The consumed coins have not already been consumed.
+- The total value out in the transaction is to equal to the total value in.
+- The transaction is validly signed by all the owners of the consumed coins in the transaction.
+]
+.kol-1-2[
+.center.width-100[![](figures/lec6/scrooge-pay.png)]
+]
+]
 
 ---
 
 class: middle
 
-## Step 7: Return to user
+## Immutable coins
 
-- When all Map and Reduce tasks have completed, the master wakes up the user program.
-- The MapReduce call in the user program returns and the program can resume execution.
-    - The output of the operation is available in $R$ output files.
+Coins cannot be transferred, subdivided or combined.
 
----
-
-class: middle
-
-## Example: Counting words
-
-.center.width-100[![](figures/lec7/mr-example.png)]
-
-.center[See also the [Hadoop tutorial](https://hadoop.apache.org/docs/stable/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html).]
+But we can obtain the same effect by using transactions. E.g., to subdivide:
+- create a new transaction;
+- consume your coins;
+- pay out two new coins (of half the value of the original coin) to yourself.
 
 ---
 
 class: middle
 
-## Other examples
+.grid[
+.kol-2-3[
+Scoorge cannot create fake transactions, because he cannot forge other people's signatures.
 
-- *Distributed grep*
-    - Search for words in lots of documents.
-    - Map: emit a line if it matches a given pattern. Produce $(file,line)$ pairs.
-    - Reduce: copy the intermediate data to the output.
-- *Count URL access frequency*
-    - Find the frequency of each URL in web logs.
-    - Map: process logs of web page access. Produce $(url,1)$ pairs.
-    - Reduce: add all values for the same URL.
-        - Is this efficient?
-- *Reverse web-link graph*
-    - Find where page links come from.
-    - Map: output $(target,source)$ pairs for each link $target$ in a web page $source$.
-    - Reduce: concatenate the list of all source URLs associated with a target.
+However,
+- he could stop endorsing transactions from some users, denying them service and making their coins unspendable;
+- he could refuse to publish transactions unless they transfer some mandated transaction fee to him.
+- he can create as many coins for himself as he wants.
 
----
-
-# Wide applicability
-
-.center.width-90[![](figures/lec7/mr-programs.png)]
-.center[Number of MapReduce programs in Google code source tree.]
+Can the system operate **without any central, trusted party**?
+]
+.kol-1-3[<br>.center.width-80[![](figures/lec6/picsou2.gif)]
+.caption[Do not worry.<br> I am honest.]]
+]
 
 ---
 
-# Fault tolerance
+class: middle
 
-- Master *pings* each worker periodically.
-    - If no response is received within a certain delay, the worker is marked as **failed**.
-    - Map or Reduce tasks given to this worker are reset back to the initial state and rescheduled for other workers.
-    - Task completion is committed to master to keep track of history.
+# Consensus in the blockchain
 
-<span class="Q">[Q]</span> What abstraction does this use?
+---
 
-<span class="Q">[Q]</span> What if the master node fails? How would you fix that?
+# Decentralization
+
+We want a *decentralized* cryptocurrency system without any central (supposedly) trusted party.
+
+## Solution
+- Implement the currency protocol on top of a **peer-to-peer** network of nodes.
+- Each node maintains its own copy of the ledger.
+
+<br>
+.center.width-70[![](figures/lec6/p2p.png)]
+
+---
+
+class: middle
+
+.center.width-100[![](figures/lec6/p2p-broadcast.png)]
+
+When Alice wants to pay Bob, she *broadcasts* the transaction to all nodes in the network. Each node updates its ledger accordingly.
+
+Note that Bob's computer is not (necessarily) in the picture.
+
+---
+
+class: middle
+
+- Who maintains the ledger?
+- Who has authority over which transactions are valid?
+- Who creates new coins?
+- Who determines how the rules of the system change?
+- How do coins acquire exchange values?
+
+---
+
+# Consensus
+
+For this peer-to-peer system to work:
+- All nodes must have the exact same copy of the ledger.
+- Therefore, they must agree on the transactions that are added in the ledger, and in which order.
+
+$\Rightarrow$ They must reach **consensus**.
+
+---
+
+class: middle
+
+## How consensus could work
+
+At any given time:
+- All nodes have a blockchain consisting of a sequence of blocks, each containing a list of transactions they have reached consensus on.
+- Each node has a set of outstanding transactions it has heard about.
+
+At regular intervals, every node in the system proposes its own outstanding transaction pool to be included in the next block, using some consensus protocol.
+
+<br>
+.center.width-80[![](figures/lec6/consensus.png)]
+
+---
+
+class: middle
+
+## Consensus is hard
+
+- Nodes may crash
+- Nodes may be malicious
+- Network is highly imperfect
+    - Not all pairs of nodes connected
+    - Faults in the network
+    - Latency (no notion of global time)
+
+---
+
+class: middle
+
+Why not simply use a **Byzantine fault-tolerant** variant of *Paxos*?
+- It would never produce inconsistent results.
+- However
+    - there are certain (rare) conditions in which the protocol may fail to make any progress,
+    - no solution exists if less than $\tfrac{2}{3}$ of the nodes are honest.
+
+---
+
+class: middle
+
+## Additional constraints
+- *Pseudonymity*: we do not want nodes to have an identity.
+- *Sybil attacks*: we do not want an adversary to be able to spawn many nodes (e.g., a majority) and take control of the system.
 
 ???
 
-The master single-point of failure is fixed in Hadoop 2.0 ("high availability").
+Draw diagram of a Sybil attack.
 
 ---
 
-# Redundant execution
+# Implicit consensus
 
-- Slow workers significantly **lengthen completion time**
-    - Because of other jobs consuming resources on machine
-    - Bad disks with soft errors transfer data very slowly
-    - Weird things: processor caches disabled (!!)
-- Solution: Near end of phase, spawn backup copies of tasks
-    - Whichever one finishes first "wins"
-- Effect: Dramatically shortens job completion time
+Assume the ability to select a random node in manner that is not vulnerable to Sybil attacks, such that at least 50% of the time an honest node is picked.
 
----
+## Consensus algorithm
 
-# Locality
+1. New transactions are *broadcast* to all nodes.
+2. Each node collects new transactions into a block.
+3. In each round, a **random node** gets to broadcast its block.
+4. Other nodes accept the block only if all transactions in it are valid (unspent, valid signatures).
+5. Nodes express their acceptance of the block by including its hash in the next block they create.
 
-- Input and output files are stored on a distributed file system.
-    - e.g., GFS or HDFS.
-- Master tries to schedule Map workers near the data they are assigned to.
-    - e.g., on the same machine or in the same rack.
-- This results in thousands of machines reading input at local disk speed.
-    - Without this, rack switches limit read rate.
-
----
-
-.center.width-100[![](figures/lec7/mr-paper.png)]
-.caption[Google, 2004.]
-
----
-
-# Hadoop Ecosystem
-
-<br>
-
-.center.width-100[![](figures/lec7/hadoop-eco.png)]
-
----
-
-class: middle
-
-- *Hadoop HDFS*: A distributed file system for reliably storing huge amounts of unstructured, semi-structured and structured data in the form of files.
-- **Hadoop MapReduce**: A distributed algorithm framework for the parallel processing of large datasets on *HDFS* filesystem. It runs on Hadoop cluster but also supports other database formats like *Cassandra* and *HBase*.
-- *Cassandra*: A key-value pair NoSQL database, with column family data representation and asynchronous masterless replication.
-    - Cassandra is built upon an architecture similar to a DHT.
-- *HBase*: A key-value pair NoSQL database, with column family data representation, with master-slave replication. It uses HDFS as underlying storage.
-- *Zookeeper*:  A distributed coordination service for distributed applications.
-    - It is based on a **Paxos algorithm** variant called Zab.
-
----
-
-class: middle
-
-- *Pig*: Pig is a scripting interface over MapReduce for developers who prefer scripting interface over native Java MapReduce programming.
-- *Hive*:  Hive is a SQL interface over MapReduce for developers and analysts who prefer SQL interface over native Java MapReduce programming.
-- *Mahout*: A library of machine learning algorithms, implemented on top of MapReduce, for finding meaningful patterns in HDFS datasets.
-- *Yarn*: A system to schedule applications and services on an HDFS cluster and manage the cluster resources like memory and CPU.
-- *Flume*: A tool to collect, aggregate, reliably move and ingest large amounts of data into HDFS.
-- ... and many others!
-
----
-
-class: middle
-
-# Spark
-
----
-
-# MapReduce programmability
-
-- Most applications require multiple MR steps.
-    - Google indexing pipeline: 21 steps
-    - Analytics queries (e.g., count clicks and top-K): 2-5 steps
-    - Iterative algorithms (e.g., PageRank): 10s of steps
-- Multi-step jobs create **spaghetti** code
-    - 21 MR steps $\rightarrow$ 21 mapper + 21 reducer classes
-    - Lots of boilerplate code per step
-
-.center.width-70[![](figures/lec7/mr-chaining.png)]
-.caption[Chaining MapReduce jobs.]
-
----
-
-# Problems with MapReduce
-
-- Over time, MapReduce use cases showed two major limitations:
-    - not all algorithms are suited for MapReduce.
-        - e.g., a **linear dataflow** is forced.
-    - it is difficult to use for exploration and *interactive programming*.
-        - e.g., inside a notebook.
-    - there are significant performance bottlenecks in iterative algorithms that need to *reuse* intermediate results.
-        - e.g., saving intermediate results to stable storage (HDFS) is **very costly**.
-- That is, MapReduce does not compose so well for large applications.
-- For this reason, dozens of high level frameworks and specialized systems were developed.
-    - e.g., Pregel, Dremel, FI, Drill, GraphLab, Storm, Impala, etc.
+.exercice[Which basic abstraction is random selection an implementation of?]
 
 ???
 
-Draw a diagram illustrating the issue with intermediate writes.
-
----
-
-# Spark
-
-.center.width-40[![](figures/lec7/spark-logo.png)]
-
-- Like Hadoop MapReduce, **Spark** is a framework for performing distributed computations.
-- Unlike various earlier specialized systems, the goal of Spark is to *generalize* MapReduce.
-- Two small additions are enough to achieve that goal:
-    - **fast data sharing**
-    - general **direct acyclic graphs** (DAGs).
-- Designed for data reuse and interactive programming.
-
----
-
-# Programmability
-
-.center.width-100[![](figures/lec7/spark-short.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
-
-.center[See also [Spark examples](https://spark.apache.org/examples.html)]
-
----
-
-# Performance
-
-Time for sorting $100\text{TB}$ of data:
-
-<br>
-.center.width-100[![](figures/lec7/spark-sort.png)]
-
-.footnote[Credits: [sortbenchmark.org](http://sortbenchmark.org/)]
-
----
-
-# RDD
-
-- Programs in Spark are written in terms of a **Resilient Distributed Dataset** (RDD) abstraction and operations on them.
-- An RDD is a **fault-tolerant** *read-only*, partitioned collection of records.
-    - Resilient: built for fault-tolerance (it can be recreated).
-    - Distributed: content is divided into atomic *partitions*, usually stored *in memory* and across multiple nodes.
-    - Dataset: collection of partitioned data with primitive values or values of values.
-- RDDs can only be created through deterministic operations on either:
-    - data in stable storage, or
-    - other RDDs.
+Random selection is a leader detector.
 
 ---
 
 class: middle
 
-.center.width-100[![](figures/lec7/rdd-1.png)]
+.center.width-80[![](figures/lec6/double-spend-transaction.png)]
 
-.footnote[Credits: [Tony Duarte](https://www.slideshare.net/sparkInstructor/apache-spark-rdd-101)]
-
----
-
-class: middle
-
-## Operations on RDDs
-
-- *Transformations*: $f(\text{RDD}) \rightarrow \text{RDD'}$
-    - Coarse-grained operations only (à la pandas/numpy).
-        - It is not possible to write to a single specific location in an RDD.
-    - Lazy evaluation (not computed immediately).
-    - e.g., `map` or `filter`.
-- *Actions*: $f(\text{RDD}) \rightarrow v$
-    - Triggers computation.
-    - e.g., `count`.
-- The interface also offers explicit *persistence* mechanisms to indicate that an RDD will be reused in future operations.
-    - This allows for significant internal optimizations.
-
----
-
-# Workflow
-
-.center.width-100[![](figures/lec7/spark-operations.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
+Alice adds an item to her shopping cart on Bob's website. The server requests payment.
+- Alice creates a transaction from her address to Bob's and broadcast it to the network.
+- An honest node creates the next block and includes this transaction in that block.
+- On seeing the transaction included in the blockchain, Bob concludes that Alice has paid him and send the purchased item to Alice.
 
 ---
 
 class: middle
 
-## Example: Log mining
+.center.width-80[![](figures/lec6/double-spend-attack.png)]
 
-Goal: Load error messages in memory, then interactively search for various patterns.
+## Double-spend attack
 
-.center.width-100[![](figures/lec7/spark-ex1.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
-
----
-
-class: middle
-count: false
-
-## Example: Log mining
-
-Goal: Load error messages in memory, then interactively search for various patterns.
-
-.center.width-100[![](figures/lec7/spark-ex2.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
-
----
-
-class: middle
-count: false
-
-## Example: Log mining
-
-Goal: Load error messages in memory, then interactively search for various patterns.
-
-.center.width-100[![](figures/lec7/spark-ex3.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
-
----
-
-class: middle
-count: false
-
-## Example: Log mining
-
-Goal: Load error messages in memory, then interactively search for various patterns.
-
-.center.width-100[![](figures/lec7/spark-ex4.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
-
----
-
-class: middle
-count: false
-
-## Example: Log mining
-
-Goal: Load error messages in memory, then interactively search for various patterns.
-
-.center.width-100[![](figures/lec7/spark-ex5.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
-
----
-
-class: middle
-count: false
-
-## Example: Log mining
-
-Goal: Load error messages in memory, then interactively search for various patterns.
-
-.center.width-100[![](figures/lec7/spark-ex6.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
-
----
-
-class: middle
-count: false
-
-## Example: Log mining
-
-Goal: Load error messages in memory, then interactively search for various patterns.
-
-.center.width-100[![](figures/lec7/spark-ex7.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
-
----
-
-class: middle
-count: false
-
-## Example: Log mining
-
-Goal: Load error messages in memory, then interactively search for various patterns.
-
-.center.width-100[![](figures/lec7/spark-ex8.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
-
----
-
-class: middle
-count: false
-
-## Example: Log mining
-
-Goal: Load error messages in memory, then interactively search for various patterns.
-
-.center.width-100[![](figures/lec7/spark-ex9.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
-
----
-
-# Rich, high-level API
-
-.grid.center[
-.kol-1-3[
-*`map`*<br>
-`filter`<br>
-`sort`<br>
-`groupBy`<br>
-`union`<br>
-`join`<br>
-...
-]
-.kol-1-3[
-*`reduce`*<br>
-`count`<br>
-`fold`<br>
-`reduceByKey`<br>
-`groupByKey`<br>
-`cogroup`<br>
-`zip`<br>
-...
-]
-.kol-1-3[
-`sample`<br>
-`take`<br>
-`first`<br>
-`partitionBy`<br>
-`mapWith`<br>
-`pipe`<br>
-`save`<br>
-...
-]
-]
-
----
-
-# Lineage
-
-- RDDs need not be materialized at all times.
-- Instead, an RDD internally stores *how it was derived* from other datasets (its **lineage**) to compute its partitions from data in stable storage.
-    - This derivation is expressed as coarse-grained transformations.
-- Therefore, a program cannot reference an RDD that it cannot reconstruct after a failure.
-
-.center.width-50[![](figures/lec7/lineage.png)]
+- Assume the next random node happens to be controlled by Alice.
+- Since Alice gets to propose the block, she could propose one that ignores the block that contains the payment to Bob.
+- Worse, she could make a transaction that transfers the same coin to an address she controls.
+- Since the two transactions spend the same coins, only of them will be included in the blockchain.
 
 ---
 
 class: middle
 
-`newRDD = myRDD.map(myfunc)`
+The double-spend attack success will depend on which block will ultimately end up on the long-term consensus chain.
 
-.center.width-90[![](figures/lec7/rdd-2.png)]
+## Policy upon forks
 
-.footnote[Credits: [Tony Duarte](https://www.slideshare.net/sparkInstructor/apache-spark-rdd-101)]
+- Honest nodes follow the policy that **extends the longest valid branch**.
+- In step 4 of implicit consensus, if an honest node discovers that the new block belongs to a longer branch than what it thought was part of the longest branch, then the node locally *reorganizes* its chain.
 
----
+???
 
-# Representing RDDs
-
-- RDDs are built around a **graph-based** representation (a DAG).
-- RDDs share a common interface:
-    - Lineage information:
-        - Set of *partitions*.
-        - List of *dependencies* on parents RDDs.
-        - Function to *compute* a partition (as an iterator) given its parents.
-    - Optimized execution (optional):
-        - *Preferred locations* for each partition.
-        - Partitioner (hash, range)
-
----
-
-# Dependencies
-
-.center.width-60[![](figures/lec7/spark-deps.png)]
-
-- *Narrow dependencies*: each partition of the parent RDD is used by at most one partition of the child RDD.
-    - Allow for pipelined execution on one node.
-    - Recovery after failure is more efficient with a narrow dependency, as only the lost parents partitions need to be recomputed.
-- *Wide dependencies*: multiple child partitions may depend on a parent partition.
-    - A child partition requires data from all its parents to be recomputed.
----
-
-# Execution process
-
-.center.width-100[![](figures/lec7/spark-execution-process.png)]
-
-.footnote[Credits: Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.]
-
----
-
-# Job scheduler
-
-.center.width-50[![](figures/lec7/spark-stages.png)]
-
-- Whenever an *action* is called, the scheduler examines that RDD's lineage graph to build a **DAG of stages** to execute.
-- Each *stage* contains as many pipeline transformations with narrow dependencies as possible.
-- The boundaries of the stages are
-    - the shuffle operations required for wide dependencies, or
-    - already computed partitions that can short-circuit the computation of a parent RDD.
+Alice's double-spend attempt:
+- The node that chooses the next block may decide to build on either of two blocks.
+- This choice will largely determine whether the double-spend attack succeeds.
 
 ---
 
 class: middle
 
-- The scheduler launches *tasks* to a lower-level scheduler to compute missing partitions from each stage until it has computed the target RDD.
-    - One task per partition.
-- Tasks are assigned to machines based on *data locality*.
+.center.width-80[![](figures/lec6/double-spend-bob.png)]
+
+Bob the merchant's point of view:
+- Double-spend probability **decreases exponentially** with the number of confirmations.
+- Common heuristic: wait for 6 confirmations before validating the transaction.
 
 ---
 
-# Fault tolerance
+class: middle
 
-- If a task fails, it is rescheduled on another node, as long as its stage's parents are still available.
-- If some stages have become unavailable, all corresponding tasks are resubmit to compute the missing partitions in parallel.
+## Recap
 
-<br>
-.center.width-70[![](figures/lec7/spark-failure.png)]
+- Protection against invalid transactions is cryptographic, but enforced by consensus.
+- Protection against double-spending is purely by consensus.
+- We are never 100% certain that a transaction is part of the consensus branch. **The guarantee is probabilistic**.
+    - Even with 1% of the total hashing power, Alice would have a hard time cheating on Bob.
+    - The probability of mining six blocks in a row is $0.01^6 = 10^{-12}$.
 
 ---
 
-# Dataflow programming
+# Incentives
 
-- Spark builds upon the **dataflow programming** paradigm.
-- Dataflow programming models a program as a *directed graph* of the data flowing between operations.
-- An operation runs as soon as all of its inputs become valid.
-- Dataflow languages are inherently parallel and work well in large, decentralized systems.
-- Modern examples:
-    - Scala
-    - Spark
-    - *Tensorflow*
+- Assuming node honesty is problematic.
+- Instead, can we build **incentives** for nodes to behave honestly?
+
+<br><br><br><br>
+.center.width-100[![](figures/lec6/incentives.png)]
+
+---
+
+class: middle
+
+## Incentive 1: block reward
+
+- The creator of a block gets to
+    - include a special coin-creation transaction in the block
+    - choose the recipient address of this transaction.
+- The value is fixed: currently 12.5 coins, but halves every 210000 blocks (~ every 4 years).
+- The block creator gets to collect the reward only if the blocks end up on the long-term consensus branch.
+
+---
+
+class: middle
+
+.center.width-70[![](figures/lec6/supply.png)]
+
+Total supply of coins with time. The block reward is cut in half every 4 years, limiting the total supply to 21 millions.
+
+???
+
+Geometric series.
+Analogy with the arrow story.
+
+---
+
+class: middle
+
+## Incentive 2: transaction fees
+
+- The creator of a transaction can choose to make the output value less than input value.
+- The remainder is a transaction fee and goes to the block creator.
+- Purely voluntary.
+
+---
+
+# Proof of work
+
+How does one select a node at random without being vulnerable to Sybil attacks?
+- Approximate the selection of a random node by instead selecting nodes in proportion to a resource that (we hope) nobody can monopolize.
+    - in proportion to computer power: **proof of work** (PoW)
+    - in proportion to currency ownership: *proof of stake* (PoS)
+
+How does one select nodes in proportion to their computing power?
+- Allow nodes to compete with one another by using their computing power.
+- This results in nodes being picked in proportion to that capacity.
+
+---
+
+class: middle
+
+## PoW with hash puzzles
+
+.center.width-100[![](figures/lec6/puzzle.png)]
+
+To create a block, find a $\text{nonce}$ such that
+$$H(\text{nonce} || \text{previous hash} || \text{tx}\_1 || \text{tx}\_2 || ...) < T$$
+for some target $T \ll 2^{256} \approx 10^{77}$.
+- If the hash function $H$ is secure, the only way to succeed is to try enough nonces until getting lucky.
+- Node creators are called *miners*.
+
+---
+
+class: middle
+
+## Property 1: difficult to compute
+
+- As of 2018, the expected number of hashes to mine a block is $3 \times 10^{22}$.
+- Only some nodes bother to compete.
+
+---
+
+class: middle
+
+## Property 2: parameterizable cost
+
+- The target $T$ is adjusted periodically as a function of how much hashing power has been deployed in the system by the miners.
+- The goal is to maintain an average time of 10 minutes between blocks.
+
+---
+
+class: middle
+
+## Property 3: trivial to verify
+
+- The $\text{nonce}$ must be published as part of the block.
+- Hence, anyone can verify that
+$$H(\text{nonce} || \text{previous hash} || \text{tx}\_1 || \text{tx}\_2 || ...) < T$$
+
+---
+
+# 51% attack
+
+- The whole system relies on the assumption that a majority of miners, weighted by hash power, follow the protocol.
+- Therefore, the protocol is vulnerable to attackers that would detain 51% or more of the total hashing power.
+
+
+---
+
+class: middle
+
+# Bitcoin and friends
+
+---
+
+# Bitcoin
+
+- The cryptocurrency protocol presented so far corresponds to the general protocol used for **Bitcoin** (BTC).
+- Bitcoin was invented by an unknown person (or group of people) using the name of Satoshi Nakamoto.
+- It was released as an *open source software* in 2009.
+- Its main goal is to establish a decentralized digital currency that is not tied to a bank or government.
+- The estimated number of unique users is 3-6 million.
+
+<br><br>
+.center.width-20[![](figures/lec6/btc.png)]
+
+---
+
+class: middle
+
+## Trading
+
+- Bitcoin can be used to buy or sell goods.
+- Bitcoin can be bought and sold like any other currency.
+- Bitcoin ATMs even exist in some countries!
+
+.center.width-50[![](figures/lec6/atm.jpg)]
+
+---
+
+class: middle
+
+## Volatility
+
+.center.width-100[![](figures/lec6/volatility.png)]
+
+As any currency, BTC can be exchanged for other currencies (e.g. USD or EUR).
+- The current exchange rate (November 1, 2018) is 1 BTC = 6358 USD.
+- The price is highly volatile and subject to speculation.
+
+---
+
+class: middle
+
+## Mining as a business
+
+.center.width-100[![](figures/lec6/farm.jpg)]
+.italic.center[A mining farm.]
+
+---
+
+class: middle
+
+## Extreme competition
+
+.center.width-100[![](figures/lec6/hashrate.png)]
+.italic.center[Global hash rate over time.]
+
+---
+
+class: middle
+
+## Energy sinkhole
+
+.center.width-80[![](figures/lec6/news1.png)]
+.center.width-80[![](figures/lec6/news2.png)]
+
+---
+
+class: middle
+
+## Mining economics
+
+.center.width-90[![](figures/lec6/economics.png)]
+
+See also the [Bitcoin Mining Profit Calculator](https://jblevins.org/btcmpc/).
+
+---
+
+class: center, black-slide, middle
+
+<iframe width="640" height="400" src="https://www.youtube.com/embed/tt0idBrjpbk?cc_load_policy=1&hl=en&version=3" frameborder="0" allowfullscreen></iframe>
+
+---
+
+class: center, black-slide, middle
+
+<iframe width="640" height="400" src="https://www.youtube.com/embed/fgrD0Bse70A?cc_load_policy=1&hl=en&version=3" frameborder="0" allowfullscreen></iframe>
+
+---
+
+# Other cryptocurrencies
+
+BTC is only one of many cryptocurrencies. Popular cryptocurrencies include:
+- ETH
+- XRP
+- LTC
+
+.center.width-90[![](figures/lec6/top100.png)]
+
+---
+
+# Applications
+
+A blockchain is nothing else than a continuously growing list of records.
+- It is secure by design, with high Byzantine fault tolerance.
+- Blockchains can therefore be used to store any kind sensitive information that should not be altered.
+
+.center.width-80[![](figures/lec6/apps.jpg)]
 
 ---
 
 # Summary
 
-- High-level abstractions enable *cloud programming* over clusters.
-    - Without having to handle parallelization, data distribution, load balancing, fault tolerance, ...
-- **MapReduce** is a parallel programming model based on map and reduce operations.
-    - Best suited for embarrassingly parallel and linear tasks.
-    - Its simplicity is a disadvantage for complex iterative programs for interactive exploration.
-- **Spark** generalizes MapReduce by making use of:
-    - fast data sharing (data resides in memory)
-    - general direct acyclic graphs of operations.
+- The **blockchain** is a linked list with hash pointers.
+- It can be used for implementing *a ledger* that stores sensitive information that should not be tampered with.
+- Decentralization requires **consensus**.
+- In Bitcoin, consensus is achieved by *proof-of-work*, which provides high Byzantine fault tolerance.
 
 ---
 
@@ -775,6 +825,5 @@ The end.
 
 # References
 
-- Dean, Jeffrey, and Sanjay Ghemawat. "MapReduce: simplified data processing on large clusters." Communications of the ACM 51.1 (2008): 107-113.
-- Zaharia, Matei, et al. "Resilient distributed datasets: A fault-tolerant abstraction for in-memory cluster computing." Proceedings of the 9th USENIX conference on Networked Systems Design and Implementation. USENIX Association, 2012.
-- Xin, Reynold. "Stanford CS347 [Guest Lecture: Apache Spark](https://www.slideshare.net/rxin/stanford-cs347-guest-lecture-apache-spark)". 2015.
+- Nakamoto, Satoshi. "Bitcoin: A peer-to-peer electronic cash system." (2008).
+- Narayanan, Arvind, et al. Bitcoin and cryptocurrency technologies: a comprehensive introduction. Princeton University Press, 2016.

@@ -23,12 +23,6 @@ How to design a large-scale distributed system similar to a hash table?
 
 ---
 
-class: middle, center, black-slide
-
-.width-80[![](figures/lec9/iceberg.png)]
-
----
-
 # Hash tables
 
 A **hash table** is a data structure that implements an associative array abstract data type, i.e. a structure than can map keys to values.
