@@ -23,6 +23,7 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2019.
 | November 26 | Visit of NRB |
 | December 3 | Lecture 9: [Distributed computing](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture9.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec9.pdf)]<br>Exercise session 6 |
 | December 20 | Deadline for the project<br>Deadline for the reading assignment |
+| --- | All lectures [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec-all.pdf)] |
 
 
 ## Projects

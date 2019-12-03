@@ -12,9 +12,9 @@ Prof. Gilles Louppe<br>
 
 R: add pointers for tutorials on Spark
 
-R: talk about amazon s3/lambda?
-
 R: universal scalability law https://twitter.com/tacertain/status/1166039932386676737?s=03 (formalize scalability)
+
+https://wso2.com/blog/research/scalability-modeling-using-universal-scalability-law
 
 ---
 
@@ -25,18 +25,6 @@ R: universal scalability law https://twitter.com/tacertain/status/11660399323866
 How do we program this thing?
 - MapReduce
 - Spark
-
----
-
-class: middle, center, black-slide
-
-.width-80[![](figures/lec7/iceberg.png)]
-
-???
-
-Cloud computing: high-level computing abstractions that make it possible to not worry about the messy stuff below, while offering efficient services at the application level.
-
-Comment on the fact that data systems are likely to be obsolete within before they graduated.
 
 ---
 
@@ -310,14 +298,15 @@ class: middle
 
 # Fault tolerance
 
-- Master *pings* each worker periodically.
-    - If no response is received within a certain delay, the worker is marked as **failed**.
-    - Map or Reduce tasks given to this worker are reset back to the initial state and rescheduled for other workers.
-    - Task completion is committed to master to keep track of history.
+Master *pings* each worker periodically.
+- If no response is received within a certain delay, the worker is marked as **failed**.
+- Map or Reduce tasks given to this worker are reset back to the initial state and rescheduled for other workers.
+- Task completion is committed to master to keep track of history.
 
-<span class="Q">[Q]</span> What abstraction does this use?
-
-<span class="Q">[Q]</span> What if the master node fails? How would you fix that?
+.exercice[
+- What abstraction does this use?
+- What if the master node fails? How would you fix that?
+]
 
 ???
 
@@ -343,6 +332,7 @@ The master single-point of failure is fixed in Hadoop 2.0 ("high availability").
     - e.g., GFS or HDFS.
 - Master tries to schedule Map workers near the data they are assigned to.
     - e.g., on the same machine or in the same rack.
+    - often, MapReduce is run concurrently with GFS on the same nodes.
 - This results in thousands of machines reading input at local disk speed.
     - Without this, rack switches limit read rate.
 
@@ -434,6 +424,10 @@ Draw a diagram illustrating the issue with intermediate writes.
     - **fast data sharing**
     - general **direct acyclic graphs** (DAGs).
 - Designed for data reuse and interactive programming.
+
+???
+
+Mention tutorials (PySpark, closeness to Pandas)
 
 ---
 
@@ -691,9 +685,12 @@ class: middle
 
 ---
 
-# Dependencies
+class: middle
 
-.center.width-60[![](figures/lec7/spark-deps.png)]
+.center.width-50[![](figures/lec7/spark-deps.png)]
+
+## Dependencies
+
 
 - *Narrow dependencies*: each partition of the parent RDD is used by at most one partition of the child RDD.
     - Allow for pipelined execution on one node.
@@ -710,9 +707,13 @@ class: middle
 
 ---
 
-# Job scheduler
+class: middle
 
 .center.width-50[![](figures/lec7/spark-stages.png)]
+
+## Job scheduler
+
+
 
 - Whenever an *action* is called, the scheduler examines that RDD's lineage graph to build a **DAG of stages** to execute.
 - Each *stage* contains as many pipeline transformations with narrow dependencies as possible.
