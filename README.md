@@ -8,7 +8,7 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2019.
 - Classroom: R7 / B28 (Montefiore Institute)
 
 ## Agenda
-
+a
 | Date | Topic |
 | --- | --- |
 | September 17 | [Outline](https://glouppe.github.io/info8002-large-scale-data-systems/?p=outline.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/outline.pdf)]<br>Lecture 1: [Introduction](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture1.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec1.pdf)] |
@@ -16,12 +16,12 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2019.
 | October 1 | Lecture 3: [Reliable broadcast](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture3.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec3.pdf)]<br>Exercise session 1 [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/ex1.pdf)] |
 | October 8 | Lecture 4: [Shared memory](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture4.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec4.pdf)] |
 | October 15 | Lecture 5: [Consensus](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture5.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec5.pdf)]<br>Exercise session 2 [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/ex2.pdf)]<br>Announcement of the project and reading assignment |
-| October 22 | Lecture 6: [Distributed file systems](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture6.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec6.pdf)]<br>Exercise session 3  |
-| November 5 | Lecture 7: [Distributed hash tables](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture7.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec7.pdf)]<br>Exercise session 4 |
+| October 22 | Lecture 6: [Distributed file systems](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture6.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec6.pdf)]|
+| November 5 | Lecture 7: [Distributed hash tables](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture7.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec7.pdf)]<br>Exercise session 3 [[PDF]](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/ex3.pdf)|
 | November 12 | Lecture 8: [Blockchain](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture8.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec8.pdf)]] |
-| November 19 | No lecture<br>Exercise session 5 (at 1:45 PM) |
+| November 19 | No lecture<br>Exercise session 5 (at 1:45 PM) (Practice exam) |
 | November 26 | Visit of NRB |
-| December 3 | Lecture 9: [Distributed computing](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture9.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec9.pdf)]<br>Exercise session 6 [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/ex3.pdf)] |
+| December 3 | Lecture 9: [Distributed computing](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture9.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec9.pdf)]<br>Exercise session 6 [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/ex4.pdf)] |
 | December 20 | Deadline for the project<br>Deadline for the reading assignment |
 | --- | All lectures [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec-all.pdf)] |
 
