@@ -17,15 +17,14 @@ body {
 
 .remark-slide-content {
     font-size: 1.4em;
-    border-top: solid 5px #0288d1; /*#20707e;*/
+    border-top: solid 5px #0288d1;
 }
 
 .remark-slide-content h1 {
     font-weight: bold;
     font-size: 2.25em;
     margin: 0 0 .5em 0;
-    color: #455a64;
-    /*color: #17525d;*/
+    color: #17525d;
 }
 
 .remark-slide-content h2 {
@@ -49,7 +48,7 @@ body {
 /* Styles ------------------------------------------------------------------- */
 
 .footnote:before {
-    content: "\2015\2015\2015";
+    content: "\2015";
     display: block;
 }
 
@@ -89,17 +88,32 @@ strong {
     font-weight: normal;
 }
 
+.highlight{ 
+    background-color: #FFFF00; 
+}
 
 .smaller {
     font-size: 1.2em;
+}
+
+.smaller-x {
+    font-size: 0.8em;
+}
+
+.smaller-xx {
+    font-size: 0.5em;
 }
 
 .katex {
     color: #1a7082;
 }
 
-.remark-code {
-    font-size: 0.8em;
+.black-slide .katex, .black-slide h1, .black-slide a {
+    color: white;
+}
+
+.remark-code, .remark-inline-code {
+    font-size: 0.9em;
 }
 
 ul > li, ol > li {
@@ -168,6 +182,14 @@ td {
     height: auto;
 }
 
+.solid {
+  border-style: solid;
+}
+
+.dashed {
+  border-style: dashed;
+}
+
 .footnote {
   position: absolute;
   bottom: 2em;
@@ -184,7 +206,7 @@ td {
     color: lightgray;
 }
 
-.exercice {
+.exercise {
     background-color: rgba(40,167,69,0.25);
     border: 2px solid rgb(40,167,69);
     border-radius: 5px;
@@ -193,10 +215,20 @@ td {
     padding: 1em;
 }
 
-.exercice:before {
+.exercise:before {
     content: "Exercise";
     font-weight: bold;
     display: block;
+}
+
+.alert {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 2px solid #f5c6cb;
+    border-radius: 5px;
+    width: 95%;
+    display: block;
+    padding: 1em;
 }
 
 
@@ -292,6 +324,86 @@ td {
     width: 100%;
 }
 
+.width-105 * {
+    width: 105%;
+}
+
+.width-110 * {
+    width: 110%;
+}
+
+.width-115 * {
+    width: 115%;
+}
+
+.width-120 * {
+    width: 120%;
+}
+
+.width-125 * {
+    width: 125%;
+}
+
+.width-130 * {
+    width: 130%;
+}
+
+.width-135 * {
+    width: 135%;
+}
+
+.width-140 * {
+    width: 140%;
+}
+
+.width-145 * {
+    width: 145%;
+}
+
+.width-150 * {
+    width: 150%;
+}
+
+.width-155 * {
+    width: 155%;
+}
+
+.width-160 * {
+    width: 160%;
+}
+
+.width-165 * {
+    width: 165%;
+}
+
+.width-170 * {
+    width: 170%;
+}
+
+.width-175 * {
+    width: 175%;
+}
+
+.width-180 * {
+    width: 180%;
+}
+
+.width-185 * {
+    width: 185%;
+}
+
+.width-190 * {
+    width: 190%;
+}
+
+.width-195 * {
+    width: 195%;
+}
+
+.width-200 * {
+    width: 200%;
+}
+
 
 /* Specials ----------------------------------------------------------------- */
 
@@ -307,12 +419,12 @@ td {
     display: inline-block;
 }
 
-.title-slide {
+.title-slide, .section {
     vertical-align: middle;
 }
 
 .end-slide {
-    background-color: #0288d1; /*#20707e;*/
+    background-color: #0288d1;
     color: white;
     vertical-align: middle;
 }
@@ -321,16 +433,6 @@ td {
     background-color: black;
     color: white;
     border-top: solid 0px;
-}
-
-.black-slide em {
-    color: white;
-    font-style: italic;
-}
-
-.black-slide strong{
-    color: white;
-    font-weight: bold;
 }
 
 .red-slide {

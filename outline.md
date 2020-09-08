@@ -2,11 +2,15 @@ class: middle, center, title-slide
 
 # Large-scale Data Systems
 
-Fall 2019
+Fall 2020
 
 <br><br>
 Prof. Gilles Louppe<br>
 [g.louppe@uliege.be](g.louppe@uliege.be)
+
+???
+
+Paper: https://www.usenix.org/legacy/event/osdi10/tech/full_papers/Beaver.pdf  and  https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-muralidhar.pdf
 
 ---
 
@@ -33,10 +37,10 @@ Feel free to contact any of us for help!
 - Lecture 3: Reliable broadcast
 - Lecture 4: Shared memory
 - Lecture 5: Consensus
-- Lecture 6: Blockchain
-- Lecture 7: Cloud computing
-- Lecture 8: Distributed hash tables
-- Lecture 9: Distributed file systems
+- Lecture 6: Distributed file systems
+- Lecture 7: Distributed hash tables
+- Lecture 8: Blockchain
+- Lecture 9: Cloud computing
 
 ---
 
@@ -86,7 +90,7 @@ Your job is to assemble them into well-engineered solutions.
 
 Slides are available at [github.com/glouppe/info8002-large-scale-data-systems](https://github.com/glouppe/info8002-large-scale-data-systems).
 - In HTML and in PDFs.
-- Posted online the day before the lesson.
+- Published/Updated the day before the lesson.
 - Slight differences/improvements/fixes from previous years.
 
 Slides are partially adapted from [CSE 486/585 Distributed systems](https://www.cse.buffalo.edu/~stevko/courses/cse486/spring16/schedule.html) (University at Buffalo) and
@@ -104,8 +108,7 @@ The core content of this course (lectures 2 to 5) is based on the following text
 
 > .italic[Christian Cachin, Rachid Guerraoui, Luis Rodrigues, "Introduction to Reliable and Secure Distributed Programming", Springer.]
 
-This textbook is **recommended**, although not required.
-
+This textbook is *optional*.
 ---
 
 # Projects
@@ -113,7 +116,7 @@ This textbook is **recommended**, although not required.
 ## Reading assignment
 
 Read, summarize and criticize a major scientific paper in Large-Scale Data Systems.
-(Paper to be announced later.)
+(See GitHub for papers and instructions.)
 
 .center.width-70[![](figures/outline/mr-paper.png)]
 
@@ -123,8 +126,7 @@ class: middle
 
 ## Programming project
 
-Implement a secure and distributed service using **Blockchain** technology.
-(To be confirmed.)
+Implement a distributed application. (Project to be announced later.)
 
 .center.width-70[![](figures/outline/blockchain.png)]
 
