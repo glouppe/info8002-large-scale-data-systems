@@ -10,7 +10,7 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2020.
 ## Agenda
 | Date | Topic |
 | --- | --- |
-| September 15 | [Outline](https://glouppe.github.io/info8002-large-scale-data-systems/?p=outline.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/outline.pdf)]<br>Lecture 1: [Introduction](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture1.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec1.pdf)] |
+| September 15 | [Course syllabus](https://glouppe.github.io/info8002-large-scale-data-systems/?p=course-syllabus.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/course-syllabus.pdf)]<br>Lecture 1: [Introduction](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture1.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec1.pdf)] |
 | September 22 | Lecture 2: [Basic distributed abstractions](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture2.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec2.pdf)]  |
 | September 29 | Lecture 3: [Reliable broadcast](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture3.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec3.pdf)]<br>Exercise session 1 |
 | October 6 | Lecture 4: [Shared memory](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture4.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec4.pdf)] |

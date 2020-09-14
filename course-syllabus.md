@@ -8,13 +8,9 @@ Fall 2020
 Prof. Gilles Louppe<br>
 [g.louppe@uliege.be](g.louppe@uliege.be)
 
-???
-
-Paper: https://www.usenix.org/legacy/event/osdi10/tech/full_papers/Beaver.pdf  and  https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-muralidhar.pdf
-
 ---
 
-# Logistics
+# Us
 
 This course is given by:
 - Theory: Gilles Louppe ([g.louppe@uliege.be](mailto:g.louppe@uliege.be))
@@ -30,21 +26,7 @@ Feel free to contact any of us for help!
 
 ---
 
-# Outline
-
-- Lecture 1: Introduction
-- Lecture 2: Basic distributed abstractions
-- Lecture 3: Reliable broadcast
-- Lecture 4: Shared memory
-- Lecture 5: Consensus
-- Lecture 6: Distributed file systems
-- Lecture 7: Distributed hash tables
-- Lecture 8: Blockchain
-- Lecture 9: Cloud computing
-
----
-
-# Philosophy
+# Goals and philosophy
 
 ## Solid ground
 
@@ -62,7 +44,7 @@ which distributed *databases* and *computing* systems are operating.
 
 - Assess the benefits and disadvantages of data systems.
 - No hype!
-
+- 
 ---
 
 class: middle, black-slide
@@ -76,6 +58,21 @@ Your job is to assemble them into well-engineered solutions.
 ]
 
 .footnote[Image credits: Kelly Sikkema.]
+
+
+---
+
+# Outline
+
+- Lecture 1: Introduction
+- Lecture 2: Basic distributed abstractions
+- Lecture 3: Reliable broadcast
+- Lecture 4: Shared memory
+- Lecture 5: Consensus
+- Lecture 6: Distributed file systems
+- Lecture 7: Distributed hash tables
+- Lecture 8: Blockchain
+- Lecture 9: Cloud computing
 
 ---
 
