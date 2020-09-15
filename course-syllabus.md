@@ -44,7 +44,7 @@ which distributed *databases* and *computing* systems are operating.
 
 - Assess the benefits and disadvantages of data systems.
 - No hype!
-- 
+
 ---
 
 class: middle, black-slide

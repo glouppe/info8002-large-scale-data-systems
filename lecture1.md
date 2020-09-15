@@ -27,7 +27,7 @@ class: middle
 .circle.center.width-40[![](figures/lec1/schmidt.jpeg)]
 
 
-.italic["Every two days now we create as much information as we did from the dawn of civilization up until  2003, according to Schmidt. That’s something like five exabytes of data, he says.
+.italic["Every two days now we create as much information as we did from the dawn of civilization up until  2003", according to Schmidt. That’s something like five exabytes of data, he says.
 
 Let me repeat that: .bold[we create as much information in two days now as we did from the dawn of man] through 2003.]
 
