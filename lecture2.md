@@ -36,6 +36,10 @@ class: middle, center, black-slide
 .circle.center[![David Wheeler](figures/lec2/wheeler.jpg)]
 .caption["All problems in computer science can be solved<br> by another level of indirection" - David Wheeler.]
 
+???
+
+The quote summarizes the whole approach we will use towards distributed systems.
+
 ---
 
 class: middle
@@ -108,20 +112,6 @@ Effectively, a distributed algorithm is described by a set of event handlers.
 
 class: middle
 
-## Layered modular architecture
-
-.center[![](figures/lec2/layering.png)]
-
-- Components can be composed locally to build software stacks.
-    - The top of the stack is the *application layer*.
-    - The bottom of the stack  the *transport* or *network* layer.
-- Distributed programming abstraction layers are typically in the middle.
-- We assume that every process executes the code triggered by events in a mutually exclusive way, without concurrently processing $\geq$ 2 events.
-
----
-
-class: middle
-
 ## Execution
 
 .center[![](figures/lec2/step.png)]
@@ -133,6 +123,28 @@ class: middle
     - *sending* a message to some process.
 - Local messages between components are treated as local computation.
 - We assume *deterministic* process steps (with respect to the message received and the local state prior to executing a step).
+
+---
+
+class: middle
+
+## Layered modular architecture
+
+.center[![](figures/lec2/layering.png)]
+
+- Components can be composed locally to build software stacks.
+    - The top of the stack is the *application layer*.
+    - The bottom of the stack  the *transport* or *network* layer.
+- Distributed programming abstraction layers are typically in the middle.
+- We assume that every process executes the code triggered by events in a mutually exclusive way, without concurrently processing $\geq$ 2 events.
+
+???
+
+The figure considers the example of a broadcast abstraction.
+1. the broadcast is initiated by a Send event from the upper layer
+2. the component will implement broadcast by invoking one or more services below
+3. messages sent by the layers below are received by the component
+4. finally, messages are delivered to the application layer
 
 ---
 
@@ -244,6 +256,10 @@ class: middle
 
 <br>
 .caption[Together, these assumptions define sets of solvable problems.]
+
+???
+
+<>W = eventually weak failure detector
 
 ---
 
@@ -476,7 +492,7 @@ class: middle
 
 The **happened-before** relation $e_1 \to e_2$ denotes that $e_1$ may have caused $e_2$.
 It is true in the following cases:
-- *FIFO order*: $e_1$ and $e_2$ occurred at the same process $p$ and $e_1$ occurred $e_2$;
+- *FIFO order*: $e_1$ and $e_2$ occurred at the same process $p$ and $e_1$ occurred before $e_2$;
 - *Network order*: $e_1$ corresponds to the transmission of $m$ at a process $p$ and $e_2$ corresponds to its reception at a process $q$;
 - *Transitivity*: if $e_1 \to e'$ and $e' \to e_2$, then $e_1 \to e_2$.
 
@@ -496,9 +512,11 @@ class: middle
 - Two executions $E$ and $F$ are *similar w.r.t. to $p$* if $E|p = F|p$.
 - Two executions $E$ and $F$ are *similar* if $E|p = F|p$ for all processes $p$.
 
+.alert[
 ## Computation theorem
 
 If two executions $E$ and $F$ have the same collection of events and their **causal order** is preserved, then $E$ and $F$ are similar executions.
+]
 
 ???
 
