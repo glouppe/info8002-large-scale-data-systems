@@ -8,7 +8,7 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2020.
 - Classroom: R7 / B28 (Montefiore Institute)
 
 ## Agenda
-a| Date | Topic |
+| Date | Topic |
 | --- | --- |
 | September 15 | [Course syllabus](https://glouppe.github.io/info8002-large-scale-data-systems/?p=course-syllabus.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/course-syllabus.pdf)]<br>Lecture 1: [Introduction](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture1.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec1.pdf)] |
 | September 22 | Lecture 2: [Basic distributed abstractions](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture2.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec2.pdf)]  |
