@@ -8,10 +8,6 @@ Lecture 4: Shared memory
 Prof. Gilles Louppe<br>
 [g.louppe@uliege.be](g.louppe@uliege.be)
 
-???
-
-R: Make sure all explanations are convincing...
-
 ---
 
 # Today
@@ -238,28 +234,51 @@ class: middle
 
 ---
 
-# Quorum principle
+# Fail-silent algorithm
 
-Can we implement a regular register in **fail-silent**? (without a failure detector)
+<br><br><br><br>
 
---
+.center[
+.width-80[![](figures/lec4/imperfect-fd.png)]
 
-count: false
-
-- Assume a majority of correct nodes.
-- Divide the system into two overlapping *majority quorums*.
-    - i.e., each quorum  counts at least $\lfloor \frac{N}{2} \rfloor + 1$ nodes.
-- Always write to and read from a majority of nodes.
-- At least one node must know the most recent value.
-
-<br>
-.center.width-60[![](figures/lec4/quorum.png)]
+What if the failure detector is not perfect? 
+]
 
 ???
 
-A quorum is the minimum number of votes that a distributed transaction has to obtain in order to be allowed to perform an operation in a distributed system.
+Then Read-One Write-all may violate validity.
 
-R: work on this slide. This was not convincing at all.
+---
+
+class: middle
+
+Can we implement a regular register in **fail-silent**? (without a failure detector)
+
+- When writing, timestamp the value to be written.
+- Always write to a strict majority of nodes.
+- Always read from a strict majority of nodes, and pick the most recent value.
+
+Then, provided that a strict majority of nodes are correct, validity is ensured.
+
+---
+
+class: middle 
+
+## Quorum principle
+
+.center.width-80[![](figures/lec4/quorum.png)]
+
+???
+
+In general, a quorum is the minimum number of votes that a distributed transaction has to obtain in order to be allowed to perform an operation in a distributed system.
+
+Here, the minimum number = N/2+1.
+
+When writing, wait for a strict majority of acks before returning.
+
+When reading, if we wait for a strict majority of acks before returning, then choosing the largest timestamp ensures that the value written last is returned, even if the majority is not composed of the same nodes.
+
+
 
 ---
 
@@ -273,7 +292,7 @@ class: middle
 
 .width-70[![](figures/lec4/majority-voting-impl2.png)]
 
-.exercice[Why do we reset `acks` and `readlist` right after having received back just more than $N/2$ messages?]
+.exercise[Why do we reset `acks` and `readlist` right after having received back just more than $N/2$ messages?]
 
 ???
 
@@ -528,7 +547,7 @@ class: middle
 
 # Simulating message passing?
 
-- As we saw, we can simulate shared with message passing.
+- As we saw, we can simulate shared memory with message passing.
     - A majority of correct nodes is all that is needed.
 - Can we *simulate message passing* in shared memory?
     - Yes: use one register $pq$ for every channel.
