@@ -303,7 +303,7 @@ Master *pings* each worker periodically.
 - Map or Reduce tasks given to this worker are reset back to the initial state and rescheduled for other workers.
 - Task completion is committed to master to keep track of history.
 
-.exercice[
+.exercise[
 - What abstraction does this use?
 - What if the master node fails? How would you fix that?
 ]

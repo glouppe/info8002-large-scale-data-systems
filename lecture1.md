@@ -43,7 +43,7 @@ class: middle, center, black-slide
 
 class: middle
 
-.exercice[
+.exercise[
 - How many iPads would you need to store 1 ZB?
 - What distance and volume does that represent?
 ]
@@ -312,7 +312,7 @@ Two generals need to coordinate an attack.
 - They communicate through **messengers**.
 - Messengers may be **killed** on their way.
 
-.exercice[What should they do?]
+.exercise[What should they do?]
 
 ???
 

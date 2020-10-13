@@ -78,7 +78,7 @@ class: middle
 
 .center.width-100[![](figures/lec3/beb-example1.png)]
 
-.exercice[Is this allowed?]
+.exercise[Is this allowed?]
 
 ???
 
@@ -92,7 +92,7 @@ class: middle
 
 .center.width-100[![](figures/lec3/beb-example2.png)]
 
-.exercice[Is this allowed?]
+.exercise[Is this allowed?]
 
 ???
 
@@ -121,7 +121,7 @@ class: middle
 
 .center.width-100[![](figures/lec3/rb-example1.png)]
 
-.exercice[Is this allowed?]
+.exercise[Is this allowed?]
 
 ???
 
@@ -135,7 +135,7 @@ class: middle
 
 .center.width-100[![](figures/lec3/rb-example2.png)]
 
-.exercice[Is this allowed?]
+.exercise[Is this allowed?]
 
 ???
 
@@ -149,7 +149,7 @@ class: middle
 
 .center.width-100[![](figures/lec3/rb-example3.png)]
 
-.exercice[Is this allowed?]
+.exercise[Is this allowed?]
 
 ???
 
@@ -163,7 +163,7 @@ class: middle
 
 .center.width-100[![](figures/lec3/rb-example4.png)]
 
-.exercice[Is this allowed?]
+.exercise[Is this allowed?]
 
 ???
 
@@ -239,7 +239,7 @@ class: middle
 
 .center.width-100[![](figures/lec3/lrb-case2.png)]
 
-.exercice[Which case?]
+.exercise[Which case?]
 
 ???
 
@@ -253,7 +253,7 @@ class: middle
 
 .center.width-100[![](figures/lec3/lrb-case1.png)]
 
-.exercice[Which case?]
+.exercise[Which case?]
 
 ???
 
@@ -290,7 +290,7 @@ class: middle
 
 .center[![](figures/lec3/erb-impl.png)]
 
-.exercice[Show that eager reliable broadcast is correct.]
+.exercise[Show that eager reliable broadcast is correct.]
 
 ---
 
@@ -361,7 +361,7 @@ class: middle
 
 .center[![](figures/lec3/maurb-impl.png)]
 
-.exercice[Show that this variant is correct.]
+.exercise[Show that this variant is correct.]
 
 ---
 
@@ -383,7 +383,7 @@ Reliable broadcast:
 - Exactly-once delivery: *guaranteed* by the properties of RB.
 - Order of message? **Not guaranteed!**
 
-.exercice[Does uniform reliable broadcast remedy this?]
+.exercise[Does uniform reliable broadcast remedy this?]
 
 ???
 
@@ -439,7 +439,7 @@ causally preceding messages `mpast`.
 
 ???
 
-.exercice[Show the correctness of the algorithm.]
+.exercise[Show the correctness of the algorithm.]
 
 ---
 
@@ -457,7 +457,7 @@ class: middle
 
 .center.width-100[![](figures/lec3/possible-execution.png)]
 
-.exercice[Is this a valid execution? the order of delivery is not the same.]
+.exercise[Is this a valid execution? the order of delivery is not the same.]
 
 ---
 
@@ -566,7 +566,7 @@ $$(1 - \frac{k}{N})^{I(t)}$$
 Therefore the probability of having received of one or more gossip messages up to time $t$, that is to have PB-delivered, is
 $$p(\text{delivery}) = 1 - (1 - \frac{k}{N})^{\sum_{t_i=0}^t I(t_i)}$$
 
-.exercice[What if nodes fail? if packets are loss?]
+.exercise[What if nodes fail? if packets are loss?]
 
 ???
 

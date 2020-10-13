@@ -121,7 +121,7 @@ class: middle
 
 .width-100[![](figures/lec4/regular-example1.png)]
 
-.exercice[Regular or non-regular?]
+.exercise[Regular or non-regular?]
 
 ???
 
@@ -135,7 +135,7 @@ class: middle
 
 .width-100[![](figures/lec4/regular-example2.png)]
 
-.exercice[Regular or non-regular?]
+.exercise[Regular or non-regular?]
 
 ???
 
@@ -149,7 +149,7 @@ class: middle
 
 .width-100[![](figures/lec4/regular-example3.png)]
 
-.exercice[Regular or non-regular?]
+.exercise[Regular or non-regular?]
 
 ???
 
@@ -170,7 +170,7 @@ class: middle
 - To $\text{write}(v)$:
     - Update leader's value to $v$.
 
-.exercice[What is the issue with this algorithm?]
+.exercise[What is the issue with this algorithm?]
 
 ???
 
@@ -192,7 +192,7 @@ class: middle
     - Broadcast $v$ to all (each node then locally updates).
     - Return.
 
-.exercice[What is the issue with this algorithm?]
+.exercise[What is the issue with this algorithm?]
 
 ---
 
@@ -277,6 +277,8 @@ Here, the minimum number = N/2+1.
 When writing, wait for a strict majority of acks before returning.
 
 When reading, if we wait for a strict majority of acks before returning, then choosing the largest timestamp ensures that the value written last is returned, even if the majority is not composed of the same nodes.
+
+This is true because at least one node the read quorum must have been part of the write quorum.
 
 
 
@@ -409,7 +411,7 @@ Linearizability **disallows** such execution.
 
 .center.width-80[![](figures/lec4/atomic-register.png)]
 
-.exercice[Show that linearizability is equivalent to validity + ordering.]
+.exercise[Show that linearizability is equivalent to validity + ordering.]
 
 ---
 
@@ -489,7 +491,7 @@ class: middle
 
 ![](figures/lec4/riwa-impl2.png)
 
-.exercice[How to adapt to fail-silent?]
+.exercise[How to adapt to fail-silent?]
 
 ???
 
@@ -509,7 +511,7 @@ class: middle
     - when $q$ completes its read, all correct processes (including $r$) have a timestamp $ts \geq ts_w$.
     - there is no way for $r$ to changes its value back to $v$ after this because $ts_v < ts_w$.
 
-.exercice[Show that the termination and validity properties are satisfied.]
+.exercise[Show that the termination and validity properties are satisfied.]
 
 ???
 

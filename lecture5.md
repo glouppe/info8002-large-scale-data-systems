@@ -71,7 +71,7 @@ Any algorithm that helps multiple processes *maintain common state* or to *decid
 
 .width-90[![](figures/lec5/consensus-interface.png)]
 
-.exercice[Which is safety, which is liveness?]
+.exercise[Which is safety, which is liveness?]
 
 ???
 
@@ -88,7 +88,7 @@ class: middle
 
 .center.width-100[![](figures/lec5/consensus-exec.png)]
 
-.exercice[Does this satisfy consensus?]
+.exercise[Does this satisfy consensus?]
 
 ???
 
@@ -108,7 +108,7 @@ class: middle
 
 .center.width-100[![](figures/lec5/consensus-exec.png)]
 
-.exercice[Does this satisfy uniform consensus?]
+.exercise[Does this satisfy uniform consensus?]
 
 ???
 
@@ -188,7 +188,7 @@ class: middle
 
 .center.width-100[![](figures/lec5/hierarchical-consensus-exec2.png)]
 
-.exercice[- Uniform consensus?
+.exercise[- Uniform consensus?
 - How many failures can be tolerated?]
 
 ???
@@ -259,6 +259,13 @@ class: middle
 
 <span class="Q">[Q]</span> Why is reliable non-uniform broadcast sufficient to have uniform consensus?
 
+Consider now the uniform agreement property, and assume that two processes
+decide differently. This can only be possible if two processes rb-broadcast decision
+messages with two different proposal values. Consider any two processes p and q
+such that rank (q) > rank (p) and suppose that p and q rb-broadcast two decision values v and v', respectively. Because of the strong accuracy property of the failure
+detector, process q must have adopted v before reaching round rank (q). Hence, it
+holds v = v', which contradicts the assumption.
+
 ---
 
 class: middle
@@ -293,7 +300,7 @@ We will build a consensus component in **fail-noisy** by combining three abstrac
 
 .center[![](figures/lec5/ele.png)]
 
-.exercice[This abstraction can be implemented from an eventually perfect failure detector. How?]
+.exercise[This abstraction can be implemented from an eventually perfect failure detector. How?]
 
 ???
 
@@ -360,7 +367,7 @@ class: middle
 
 class: middle
 
-.exercice[
+.exercise[
 - What if $p_1$ fails only later, some time after the second `bebDeliver` event?
 - What if instead of crashing, $p_1$ eventually trusts $p_2$?
 - Could $p_1$ and $p_2$ keep bouncing NACKs to each other?]
@@ -449,7 +456,7 @@ class: middle
 
 .center.width-100[![](figures/lec5/econs-exec3.png)]
 
-.exercice[What is wrong in this execution?]
+.exercise[What is wrong in this execution?]
 
 ???
 
@@ -692,7 +699,10 @@ class: middle
 - Commands are *deterministic* programs, such that the outputs are solely determined by the initial state and the sequence of commands.
 - A state machine can be made *fault-tolerant* by replicating it on different processes.
 - This can now be easily implemented simply by disseminating all commands to execute using a uniform total-order broadcast primitive.
-- This gives a **generic recipe** to make any deterministic program distributed, consistent and fault-tolerant!
+
+.alert[
+This gives a **generic recipe** to make any deterministic program distributed, consistent and fault-tolerant!
+]
 
 ---
 

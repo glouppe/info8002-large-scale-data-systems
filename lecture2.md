@@ -390,7 +390,7 @@ class: middle
     - Can be implemented using stubborn links.
     - **By default**, we assume the perfect links abstraction.
 
-.exercice[What abstraction do UDP and TCP implement?]
+.exercise[What abstraction do UDP and TCP implement?]
 
 ???
 
@@ -405,7 +405,7 @@ class: middle
 
 .center[![](figures/lec2/sl-interface.png)]
 
-.exercice[Which property is safety/liveness/neither?]
+.exercise[Which property is safety/liveness/neither?]
 
 ???
 
@@ -420,7 +420,7 @@ class: middle
 
 .center[![](figures/lec2/pl-interface.png)]
 
-.exercice[Which property is safety/liveness/neither?]
+.exercise[Which property is safety/liveness/neither?]
 
 ???
 
@@ -435,7 +435,7 @@ class: middle
 
 .center[![](figures/lec2/pl-impl.png)]
 
-.exercice[How does TCP efficiently maintain its `delivered` log?]
+.exercise[How does TCP efficiently maintain its `delivered` log?]
 
 ???
 
@@ -609,7 +609,7 @@ Assumption of three properties:
     - Processes have access to a local physical clock;
     - Known upper bound on clock drift and clock skew.
 
-.exercice[Why studying synchronous systems? What services can be provided?]
+.exercise[Why studying synchronous systems? What services can be provided?]
 
 ???
 
@@ -629,7 +629,7 @@ A partially synchronous system is a system that is synchronous *most of the time
 - There are periods where the timing assumptions of a synchronous system do not hold.
 - But the distributed algorithm will have a long enough time window where everything behaves nicely, so that it can achieve its goal.
 
-.exercice[Are there such systems?]
+.exercise[Are there such systems?]
 
 ???
 
@@ -667,7 +667,7 @@ Assuming a crash-stop process abstraction, the **perfect detector** encapsulates
 
 .center.width-90[![](figures/lec2/pfd-interface.png)]
 
-.exercice[Which property is safety/liveness/neither?]
+.exercise[Which property is safety/liveness/neither?]
 
 ???
 
@@ -731,7 +731,7 @@ class: middle
 ]
 ]
 
-.exercice[Show that this implementation is correct.]
+.exercise[Show that this implementation is correct.]
 
 ---
 
@@ -756,7 +756,7 @@ class: middle
 
 .center[![](figures/lec2/le-impl.png)]
 
-.exercice[- Show that this implementation is correct.
+.exercise[- Show that this implementation is correct.
 - Is $le$ a failure detector?]
 
 ---

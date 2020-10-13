@@ -45,7 +45,7 @@ class: middle
 - GFS and HDFS are examples of distributed file systems.
     - They represent *one* way (not the way) to design a distributed file system.
 
-.exercice[Which file systems do you know?]
+.exercise[Which file systems do you know?]
 
 ---
 
@@ -150,7 +150,7 @@ GFS is not a good fit for:
 - Many *chunkservers* (100s - 1000s) storing the data, physically spread in different racks.
 - Many clients.
 
-.exercice[Why spreading across racks?]
+.exercise[Why spreading across racks?]
 
 ???
 
@@ -205,7 +205,7 @@ class: middle
     - Clients never read and write file data through master.
     - Instead, clients ask the master which chunkservers it should contact.
 
-.exercice[As the cluster grows, can the master become a bottleneck?]
+.exercise[As the cluster grows, can the master become a bottleneck?]
 
 ???
 
@@ -225,7 +225,7 @@ Size of storage increased in the range of petabytes. The amount of metadata main
 - Disadvantage:
     - A chunkserver can become a **hotspot** for popular files.
 
-.exercice[
+.exercise[
 - How to fix the hotspot problem?
 - What if a file is larger than the chunk size?
 ]
@@ -474,7 +474,7 @@ Scenario: a chunkserver misses a mutation applied to a chunk (e.g., a chunk was 
 - Master keeps up to date through *hearbeat* messages.
 - A chunkserver has the **final word** over what chunks it stores.
 
-.exercice[What does this design decision simplify?]
+.exercise[What does this design decision simplify?]
 
 ---
 
@@ -508,7 +508,7 @@ Scenario: a chunkserver misses a mutation applied to a chunk (e.g., a chunk was 
 - Read requests: the chunkserver *verifies the checksum* of the data blocks that overlap with the read range.
     - Corrupted data are not sent to the clients.
 
-.exercice[What if a read request fails because of corrupted data?]
+.exercise[What if a read request fails because of corrupted data?]
 
 ---
 

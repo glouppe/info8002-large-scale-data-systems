@@ -515,7 +515,7 @@ Assume the ability to select a random node in manner that is not vulnerable to S
 4. Other nodes accept the block only if all transactions in it are valid (unspent, valid signatures).
 5. Nodes express their acceptance of the block by including its hash in the next block they create.
 
-.exercice[Which basic abstraction is random selection an implementation of?]
+.exercise[Which basic abstraction is random selection an implementation of?]
 
 ???
 

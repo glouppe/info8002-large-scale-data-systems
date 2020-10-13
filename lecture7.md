@@ -130,7 +130,7 @@ The core usage of the Chord protocol is to query a key from a client (generally 
 - Scalable, but $\mathcal{O}(n)$ operations are required.
     - **Unacceptable** in  large systems!
 
-.exercice[How to make lookups faster?]
+.exercise[How to make lookups faster?]
 
 ???
 
