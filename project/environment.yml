@@ -1,0 +1,56 @@
+name: fbw
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - _libgcc_mutex=0.1=conda_forge
+  - _openmp_mutex=4.5=1_gnu
+  - ca-certificates=2020.6.20=hecda079_0
+  - certifi=2020.6.20=py39h079e4ff_2
+  - cycler=0.10.0=py_2
+  - freetype=2.10.4=he06d7ca_0
+  - jpeg=9d=h516909a_0
+  - kiwisolver=1.2.0=py39h45ac560_1
+  - lcms2=2.11=hbd6801e_0
+  - ld_impl_linux-64=2.35=h769bd43_9
+  - libblas=3.8.0=17_openblas
+  - libcblas=3.8.0=17_openblas
+  - libffi=3.2.1=he1b5a44_1007
+  - libgcc-ng=9.3.0=h5dbcf3e_17
+  - libgfortran-ng=9.3.0=he4bcb1c_17
+  - libgfortran5=9.3.0=he4bcb1c_17
+  - libgomp=9.3.0=h5dbcf3e_17
+  - liblapack=3.8.0=17_openblas
+  - libopenblas=0.3.10=pthreads_h4812303_5
+  - libpng=1.6.37=hed695b0_2
+  - libstdcxx-ng=9.3.0=h2ae2ef3_17
+  - libtiff=4.1.0=hc7e4089_6
+  - libwebp-base=1.1.0=h516909a_3
+  - lz4-c=1.9.2=he1b5a44_3
+  - matplotlib=3.3.2=0
+  - matplotlib-base=3.3.2=py39h2be37a7_1
+  - ncurses=6.2=he1b5a44_2
+  - numpy=1.19.2=py39h2bb7b6c_1
+  - olefile=0.46=pyh9f0ad1d_1
+  - openssl=1.1.1h=h516909a_0
+  - pillow=8.0.1=py39h6f3857e_0
+  - pip=20.2.4=py_0
+  - pyparsing=2.4.7=pyh9f0ad1d_0
+  - python=3.9.0=h2a148a8_4_cpython
+  - python-dateutil=2.8.1=py_0
+  - python_abi=3.9=1_cp39
+  - readline=8.0=he28a2e2_2
+  - setuptools=49.6.0=py39h079e4ff_2
+  - six=1.15.0=pyh9f0ad1d_0
+  - sqlite=3.33.0=h4cf870e_1
+  - tk=8.6.10=hed695b0_1
+  - tornado=6.0.4=py39h07f9747_2
+  - tzdata=2020d=h516909a_0
+  - wheel=0.35.1=pyh9f0ad1d_0
+  - xz=5.2.5=h516909a_1
+  - zlib=1.2.11=h516909a_1010
+  - zstd=1.4.5=h6597ccf_2
+  - pip:
+    - krpc==0.4.8
+    - protobuf==3.13.0
+
