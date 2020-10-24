@@ -28,6 +28,8 @@ See the [`project`](project) folder for a complete description of the project.
 
 Your report should be formatted using the LaTeX template [`template-report-reading-assignment.tex`](https://glouppe.github.io/info8002-large-scale-data-systems/template-report-reading-assignment.tex).
 
+Your project should be submitted  by **December 18, 2020 at 23:59** on the [submission platform](https://submit.montefiore.ulg.ac.be/).
+
 ### Reading assignment
 
 Your task is to read and summarize a scientific paper in the field of distributed systems. You are free to select one among the following two papers:
@@ -44,7 +46,7 @@ Constraints:
 - Formatted using the LaTeX template [`template-report-reading-assignment.tex`](https://glouppe.github.io/info8002-large-scale-data-systems/template-report-reading-assignment.tex).
 
 Your report should be submitted  by **December 18, 2020 at 23:59** on the [submission platform](https://submit.montefiore.ulg.ac.be/).
-a
+
 ## Archives
 
 - [2019-2020](https://github.com/glouppe/info8002-large-scale-data-systems/tree/info8002-2019)
