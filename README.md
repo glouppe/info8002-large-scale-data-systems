@@ -24,7 +24,9 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2020.
 
 ### Programming project
 
-TBD.
+See the [`project`](project) folder for a complete description of the project.
+
+Your report should be formatted using the LaTeX template [`template-report-reading-assignment.tex`](https://glouppe.github.io/info8002-large-scale-data-systems/template-report-reading-assignment.tex).
 
 ### Reading assignment
 
@@ -42,7 +44,7 @@ Constraints:
 - Formatted using the LaTeX template [`template-report-reading-assignment.tex`](https://glouppe.github.io/info8002-large-scale-data-systems/template-report-reading-assignment.tex).
 
 Your report should be submitted  by **December 18, 2020 at 23:59** on the [submission platform](https://submit.montefiore.ulg.ac.be/).
-
+a
 ## Archives
 
 - [2019-2020](https://github.com/glouppe/info8002-large-scale-data-systems/tree/info8002-2019)
