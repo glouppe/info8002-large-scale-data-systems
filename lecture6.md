@@ -66,7 +66,7 @@ We want single-system illusion for data storage, but
 .width-60[![](figures/lec8/google-first-server_a.jpg)]
 .width-60[![](figures/lec8/google-first-server.jpg)]
 
-.italic[Google first servers]
+.italic[Google's first servers]
 ]
 ]
 
