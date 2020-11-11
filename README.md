@@ -19,9 +19,9 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2020.
 | October 27 | _(Lecture 7 is postponed.)_ |
 | November 3 | Lecture 7: [Distributed hash tables](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture7.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec7.pdf)]  |
 | November 10 | Lecture 8: [Blockchain](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture8.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec8.pdf)]<br>Presentation of the programming project, 2PM on [Jitsi](https://meet.jit.si/ULG-Montefiore-INFO8002-Ex-Session)<br>Exercise session 3 [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/ex3.pdf)], 2PM on [Jitsi](https://meet.jit.si/ULG-Montefiore-INFO8002-Ex-Session)  |
-| November 17 | Lecture 9: [Distributed computing](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture9.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec9.pdf)]<br>Exercise session 4 [PDF], 2PM on [Jitsi](https://meet.jit.si/ULG-Montefiore-INFO8002-Ex-Session) |
-| November 24 | Exercise session 5 [PDF], 2PM on [Jitsi](https://meet.jit.si/ULG-Montefiore-INFO8002-Ex-Session) | 
-| December 18 | Deadline for the reading assignment and the programming project | 
+| November 17 | Lecture 9: [Distributed computing](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture9.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec9.pdf)]<br>Exercise session 4 [[PDF]](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/ex4.pdf), 2PM on [Jitsi](https://meet.jit.si/ULG-Montefiore-INFO8002-Ex-Session) |
+| November 24 | Exercise session 5 [PDF], 2PM on [Jitsi](https://meet.jit.si/ULG-Montefiore-INFO8002-Ex-Session) |
+| December 18 | Deadline for the reading assignment and the programming project |
 
 ## Projects
 
