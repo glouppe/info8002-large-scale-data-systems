@@ -11,6 +11,7 @@ Prof. Gilles Louppe<br>
 ???
 
 R: in kademlia, why using the binary representation for structuring the topology? why not just integer and euclidean distance?
+R: illustrations for kademlia https://www.kth.se/social/upload/516479a5f276545d6a965080/3-kademlia.pdf
 
 ---
 
@@ -69,7 +70,7 @@ Chord is a protocol and algorithm for a peer-to-peer distributed hash table.
 - The overlay network is arranged in a **identifier circle** ranging from $0$ to $2^m - 1$.
     - A *node identifier* is chosen by hashing the node IP address.
     - A *key identifier* is chosen by hashing the key.
-- Based on **consistent hashing** with SHA-1 hash function.
+- Based on **consistent hashing**.
 - Supports a single operation: $\text{lookup}(k)$.
     - Returns the host which holds the data associated with the key.
 
@@ -93,7 +94,8 @@ count: false
 - Evenly distributes $x$ objects over $n$ bins.
 - When $n$ changes:
   - Only $\mathcal{O}(\frac{x}{n})$ objects need to be rehashed.
-  - Uses a deterministic hash function, independent of $n$.
+  - Uses a deterministic hash function, independent of $n$. 
+    - Chord makes use of SHA-1 as hash function
 
 ---
 
@@ -145,9 +147,9 @@ class: middle
 In Chord, in addition to $\text{successor}$ and $\text{predecessor}$ pointers, each node maintains a finger table to accelerate lookups.
 - As before, let $m$ be the number of bits in the identifier.
 - Every node $n$ maintains a routing (finger) table with at most $m$ entries.
-- Entry $i$ in the finger table of node $n$:
-  - First node $s$ that succeeds $n$ by at least $2^{i - 1}$ on the identifier circle.
-  - Therefore, $s = \text{successor}((n + 2^{i-1})\text{~}\textrm{mod}\text{~}2^m)$
+- Entry $1 \leq k \leq m$ in the finger table of node $n$:
+  - First node $s$ that succeeds $n$ by at least $2^{k - 1}$ on the identifier circle.
+  - Therefore, $s = \text{successor}((n + 2^{k-1})\text{~}\textrm{mod}\text{~}2^m)$
 
 <br>
 .center.width-70[![](figures/lec9/chord-variable.png)]
@@ -159,7 +161,7 @@ class: middle
 ## Example
 
 - $m = 4$ bits $\rightarrow$ max 4 entries in the table.
-- $i$-th entry in finger table: $s = \text{successor}((n + 2^{i - 1})\text{~}\mathrm{mod}\text{~}2^m)$
+- $k$-th entry in finger table: $s = \text{successor}((n + 2^{k - 1})\text{~}\mathrm{mod}\text{~}2^m)$
 
 .center.width-40[![](figures/lec9/chord-clean.png)]
 
@@ -169,15 +171,15 @@ class: middle
 
 ## Example: first entry
 
-- $n=4$, $i = 1$
-- $s = \text{successor}((n + 2^{i-1}) \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(5) = 5$
+- $n=4$, $k = 1$
+- $s = \text{successor}((n + 2^{k-1}) \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(5) = 5$
 
 .center.width-80[![](figures/lec9/chord-finger-1.png)]
 
 ???
 
-- Interval: [`finger[i].start` -> `finger[i+1].start`)
-- Successor column should be `finger[i].node`, i.e. `successor(finger[i].start)`
+- Interval: [`finger[k].start` -> `finger[k+1].start`)
+- Successor column should be `finger[k].node`, i.e. `successor(finger[k].start)`
 
 ---
 
@@ -185,8 +187,8 @@ class: middle
 
 ## Example: second entry
 
-- $n=4$, $i = 2$
-- $s = \text{successor}((n + 2^{i-1}) \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(6) = 8$
+- $n=4$, $k = 2$
+- $s = \text{successor}((n + 2^{k-1}) \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(6) = 8$
 
 .center.width-80[![](figures/lec9/chord-finger-2.png)]
 
@@ -196,8 +198,8 @@ class: middle
 
 ## Example: third entry
 
-- $n=4$, $i = 3$
-- $s = \text{successor}((n + 2^{i-1}) \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(8) = 8$
+- $n=4$, $k = 3$
+- $s = \text{successor}((n + 2^{k-1}) \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(8) = 8$
 
 .center.width-80[![](figures/lec9/chord-finger-3.png)]
 
@@ -207,8 +209,8 @@ class: middle
 
 ## Example: fourth entry
 
-- $n=4$, $i = 4$
-- $s = \text{successor}((n + 2^{i-1}) \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(12) = 14$
+- $n=4$, $k = 4$
+- $s = \text{successor}((n + 2^{k-1}) \text{~}\mathrm{mod}\text{~}2^m) = \text{successor}(12) = 14$
 
 .center.width-80[![](figures/lec9/chord-finger-4.png)]
 
@@ -242,31 +244,31 @@ n.find_successor(id):
 ```
 // search the local table for the highest predecessor of id
 n.closest_preceding_node(id):
-  for i = m downto 1:
-    if (finger[i] ∈ (n, id)):
-      return finger[i]
+  for k = m downto 1:
+    if (finger[k] ∈ (n, id)):
+      return finger[k]
   return n
 ```
 
 ???
 
-`finger[i]` is the first node that succeeds $n+2^{i-1}$. I.e., this corresponds to `finger[i].node`.
+`finger[k]` is the first node that succeeds $n+2^{k-1}$. I.e., this corresponds to `finger[k].node`.
 
 ---
 
 class: middle
 
-## Example: finding $\text{successor}(k=3)$ from $\text{node}\_4$
+## Example: finding $\text{successor}(id=3)$ from $\text{node}\_4$
 
-1. $\text{node}\_4$ checks if $k$ is in the interval (4, 5].
-2. No, $\text{node}\_4$ checks its finger table (starting from the last entry, i.e., $i = m$).
+1. $\text{node}\_4$ checks if $id$ is in the interval (4, 5].
+2. No, $\text{node}\_4$ checks its finger table (starting from the last entry, i.e., $k = m$).
    1. Is $\text{node}\_{14}$ in the interval (4, 3)? *Yes!*
-3. $\text{node}\_{14}$ checks if $k$ is in the interval (14, 0].
+3. $\text{node}\_{14}$ checks if $id$ is in the interval (14, 0].
 4. No, $\text{node}\_{14}$ checks its finger table for closest preceding node.
    1. Return $\text{node}\_{0}$.
-5. $\text{node}\_{0}$ checks if $k$ is in the interval (0, 4]. *Yes!*
+5. $\text{node}\_{0}$ checks if $id$ is in the interval (0, 4]. *Yes!*
 
-$\rightarrow$ Node 0 is the preceding node of $k = 4$. Therefore $\text{successor}(k=3)=\text{node}\_0.\text{successor}=4$.
+$\rightarrow$ Node 0 is the preceding node of $k = 4$. Therefore $\text{successor}(id=3)=\text{node}\_0.\text{successor}=4$.
 
 Of course, one could implement a mechanism that prevents $\text{node}\_{4}$ from looking up its own preceding node in the network.
 
@@ -385,13 +387,21 @@ Kademlia is a peer-to-peer hash table with **provable** consistency and performa
 
 Nodes are structured in an *overlay network* where they correspond
 to the **leaves of an (unbalanced) binary  tree**, with each node's position determined by the shortest unique prefix of its identifier.
+
+<br>
+.center.width-85[![](figures/lec9/kademlia-subtrees.png)]
+
+---
+
+class: middle
+
 - Node identifiers are chosen at random in the identifier space.
 - For a given node, Kademlia divides the binary tree into a series of successively lower sub-trees that do not contain the node.
     - The highest sub-tree consists of the half of the binary tree not containing the node.
     - The next sub-tree consists of the half of the remaining tree not containing the node, etc.
 - Kamdelia ensures that every node knows at least one other node in each of its sub-trees. This guarantees that any node can locate any other node given its identifier.
 
-.center.width-50[![](figures/lec9/kademlia-subtrees.png)]
+
 
 ---
 
@@ -408,6 +418,14 @@ The distance between two identifiers is defined as $$d(x, y) = x \oplus y.$$
 ???
 
 unidirectional: for any x and distance delta>0, there is exactly one y such that d(x,y)=delta.
+
+---
+
+class: middle
+
+E.g., if the identifier space is 3 bits, then the distance between IDs $1$ and $4$ is
+
+$$d(1, 4) = d(001\_2, 100\_2) = 001\_2 \oplus 100\_2 = 101\_2 = 5.$$
 
 ---
 
@@ -546,7 +564,7 @@ class: middle
 
 ## Dynamic construction of the routing table
 
-- Nodes in the routing table are allocated dynamically as needed.
+- The routing tables are allocated dynamically as node receive requests.
 - A bucket is split whenever the $k$-bucket is full and the range includes the node's own identifier.
 
 .center.width-70[![](figures/lec9/k-bucket.png)]

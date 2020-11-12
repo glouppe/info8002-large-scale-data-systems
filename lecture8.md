@@ -143,6 +143,10 @@ A **hash pointer** is a pointer to where some information is stored, together wi
 <br>
 .center.width-40[![](figures/lec6/hash-pointer.png)]
 
+???
+
+A hash pointer is like a virtual address.
+
 ---
 
 class: middle, center, red-slide
