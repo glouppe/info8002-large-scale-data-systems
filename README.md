@@ -20,7 +20,8 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2020.
 | November 3 | Lecture 7: [Distributed hash tables](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture7.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec7.pdf)]  |
 | November 10 | Lecture 8: [Blockchain](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture8.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec8.pdf)]<br>Presentation of the programming project, 2PM on [Jitsi](https://meet.jit.si/ULG-Montefiore-INFO8002-Ex-Session)<br>Exercise session 3 [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/ex3.pdf)], 2PM on [Jitsi](https://meet.jit.si/ULG-Montefiore-INFO8002-Ex-Session)  |
 | November 17 | Lecture 9: [Distributed computing](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture9.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec9.pdf)]<br>Exercise session 4 [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/ex4.pdf)] |
-| November 24 | Exercise session 5 [PDF] |
+| November 24 | Exercise session 5 [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/ex5.pdf)] |
+| December 8 | Q&A session (see email) |
 | December 18 | Deadline for the reading assignment and the programming project |
 
 ## Projects
@@ -43,7 +44,7 @@ Your task is to read and summarize a scientific paper in the field of distribute
 You should produce a report that summarizes the problem that is tackled by the paper and explains why it is challenging or important. The report should outline the main contributions and results with respect to the problem that is addressed. It should also include a critical discussion of the advantages and shortcomings of the contributions of the paper.
 
 Constraints:
-- You can work in groups of maximum 3 students.
+- You can work in groups of maximum 4 students.
 - You report must be written in English.
 - Up to 4 pages (excluding references, if any).
 - Formatted using the LaTeX template [`template-report-reading-assignment.tex`](https://glouppe.github.io/info8002-large-scale-data-systems/template-report-reading-assignment.tex).
