@@ -92,7 +92,7 @@ class: middle
 
 **MapReduce** is a *parallel programming* model for processing distributed data on a cluster.
 
-It comes with a simple *high-level* API limited two operations: **map** and **reduce**, as inspired by Lisp primitives:
+It comes with a simple *high-level* API limited to two operations: **map** and **reduce**, as inspired by Lisp primitives:
 - `map`: apply function to each value in a set.
     - `(map 'length '(() (a) (a b) (a b c)))` $\rightarrow$ `(0 1 2 3)`
 - `reduce`: combines all the values using a binary function.
@@ -121,6 +121,26 @@ class: middle
 - **Reduce**: intermediate key/value pairs $\rightarrow$  result files
     - Combine all intermediate values for a particular key through a user-defined function.
     - Produces a set of merged output values.
+
+---
+
+class: middle
+
+## Examples
+
+- *Count URL access frequency*
+    - Find the frequency of each URL in web logs.
+    - Map: process logs of web page access. Produce $(url,1)$ pairs.
+    - Reduce: add all values for the same URL.
+        - Is this efficient?
+- *Reverse web-link graph*
+    - Find where page links come from.
+    - Map: output $(target,source)$ pairs for each link $target$ in a web page $source$.
+    - Reduce: concatenate the list of all source URLs associated with a target.
+- *Distributed grep*
+  - Search for words in lots of documents.
+  - Map: emit a line if it matches a given pattern. Produce $(file,line)$ pairs.
+  - Reduce: copy the intermediate data to the output.
 
 ---
 
@@ -266,26 +286,6 @@ class: middle
 .center.width-100[![](figures/lec7/mr-example.png)]
 
 .center[See also the [Hadoop tutorial](https://hadoop.apache.org/docs/stable/hadoop-mapreduce-client/hadoop-mapreduce-client-core/MapReduceTutorial.html).]
-
----
-
-class: middle
-
-## Other examples
-
-- *Distributed grep*
-    - Search for words in lots of documents.
-    - Map: emit a line if it matches a given pattern. Produce $(file,line)$ pairs.
-    - Reduce: copy the intermediate data to the output.
-- *Count URL access frequency*
-    - Find the frequency of each URL in web logs.
-    - Map: process logs of web page access. Produce $(url,1)$ pairs.
-    - Reduce: add all values for the same URL.
-        - Is this efficient?
-- *Reverse web-link graph*
-    - Find where page links come from.
-    - Map: output $(target,source)$ pairs for each link $target$ in a web page $source$.
-    - Reduce: concatenate the list of all source URLs associated with a target.
 
 ---
 
