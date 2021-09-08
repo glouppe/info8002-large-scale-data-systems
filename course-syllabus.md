@@ -2,7 +2,7 @@ class: middle, center, title-slide
 
 # Large-scale Data Systems
 
-Fall 2020
+Fall 2021
 
 <br><br>
 Prof. Gilles Louppe<br>
@@ -14,14 +14,14 @@ Prof. Gilles Louppe<br>
 
 This course is given by:
 - Theory: Gilles Louppe ([g.louppe@uliege.be](mailto:g.louppe@uliege.be))
-- Practicals and projects: Joeri Hermans ([joeri.hermans@doct.ulg.ac.be](mailto:joeri.hermans@doct.ulg.ac.be))
+- Practicals and projects: Sami Ben Mariem ([Sami.BenMariem@uliege.be](mailto:Sami.BenMariem@uliege.be))
 
 Feel free to contact any of us for help!
 
 <br>
 .center[
-.circle[![](figures/outline/gilles.jpg)] &nbsp;
-.circle[![](figures/outline/joeri.jpg)]
+.circle.width-25[![](figures/outline/gilles.jpg)] &nbsp;
+.circle.width-25[![](figures/outline/sami.jpeg)]
 ]
 
 ---
@@ -36,7 +36,6 @@ which distributed *databases* and *computing* systems are operating.
 
 ## Practical
 
-- Exposition to *industrial software*.
 - Fun and challenging course project.
 - Practice and improve **your system engineering skills**!
 
@@ -72,7 +71,7 @@ Your job is to assemble them into well-engineered solutions.
 - Lecture 6: Distributed file systems
 - Lecture 7: Distributed hash tables
 - Lecture 8: Blockchain
-- Lecture 9: Cloud computing
+- Lecture 9: Distributed computing
 
 ---
 

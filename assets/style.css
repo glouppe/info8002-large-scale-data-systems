@@ -17,14 +17,14 @@ body {
 
 .remark-slide-content {
     font-size: 1.4em;
-    border-top: solid 5px #0288d1;
+
 }
 
 .remark-slide-content h1 {
     font-weight: bold;
     font-size: 2.25em;
     margin: 0 0 .5em 0;
-    color: #17525d;
+    color: #235699;
 }
 
 .remark-slide-content h2 {
@@ -65,7 +65,7 @@ a:hover {
     color: #d11a01;
 }
 
-.Q {
+.Q, .green {
     color: #009933;
 }
 
@@ -101,15 +101,23 @@ strong {
 }
 
 .smaller-xx {
-    font-size: 0.5em;
+    font-size: 0.7em;
+}
+
+.smaller-xxx {
+    font-size: 0.4em;
 }
 
 .katex {
-    color: #1a7082;
+    color: #356aaf;
 }
 
-.black-slide .katex, .black-slide h1, .black-slide a {
+.black-slide .katex, .black-slide h1 {
     color: white;
+}
+
+.black-slide a, .black-slide .footnote a {
+    color: #89c2ce;
 }
 
 .remark-code, .remark-inline-code {
@@ -221,6 +229,15 @@ td {
     display: block;
 }
 
+.question, .success {
+    background-color: rgba(40,167,69,0.25);
+    border: 2px solid rgb(40,167,69);
+    border-radius: 5px;
+    width: 95%;
+    display: block;
+    padding: 1em;
+}
+
 .alert {
     color: #721c24;
     background-color: #f8d7da;
@@ -314,6 +331,10 @@ td {
 
 .width-90 * {
     width: 90%;
+}
+
+.width-93 * {
+    width: 93.7%;
 }
 
 .width-95 * {
@@ -424,7 +445,7 @@ td {
 }
 
 .end-slide {
-    background-color: #0288d1;
+    background-color: #1452a3;
     color: white;
     vertical-align: middle;
 }
