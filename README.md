@@ -3,7 +3,7 @@
 Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2021.
 
 - Instructor: Gilles Louppe ([g.louppe@uliege.be](mailto:g.louppe@uliege.be))
-- Teaching assistant: Joeri Hermans ([joeri.hermans@doct.ulg.ac.be](mailto:joeri.hermans@doct.ulg.ac.be))
+- Teaching assistant: Sami Ben Mariem ([Sami.BenMariem@uliege.be](mailto:Sami.BenMariem@uliege.be))
 - When: Fall 2021, Tuesday 1:45 PM.
 - Classroom: R7/B28.
 
