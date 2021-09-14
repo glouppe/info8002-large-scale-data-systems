@@ -46,42 +46,6 @@ which distributed *databases* and *computing* systems are operating.
 
 ---
 
-class: middle, black-slide
-
-.center.width-75[![](./figures/outline/lego.jpg)]
-
-.center[
-We give you Lego bricks.
-
-Your job is to assemble them into well-engineered solutions.
-]
-
-.footnote[Image credits: Kelly Sikkema.]
-
-
----
-
-# Outline
-
-- Lecture 1: Introduction
-- Lecture 2: Basic distributed abstractions
-- Lecture 3: Reliable broadcast
-- Lecture 4: Shared memory
-- Lecture 5: Consensus
-- Lecture 6: Distributed file systems
-- Lecture 7: Distributed hash tables
-- Lecture 8: Blockchain
-- Lecture 9: Distributed computing
-
----
-
-# Lectures
-
-- Theoretical lectures
-- Practicals
-
----
-
 # Slides
 
 Slides are available at [github.com/glouppe/info8002-large-scale-data-systems](https://github.com/glouppe/info8002-large-scale-data-systems).
@@ -93,6 +57,12 @@ Slides are partially adapted from [CSE 486/585 Distributed systems](https://www.
 [CS425 Distributed systems](https://courses.engr.illinois.edu/cs425/fa2017/lectures.html) (University of Illinois UC).
 
 .center.width-80[![](figures/outline/slides.png)]
+
+---
+
+# Videos
+
+Podcasts from Fall 2020 are available on MyULiège.
 
 ---
 
@@ -111,7 +81,7 @@ This textbook is *optional*.
 
 ## Reading assignment
 
-Read, summarize and criticize a major scientific paper in Large-Scale Data Systems.
+Read, summarize and criticize a major scientific paper in large-scale data systems.
 (See GitHub for papers and instructions.)
 
 .center.width-70[![](figures/outline/mr-paper.png)]

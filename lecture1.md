@@ -16,12 +16,6 @@ class: middle
 
 ---
 
-class: middle, center, black-slide
-
-.width-90[![](figures/lec1/big-data-everywhere.jpg)]
-
----
-
 class: middle
 
 .circle.center.width-40[![](figures/lec1/schmidt.jpeg)]
@@ -32,6 +26,12 @@ class: middle
 Let me repeat that: .bold[we create as much information in two days now as we did from the dawn of man] through 2003.]
 
 .pull-right[Eric Schmidt, 2010.]
+
+---
+
+class: middle, center, black-slide
+
+.width-90[![](figures/lec1/big-data-everywhere.jpg)]
 
 ---
 
@@ -66,25 +66,25 @@ that's 1.7 the diameter of the sun!
 
 # The four V of big data
 
-.center.width-100[![](./figures/lec1/1-volume.jpg)]
+.center.width-95[![](./figures/lec1/1-volume.jpg)]
 
 ---
 
 class: middle
 
-.center.width-100[![](./figures/lec1/2-velocity.jpg)]
+.center.width-95[![](./figures/lec1/2-velocity.jpg)]
 
 ---
 
 class: middle
 
-.center.width-100[![](./figures/lec1/3-variety.jpg)]
+.center.width-95[![](./figures/lec1/3-variety.jpg)]
 
 ---
 
 class: middle
 
-.center.width-100[![](./figures/lec1/4-veracity.jpg)]
+.center.width-95[![](./figures/lec1/4-veracity.jpg)]
 
 ---
 
@@ -391,7 +391,7 @@ class: middle
 
 In this course, data systems will broadly refer to any kind of computer systems, distributed or not, that can be used to store, retrieve, organize or process data.
 
-Our main focus will be on data systems for data science purposes.
+Our main focus will be on distributed data systems.
 
 ---
 
@@ -446,6 +446,20 @@ class: middle
 class: middle
 
 # Outline
+
+---
+
+# Outline
+
+- Lecture 1: Introduction
+- Lecture 2: Basic distributed abstractions
+- Lecture 3: Reliable broadcast
+- Lecture 4: Shared memory
+- Lecture 5: Consensus
+- Lecture 6: Distributed file systems
+- Lecture 7: Distributed hash tables
+- Lecture 8: Blockchain
+- Lecture 9: Distributed computing
 
 ---
 
@@ -531,6 +545,18 @@ class: middle
     - Map Reduce (Hadoop)
     - Computational graph systems (Spark, Dask)
 - Is distributed computing always necessary?
+
+---
+
+class: middle, black-slide
+
+.center.width-75[![](./figures/outline/lego.jpg)]
+
+.center[
+We give you Lego bricks. Your job is to assemble them<br> into well-engineered solutions.
+]
+
+.footnote[Image credits: Kelly Sikkema.]
 
 ---
 
