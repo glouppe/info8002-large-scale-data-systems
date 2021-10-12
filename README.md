@@ -29,7 +29,21 @@ TBD.
 
 ### Reading assignment
 
-TBD.
+Your task is to read and summarize a scientific paper in the field of distributed systems. You are free to select one among the following two papers:
+
+> - Baker, Bond et al, "Megastore: Providing Scalable, Highly Available Storage for Interactive Services", 2011. [PDF](https://storage.googleapis.com/pub-tools-public-publication-data/pdf/36971.pdf).
+> - Zheng, Lin et al, "PaxosStore: High-availability Storage Made Practical in WeChat", 2017. [PDF](https://www.usenix.org/system/files/conference/osdi14/osdi14-paper-muralidhar.pdf).
+>
+You should produce a report that summarizes the problem that is tackled by the paper and explains why it is challenging or important. The report should outline the main contributions and results with respect to the problem that is addressed. It should also include a critical discussion of the advantages and shortcomings of the contributions of the paper.
+
+Constraints:
+- You can work in groups of maximum 4 students.
+- You report must be written in English.
+- Up to 4 pages (excluding references, if any).
+- Formatted using the LaTeX template [`template-report-reading-assignment.tex`](https://glouppe.github.io/info8002-large-scale-data-systems/template-report-reading-assignment.tex).
+
+Your report should be submitted  by **December 17, 2021 at 23:59** on the [submission platform](https://submit.montefiore.ulg.ac.be/).
+
 
 ## Archives
 
