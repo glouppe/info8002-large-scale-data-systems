@@ -15,9 +15,9 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2021.
 | September 28 | Lecture 3: [Reliable broadcast](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture3.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec3.pdf)] |
 | October 5 | Lecture 4: [Shared memory](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture4.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec4.pdf)] |
 | October 12 | Lecture 5: [Consensus](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture5.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec5.pdf)] |
-| October 19 | Lecture 6: [Distributed file systems](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture6.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec6.pdf)] |
+| October 19 | Lecture 6: [Blockchain](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture8.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec8.pdf)]<br>Exercise session 1 | 
 | October 26 | Lecture 7: [Distributed hash tables](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture7.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec7.pdf)]  |
-| November 9 | Lecture 8: [Blockchain](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture8.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec8.pdf)] |
+| November 9 | Lecture 8: [Distributed file systems](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture6.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec6.pdf)] |
 | November 16 | Lecture 9: [Distributed computing](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture9.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec9.pdf)] |
 | December 17 | Deadline for the reading assignment and the programming project |
 
