@@ -28,7 +28,7 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2021.
 
 ### Programming project
 
-TBD.
+KeyChain. Due by **December 17, 2021 at 23:59**. See the [`/project/`](https://github.com/glouppe/info8002-large-scale-data-systems/tree/master/project) folder for instructions.
 
 ### Reading assignment
 
