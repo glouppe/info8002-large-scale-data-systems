@@ -17,7 +17,7 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2021.
 | October 12 | Lecture 5: [Consensus](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture5.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec5.pdf)] |
 | October 19 | Lecture 6: [Blockchain](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture8.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec8.pdf)]<br>Exercise session 1 [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/tp1.pdf)] | 
 | October 26 | Lecture 7: [Distributed hash tables](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture7.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec7.pdf)]<br>Exercise session 2 [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/tp2.pdf)] |
-| November 9 | Lecture 8: [Distributed file systems](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture6.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec6.pdf)]<br>Exercise session 3 [PDF] |
+| November 9 | Lecture 8: [Distributed file systems](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture6.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec6.pdf)]<br>Exercise session 3 [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/tp3.pdf)] |
 | November 16 | Lecture 9: [Distributed computing](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture9.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec9.pdf)] |
 | November 30 | Exercise session 4 [PDF]|
 | December 7 | Exercise session 5 [PDF]|
@@ -28,7 +28,7 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2021.
 
 ### Programming project
 
-KeyChain. Due by **December 17, 2021 at 23:59**. See the [`/project/`](https://github.com/glouppe/info8002-large-scale-data-systems/tree/master/project) folder for instructions.
+KeyChain. Due by **December 17, 2021 at 23:59**. See the [`/project/`](https://github.com/glouppe/info8002-large-scale-data-systems/tree/master/project) folder for instructions. Presentation can be found [here](https://github.com/glouppe/info8002-large-scale-data-systems/tree/master/pdf/project-presentation.pdf)
 
 ### Reading assignment
 

@@ -27,7 +27,7 @@ _install_requires = [
     "flask",
     "hashlib",
     "numpy",
-    "requists",
+    "requests",
     "time"
 ]
 

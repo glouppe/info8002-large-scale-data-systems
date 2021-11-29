@@ -18,6 +18,8 @@ class Block:
         """Returns the list of transactions associated with this block."""
         raise NotImplementedError
 
+    def contains(self, transaction):
+        """Returns a boolean expressing wether or not the transaction is contained in the block."""
 
 class Transaction:
     def __init__(self):

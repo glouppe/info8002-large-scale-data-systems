@@ -46,12 +46,17 @@ Beyond this coarse structure, **you are free** to design and implement this proj
 
 ## Report
 
-Your project must comes with a written **report** (in PDF) that includes:
+Your project must comes with a written **report** (3-5 pages, PDF) that includes:
 * A detailed description of your general architecture, its individual components and their interactions. Specify clearly your set of assumptions and use pseudo-code to describe your implementations.
-* A discussion of the consequences and scalability of your broadcast implementation.
-* A discussion about the applicability of a blockchain to this problem.
 * An experiment demonstrating the resistance of the key-value store against faults.
 * An experiment showing the transaction throughput with respect to the difficulty level.
 * An experiment demonstrating a 51% attack by rewriting an older version of a key.
+* A discussion of the consequences and scalability of your broadcast implementation.
+* A discussion of the efficiency and scalability of your **put** and **retrieve** operations.
+* A discussion about the applicability of a blockchain to this problem.
 
 Experimental results should all come with a critical discussion.
+
+## Bonus
+
+Any relevant additional feature provided may be eligible to a **1point** bonus. The feature should be documented in the report and correctly implemented.
