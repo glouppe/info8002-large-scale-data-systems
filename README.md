@@ -20,7 +20,7 @@ Lectures for INFO8002 - Large-Scale Data Systems, ULiège, Fall 2021.
 | November 9 | Lecture 8: [Distributed file systems](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture6.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec6.pdf)]<br>Exercise session 3 [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/tp3.pdf)] |
 | November 16 | Lecture 9: [Distributed computing](https://glouppe.github.io/info8002-large-scale-data-systems/?p=lecture9.md) [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/lec9.pdf)] |
 | November 30 | Exercise session 4 [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/tp4.pdf)] |
-| December 7 | Exercise session 5 [PDF]|
+| December 7 | Exercise session 5 [[PDF](https://glouppe.github.io/info8002-large-scale-data-systems/pdf/tp5.pdf)] |
 | December 14 | Q&A Session |
 | December 17 | Deadline for the reading assignment and the programming project |
 
