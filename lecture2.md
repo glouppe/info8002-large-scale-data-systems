@@ -671,6 +671,23 @@ Assuming a crash-stop process abstraction, the **perfect detector** encapsulates
 
 ???
 
+Degrees of completeness
+The degrees of completeness depend on the number of crashed process is suspected by a failure detector in a certain period.[5]
+
+- Strong completeness: "every faulty process is eventually permanently suspected by every non-faulty process."[6]
+- Weak completeness: "every faulty process is eventually permanently suspected by some non-faulty process."[6]
+
+Degrees of accuracy
+The degrees of accuracy depend on the number of mistakes that a failure detector made in a certain period.[5]
+
+- Strong accuracy: "no process is suspected (by anybody) before it crashes."[6]
+- Weak accuracy: "some non-faulty process is never suspected."[6]
+- Eventual strong accuracy: "no non-faulty process is suspected after some time since the end of the initial period of chaos as the time at which the last crash occurs."[6]
+- Eventual weak accuracy: "after some initial period of confusion, some non-faulty process is never suspected."[6]
+
+
+<br>
+
 - PFD1. Strong completeness: liveness
 - PFD2. Strong accuracy: safety
 

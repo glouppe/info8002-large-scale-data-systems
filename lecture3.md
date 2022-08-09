@@ -292,6 +292,12 @@ class: middle
 
 .exercise[Show that eager reliable broadcast is correct.]
 
+???
+
+Hence, RB can be implemented in asynchronous systems (see Lecture 2, slide 23).
+
+Insist on the fact that different distributed system models assumptions lead to distinct implementations.
+
 ---
 
 # Uniformity
@@ -439,7 +445,7 @@ causally preceding messages `mpast`.
 
 ???
 
-.exercise[Show the correctness of the algorithm.]
+Every process $p$ maintains a vector clock $V$ such that entry $V [ rank (q)]$ represents the number of messages that $p$ has crb-delivered from process $q$.
 
 ---
 

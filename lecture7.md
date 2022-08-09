@@ -411,7 +411,7 @@ class: middle
 
 The distance between two identifiers is defined as $$d(x, y) = x \oplus y.$$
 - XOR is a valid, albeit non-Euclidean metric.
-- XOR captures the notion of distance between two identifiers: in a fully-populated binary tree of 160-bit IDs, it is the height of the smallest subtree containing them both.
+- XOR captures the notion of distance between two identifiers: in a fully-populated binary tree of 160-bit IDs, the magnitude of the distance is the height of the smallest subtree containing them both.
 - XOR is symmetric.
 - XOR is unidirectional.
 
@@ -433,13 +433,8 @@ class: middle
 
 ## Node state
 
-- For every prefix of size $0 \leq i < 160$, every node keeps a list, called a **k-bucket**,  of (IP address, Port, ID) for nodes of distance between $2^i$ and $2^{i+1}$ of itself.
+- For each $0 \leq i < 160$, every node keeps a list, called a **k-bucket**,  of (IP address, Port, ID) for nodes of distance between $2^i$ and $2^{i+1}$ of itself.
 - Every k-bucket is sorted by time last seen (least recently seen first).
-- When a node receives a message, it updates the corresponding k-bucket for the sender's identifier. If the sender already exists, it is moved to the tail of the list.
-  - If the k-bucket is full, the node pings the **least recently** seen node and checks if it is still available.
-        - Only if the node is **not available** it will replace it.
-        - If available, the node is pushed back at the end of the bucket.
-  - Policy of replacement only when a nodes leaves the network $\rightarrow$ prevents Denial of Service (DoS) attacks (e.g., flushing routing tables).
 
 ---
 
@@ -557,6 +552,18 @@ The routing table is an (unbalanced) binary tree whose leaves are $k$-buckets.
 - The shared prefix is the $k$-buckets position in the binary tree.
 - Thus, a $k$-buckets covers some range of the 160 bit identifier space.
 - All $k$-buckets cover the *complete* identifier space with *no* overlap.
+
+---
+
+class: middle
+
+## Update
+
+When a node receives a message, it updates the corresponding k-bucket for the sender's identifier. If the sender already exists, it is moved to the tail of the list.
+- If the k-bucket is full, the node pings the **least recently** seen node and checks if it is still available.
+      - Only if the node is **not available** it will replace it.
+      - If available, the node is pushed back at the end of the bucket.
+- Policy of replacement only when a nodes leaves the network $\rightarrow$ prevents Denial of Service (DoS) attacks (e.g., flushing routing tables).
 
 ---
 
